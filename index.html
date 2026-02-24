@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Dashboard</title>
+    <title>Lounas Dashboard</title>
     <style>
         :root {
             --bg: #000000; --card: #1C1C1E; --card-sec: #2C2C2E; --accent: #0A84FF;
@@ -49,17 +49,17 @@
         input { flex: 1; background: #000; border: none; padding: 12px; border-radius: 10px; color: white; text-align: center; font-weight: 700; font-size: 18px; }
         select { flex: 1.5; background: #000; border: none; padding: 12px; border-radius: 10px; color: var(--accent); font-weight: 700; appearance: none; text-align: center; }
 
-        #splash { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: black; display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        #splash { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: black; display: flex; align-items: center; justify-content: center; z-index: 1000; transition: opacity 0.5s; }
     </style>
 </head>
 <body>
 
-<div id="splash"><div style="font-weight: 800; letter-spacing: 2px;">SYNCING...</div></div>
+<div id="splash"><div style="font-weight: 800; letter-spacing: 2px; color: white;">SYNCING...</div></div>
 
 <div class="container">
     <header>
-        <div class="date" id="date-label">Dashboard</div>
-        <h1>Lounas</h1>
+        <div class="date" id="date-label">MUHOS SCHOOLS</div>
+        <h1>Dashboard</h1>
     </header>
 
     <div class="hero">
@@ -73,10 +73,10 @@
     </div>
 
     <div class="ai-zone">
-        <textarea id="ai-input" rows="2" placeholder="Describe your plate..."></textarea>
+        <textarea id="ai-input" rows="2" placeholder="Kuvaile ateriasi... (esim. 'kaksi kauhallista lihakeittoa')"></textarea>
         <div class="btn-row">
-            <button class="btn btn-sec" onclick="alert('Camera integration coming soon')">📷 Camera</button>
-            <button class="btn btn-pri" onclick="runAI()">✨ Analyze</button>
+            <button class="btn btn-sec" onclick="alert('Kamera-analyysi tulossa pian!')">📷 Kamera</button>
+            <button class="btn btn-pri" onclick="runAI()">✨ Analysoi</button>
         </div>
     </div>
 
@@ -84,15 +84,19 @@
 </div>
 
 <script>
-    const GEMINI_API_KEY = "AIzaSyDBxIHsj1chijnARGj5oh_W8swKbGnEsSo"; // Hae aistudio.google.com
+    // Avain lisätty suoraan projektiin
+    const GEMINI_API_KEY = "AIzaSyDBxIHsj1chijnARGj5oh_W8swKbGnEsSo";
+    
     let mealData = [];
     const UNITS = { "kauha": 130, "dl": 100, "kpl": 60, "g": 1 };
 
     async function init() {
         try {
-            // Lukee tiedoston, jonka robotti luo
+            // Lukee tiedoston, jonka GitHub Action päivittää aamuisin
             const r = await fetch('./menu.json');
+            if (!r.ok) throw new Error("Menu file not found");
             const data = await r.json();
+            
             const rows = data[0].data.mealOptions[0].rows;
             const container = document.getElementById('food-list');
 
@@ -125,20 +129,23 @@
                         </div>
                     </div>`;
             });
-            document.getElementById('splash').style.display = 'none';
+            document.getElementById('splash').style.opacity = '0';
+            setTimeout(() => document.getElementById('splash').style.display = 'none', 500);
         } catch (e) {
-            document.getElementById('splash').innerHTML = "Run 'Päivitä ruokalista' Action in GitHub first.";
+            document.getElementById('splash').innerHTML = "<div style='text-align:center; padding: 20px;'><h3>Ei dataa tälle päivälle.</h3><p>Varmista että GitHub Action on ajettu kerran.</p></div>";
         }
     }
 
     async function runAI() {
         const text = document.getElementById('ai-input').value;
-        if (!text || GEMINI_API_KEY === "TÄHÄN_SINUN_AVAIN") return alert("Add API Key or text!");
+        if (!text) return alert("Kirjoita kuvaus ensin!");
         
-        document.getElementById('splash').style.display = 'flex';
-        document.getElementById('splash').innerText = "AI is thinking...";
+        const loader = document.getElementById('splash');
+        loader.style.display = 'flex';
+        loader.style.opacity = '1';
+        loader.innerHTML = "<div style='color:white; font-weight:800;'>AI IS ANALYZING...</div>";
 
-        const prompt = `Menu: ${JSON.stringify(mealData.map(m=>m.name))}. User: "${text}". Estimate portions in grams. Return ONLY JSON: {"FoodName": grams}.`;
+        const prompt = `Menu tänään: ${JSON.stringify(mealData.map(m=>m.name))}. Käyttäjä sanoo: "${text}". Arvioi annoskoot grammoina. Palauta VAIN JSON-objekti: {"RuoanNimi": grammamäärä}.`;
 
         try {
             const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
@@ -146,7 +153,8 @@
                 body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
             });
             const d = await resp.json();
-            const results = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, ""));
+            const aiText = d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim();
+            const results = JSON.parse(aiText);
             
             mealData.forEach((item, i) => {
                 if (results[item.name]) {
@@ -155,8 +163,12 @@
                 }
             });
             calc();
-        } catch (e) { alert("AI Error"); }
-        document.getElementById('splash').style.display = 'none';
+        } catch (e) { 
+            console.error(e);
+            alert("AI Error - tarkista onko ruoan nimi täsmälleen sama."); 
+        }
+        loader.style.opacity = '0';
+        setTimeout(() => loader.style.display = 'none', 500);
     }
 
     function calc() {
@@ -173,6 +185,10 @@
         document.getElementById('res-h').innerText = Math.round(th) + "g";
         document.getElementById('res-r').innerText = Math.round(tr) + "g";
     }
+
+    // Päivämäärän asetus otsikkoon
+    const d = new Date();
+    document.getElementById('date-label').innerText = d.toLocaleDateString('fi-FI', { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase();
 
     init();
 </script>
