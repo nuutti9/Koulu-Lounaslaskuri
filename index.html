@@ -3,131 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Lounas AI</title>
+    <title>Dashboard</title>
     <style>
-        :root { --bg: #000000; --card: #1C1C1E; --accent: #0A84FF; --p: #FF453A; --f: #FFD60A; --c: #32D74B; --text: #FFFFFF; --text-dim: #8E8E93; }
-        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; -webkit-font-smoothing: antialiased; }
-        .app { max-width: 414px; margin: 0 auto; }
-        header { margin: 20px 0; }
-        .summary { background: linear-gradient(145deg, #1c1c1e, #111); border-radius: 24px; padding: 30px; text-align: center; border: 1px solid #2C2C2E; margin-bottom: 20px; }
-        .kcal-val { font-size: 64px; font-weight: 800; display: block; }
-        .macros { display: grid; grid-template-columns: 1fr 1fr 1fr; margin-top: 20px; padding-top: 15px; border-top: 1px solid #2C2C2E; }
-        .m-box { display: flex; flex-direction: column; font-size: 14px; font-weight: 700; }
-        .ai-box { background: var(--card); border-radius: 20px; padding: 15px; margin-bottom: 20px; }
+        :root {
+            --bg: #000000; --card: #1C1C1E; --card-sec: #2C2C2E; --accent: #0A84FF;
+            --p: #FF453A; --f: #FFD60A; --c: #32D74B; --text: #FFFFFF; --text-dim: #8E8E93;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+            background-color: var(--bg); color: var(--text); margin: 0; padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container { width: 100%; max-width: 414px; padding: 20px; margin: 0 auto; box-sizing: border-box; }
+
+        header { margin: 40px 0 25px 5px; }
+        .date { font-size: 13px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+        h1 { font-size: 34px; font-weight: 800; margin: 0; letter-spacing: -1px; }
+
+        .hero {
+            background: linear-gradient(145deg, #1c1c1e, #131314);
+            border-radius: 22px; padding: 30px; margin-bottom: 25px;
+            border: 1px solid rgba(255,255,255,0.05); text-align: center;
+        }
+
+        .kcal-val { font-size: 64px; font-weight: 800; line-height: 1; display: block; }
+        .macro-row { display: grid; grid-template-columns: 1fr 1fr 1fr; margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--card-sec); }
+        .m-box { display: flex; flex-direction: column; align-items: center; }
+        .m-label { font-size: 11px; font-weight: 700; color: var(--text-dim); margin-bottom: 4px; }
+        .m-val { font-size: 18px; font-weight: 700; }
+
+        .ai-zone { background: var(--card); border-radius: 22px; padding: 15px; margin-bottom: 25px; }
         textarea { width: 100%; background: transparent; border: none; color: white; font-size: 16px; outline: none; resize: none; padding: 5px; box-sizing: border-box; }
         .btn-row { display: flex; gap: 10px; margin-top: 10px; }
-        .btn { flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .btn { flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-sec { background: #2C2C2E; color: white; }
         .btn-pri { background: var(--accent); color: white; }
-        .food-item { background: var(--card); border-radius: 20px; padding: 18px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 12px; border: 1px solid #2C2C2E; }
-        .food-head { display: flex; justify-content: space-between; font-weight: 700; }
-        .food-g { color: var(--accent); font-size: 13px; }
-        .inputs { display: flex; gap: 10px; }
+
+        .food-card { background-color: var(--card); border-radius: 20px; padding: 18px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.02); }
+        .food-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .food-name { font-size: 17px; font-weight: 700; }
+        .food-g { font-size: 13px; font-weight: 700; color: var(--accent); background: rgba(10, 132, 255, 0.1); padding: 4px 10px; border-radius: 8px; }
+        .controls { display: flex; gap: 10px; }
         input { flex: 1; background: #000; border: none; padding: 12px; border-radius: 10px; color: white; text-align: center; font-weight: 700; font-size: 18px; }
-        select { flex: 1.5; background: #000; border: none; padding: 12px; border-radius: 10px; color: var(--accent); font-weight: 700; }
-        #overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 1000; font-weight: 800; }
+        select { flex: 1.5; background: #000; border: none; padding: 12px; border-radius: 10px; color: var(--accent); font-weight: 700; appearance: none; text-align: center; }
+
+        #splash { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: black; display: flex; align-items: center; justify-content: center; z-index: 1000; }
     </style>
 </head>
 <body>
 
-<div id="overlay">Ladataan menu...</div>
+<div id="splash"><div style="font-weight: 800; letter-spacing: 2px;">SYNCING...</div></div>
 
-<div class="app">
+<div class="container">
     <header>
-        <div style="color: var(--text-dim); font-size: 13px; font-weight: 600; text-transform: uppercase;" id="date-now">Dashboard</div>
-        <h1 style="font-size: 34px; margin: 0;">Yhteenveto</h1>
+        <div class="date" id="date-label">Dashboard</div>
+        <h1>Lounas</h1>
     </header>
 
-    <div class="summary">
+    <div class="hero">
         <span class="kcal-val" id="res-kcal">0</span>
-        <span style="color: var(--text-dim); font-weight: 600;">kcal yhteensä</span>
-        <div class="macros">
-            <div class="m-box"><span style="color:var(--p)">PROT</span><span id="res-p">0g</span></div>
-            <div class="m-box"><span style="color:var(--f)">FAT</span><span id="res-r">0g</span></div>
-            <div class="m-box"><span style="color:var(--c)">CARB</span><span id="res-h">0g</span></div>
+        <div style="color: var(--text-dim); font-weight: 600;">kcal consumed</div>
+        <div class="macro-row">
+            <div class="m-box"><span class="m-label">PROTEIN</span><span class="m-val" style="color: var(--p)" id="res-p">0g</span></div>
+            <div class="m-box"><span class="m-label">FATS</span><span class="m-val" style="color: var(--f)" id="res-r">0g</span></div>
+            <div class="m-box"><span class="m-label">CARBS</span><span class="m-val" style="color: var(--c)" id="res-h">0g</span></div>
         </div>
     </div>
 
-    <div class="ai-box">
-        <textarea id="ai-text" rows="2" placeholder="Mitä söit? (esim. 'kaksi perunaa ja kauha kastiketta')"></textarea>
+    <div class="ai-zone">
+        <textarea id="ai-input" rows="2" placeholder="Describe your plate..."></textarea>
         <div class="btn-row">
-            <input type="file" id="cam" accept="image/*" capture="camera" style="display:none" onchange="preview(this)">
-            <button class="btn btn-sec" onclick="document.getElementById('cam').click()">📷 Kuva</button>
-            <button class="btn btn-pri" onclick="analyze()">✨ Analysoi</button>
+            <button class="btn btn-sec" onclick="alert('Camera integration coming soon')">📷 Camera</button>
+            <button class="btn btn-pri" onclick="runAI()">✨ Analyze</button>
         </div>
     </div>
 
-    <div id="food-container"></div>
+    <div id="food-list"></div>
 </div>
 
 <script>
-    const MY_URL = "https://script.google.com/macros/s/AKfycbzUuwZhoQo6fsL-mNC7eHmcEh_srdT7EApFB_gHTU-HnxQiIQ1BC08MQ7qCUEgGvFMaPA/exec";
+    const GEMINI_API_KEY = "TÄHÄN_SINUN_AVAIN"; // Hae aistudio.google.com
     let mealData = [];
-    let imgBase64 = null;
     const UNITS = { "kauha": 130, "dl": 100, "kpl": 60, "g": 1 };
 
     async function init() {
         try {
-            const r = await fetch(MY_URL);
-            const json = await r.json();
-            const rows = json[0].data.mealOptions[0].rows; // [cite: 1, 20]
-            const cont = document.getElementById('food-container');
-            
+            // Lukee tiedoston, jonka robotti luo
+            const r = await fetch('./menu.json');
+            const data = await r.json();
+            const rows = data[0].data.mealOptions[0].rows;
+            const container = document.getElementById('food-list');
+
             rows.forEach((row, i) => {
-                const factors = (row.nutritiveItem && row.nutritiveItem.factors) ? row.nutritiveItem.factors : []; // [cite: 2, 20, 58]
-                const get100 = (lbl, isK) => {
+                const factors = row.nutritiveItem.factors;
+                const getVal = (lbl, isK) => {
                     const f = factors.find(fact => {
-                        const name = fact.nutritiveFactorNames[0].name; // [cite: 2, 20, 58]
+                        const name = fact.nutritiveFactorNames[0].name;
                         return isK ? (name === "Energia" && fact.values[0].value100.includes("kcal")) : (name === lbl);
                     });
-                    return f ? parseFloat(f.values[0].value100.replace(',','.').replace(/[^\d.]/g,'')) : 0; // [cite: 2, 3, 21]
+                    return f ? parseFloat(f.values[0].value100.replace(',','.').replace(/[^\d.]/g, '')) : 0;
                 };
 
                 const item = {
                     name: row.names[0].name,
-                    kcal: get100("Energia", true), p: get100("Proteiini"), h: get100("Hiilihydraatit"), r: get100("Rasva"), // [cite: 2, 3, 58, 60]
-                    dlW: row.names[0].name.toLowerCase().includes("pasta") ? 65 : 100
+                    kcal: getVal("Energia", true), p: getVal("Proteiini"), h: getVal("Hiilihydraatit"), r: getVal("Rasva"),
+                    density: row.names[0].name.toLowerCase().includes("pasta") ? 65 : 100
                 };
                 mealData.push(item);
 
-                cont.innerHTML += `
-                    <div class="food-item">
-                        <div class="food-head"><span>${item.name}</span><span class="food-g" id="w-${i}">0 g</span></div>
-                        <div class="inputs">
+                container.innerHTML += `
+                    <div class="food-card">
+                        <div class="food-header"><span>${item.name}</span><span class="food-g" id="w-${i}">0 g</span></div>
+                        <div class="controls">
                             <input type="number" id="q-${i}" value="0" oninput="calc()">
                             <select id="u-${i}" onchange="calc()">
                                 <option value="kauha">Kauha</option><option value="dl">Desi</option>
-                                <option value="kpl">Kpl</option><option value="g">Gramma</option>
+                                <option value="kpl">Kpl</option><option value="g">Gram</option>
                             </select>
                         </div>
                     </div>`;
             });
-            document.getElementById('overlay').style.display = 'none';
-        } catch (e) { document.getElementById('overlay').innerText = "Yhteysvirhe. Tarkista Script URL."; }
-    }
-
-    function preview(input) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = e => { imgBase64 = e.target.result.split(',')[1]; document.getElementById('ai-text').placeholder = "Kuva valmis!"; };
-            reader.readAsDataURL(input.files[0]);
+            document.getElementById('splash').style.display = 'none';
+        } catch (e) {
+            document.getElementById('splash').innerHTML = "Run 'Päivitä ruokalista' Action in GitHub first.";
         }
     }
 
-    async function analyze() {
-        document.getElementById('overlay').style.display = 'flex';
-        document.getElementById('overlay').innerText = "AI analysoi...";
+    async function runAI() {
+        const text = document.getElementById('ai-input').value;
+        if (!text || GEMINI_API_KEY === "TÄHÄN_SINUN_AVAIN") return alert("Add API Key or text!");
+        
+        document.getElementById('splash').style.display = 'flex';
+        document.getElementById('splash').innerText = "AI is thinking...";
+
+        const prompt = `Menu: ${JSON.stringify(mealData.map(m=>m.name))}. User: "${text}". Estimate portions in grams. Return ONLY JSON: {"FoodName": grams}.`;
+
         try {
-            const res = await fetch(MY_URL, {
+            const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
                 method: 'POST',
-                body: JSON.stringify({
-                    action: "analyze",
-                    text: document.getElementById('ai-text').value,
-                    image: imgBase64,
-                    menu: mealData.map(m => m.name).join(", ")
-                })
+                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
             });
-            const results = await res.json();
+            const d = await resp.json();
+            const results = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, ""));
+            
             mealData.forEach((item, i) => {
                 if (results[item.name]) {
                     document.getElementById(`q-${i}`).value = results[item.name];
@@ -135,8 +155,8 @@
                 }
             });
             calc();
-        } catch (e) { alert("AI-virhe."); }
-        document.getElementById('overlay').style.display = 'none';
+        } catch (e) { alert("AI Error"); }
+        document.getElementById('splash').style.display = 'none';
     }
 
     function calc() {
@@ -144,18 +164,16 @@
         mealData.forEach((item, i) => {
             const q = parseFloat(document.getElementById(`q-${i}`).value) || 0;
             const u = document.getElementById(`u-${i}`).value;
-            let w = (u === "dl") ? q * item.dlW : (u === "g" ? q : UNITS[u] * q);
+            let w = (u === "dl") ? q * item.density : (u === "g" ? q : UNITS[u] * q);
             document.getElementById(`w-${i}`).innerText = Math.round(w) + " g";
             tk += (w * item.kcal) / 100; tp += (w * item.p) / 100; th += (w * item.h) / 100; tr += (w * item.r) / 100;
         });
         document.getElementById('res-kcal').innerText = Math.round(tk);
-        document.getElementById('res-p').innerText = tp.toFixed(0) + "g";
-        document.getElementById('res-h').innerText = th.toFixed(0) + "g";
-        document.getElementById('res-r').innerText = tr.toFixed(0) + "g";
+        document.getElementById('res-p').innerText = Math.round(tp) + "g";
+        document.getElementById('res-h').innerText = Math.round(th) + "g";
+        document.getElementById('res-r').innerText = Math.round(tr) + "g";
     }
 
-    const d = new Date();
-    document.getElementById('date-now').innerText = d.toLocaleDateString('fi-FI', { weekday: 'long', day: 'numeric', month: 'long' });
     init();
 </script>
 </body>
