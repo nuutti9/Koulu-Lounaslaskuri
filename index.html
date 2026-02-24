@@ -10,79 +10,67 @@
             --p: #FF453A; --f: #FFD60A; --c: #32D74B; --text: #FFFFFF; --text-dim: #8E8E93;
             --radius: 22px;
         }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
             background-color: var(--bg); color: var(--text); margin: 0; padding: 0;
             -webkit-font-smoothing: antialiased;
         }
-
         .container { width: 100%; max-width: 414px; padding: 20px; margin: 0 auto; box-sizing: border-box; }
-
         header { margin: 40px 0 25px 5px; }
         .date { font-size: 13px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
         h1 { font-size: 34px; font-weight: 800; margin: 0; letter-spacing: -1px; }
-
         .hero {
             background: linear-gradient(145deg, #1c1c1e, #131314);
             border-radius: var(--radius); padding: 30px; margin-bottom: 25px;
             border: 1px solid rgba(255,255,255,0.05); text-align: center;
         }
-
         .kcal-val { font-size: 64px; font-weight: 800; line-height: 1; display: block; }
         .macro-row { display: grid; grid-template-columns: 1fr 1fr 1fr; margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--card-sec); }
         .m-box { display: flex; flex-direction: column; align-items: center; }
-        .m-label { font-size: 11px; font-weight: 700; color: var(--text-dim); margin-bottom: 4px; }
         .m-val { font-size: 18px; font-weight: 700; }
-
         .ai-zone { background: var(--card); border-radius: var(--radius); padding: 15px; margin-bottom: 25px; }
-        textarea { width: 100%; background: transparent; border: none; color: white; font-size: 16px; outline: none; resize: none; padding: 5px; box-sizing: border-box; }
-        .btn-row { display: flex; gap: 10px; margin-top: 10px; }
-        .btn { flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .btn-pri { background: var(--accent); color: white; }
-
-        .food-card { background-color: var(--card); border-radius: 20px; padding: 18px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.02); }
+        textarea { width: 100%; background: transparent; border: none; color: white; font-size: 16px; outline: none; resize: none; padding: 10px; box-sizing: border-box; }
+        .btn-pri { background: var(--accent); color: white; width: 100%; padding: 16px; border-radius: 14px; border: none; font-weight: 700; cursor: pointer; }
+        .food-card { background-color: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.02); }
         .food-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .food-name { font-size: 17px; font-weight: 700; }
         .food-g { font-size: 13px; font-weight: 700; color: var(--accent); background: rgba(10, 132, 255, 0.1); padding: 4px 10px; border-radius: 8px; }
         .controls { display: flex; gap: 10px; }
         input { flex: 1; background: #000; border: none; padding: 12px; border-radius: 10px; color: white; text-align: center; font-weight: 700; font-size: 18px; outline: none; }
         select { flex: 1.5; background: #000; border: none; padding: 12px; border-radius: 10px; color: var(--accent); font-weight: 700; appearance: none; text-align: center; }
-
         #splash { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: black; display: flex; align-items: center; justify-content: center; z-index: 1000; transition: opacity 0.5s; }
     </style>
 </head>
 <body>
 
-<div id="splash"><div style="font-weight: 800; letter-spacing: 2px; color: white;">SYNCING...</div></div>
+<div id="splash"><div style="font-weight: 800; color: white;">INITIALIZING GEMINI 2.5...</div></div>
 
 <div class="container">
     <header>
-        <div class="date" id="date-label">MUHOS SCHOOLS</div>
-        <h1>Dashboard</h1>
+        <div class="date" id="date-label">Dashboard</div>
+        <h1>Lounas</h1>
     </header>
 
     <div class="hero">
         <span class="kcal-val" id="res-kcal">0</span>
-        <div style="color: var(--text-dim); font-weight: 600;">kcal consumed</div>
+        <div style="color: var(--text-dim); font-weight: 600;">kcal yhteensä</div>
         <div class="macro-row">
-            <div class="m-box"><span class="m-label">PROTEIN</span><span class="m-val" style="color: var(--p)" id="res-p">0g</span></div>
-            <div class="m-box"><span class="m-label">FATS</span><span class="m-val" style="color: var(--f)" id="res-r">0g</span></div>
-            <div class="m-box"><span class="m-label">CARBS</span><span class="m-val" style="color: var(--c)" id="res-h">0g</span></div>
+            <div class="m-box"><span style="color:var(--p); font-size:11px;">PROT</span><span class="m-val" id="res-p">0g</span></div>
+            <div class="m-box"><span style="color:var(--f); font-size:11px;">FAT</span><span class="m-val" id="res-r">0g</span></div>
+            <div class="m-box"><span style="color:var(--c); font-size:11px;">CARB</span><span class="m-val" id="res-h">0g</span></div>
         </div>
     </div>
 
     <div class="ai-zone">
-        <textarea id="ai-input" rows="2" placeholder="Kuvaile annoksesi... (esim. 'kaksi kauhallista lihakeittoa')"></textarea>
-        <div class="btn-row">
-            <button class="btn btn-pri" style="width:100%" onclick="runAI()">✨ ANALYSOI TEKOÄLYLLÄ</button>
-        </div>
+        <textarea id="ai-input" rows="2" placeholder="Kuvaile annoksesi..."></textarea>
+        <button class="btn-pri" onclick="runAI()">✨ ANALYSOI (FLASH 2.5)</button>
     </div>
 
     <div id="food-list"></div>
 </div>
 
 <script>
+    // Uusi API avain ja malliversio dokumentaation mukaan
     const GEMINI_API_KEY = "AIzaSyDBxIHsj1chijnARGj5oh_W8swKbGnEsSo";
     let mealData = [];
     const UNITS = { "kauha": 130, "dl": 100, "kpl": 60, "g": 1 };
@@ -90,9 +78,7 @@
     async function init() {
         try {
             const r = await fetch('./menu.json');
-            if (!r.ok) throw new Error("Menu data missing");
             const data = await r.json();
-            
             const rows = data[0].data.mealOptions[0].rows;
             const container = document.getElementById('food-list');
 
@@ -126,39 +112,41 @@
             });
             document.getElementById('splash').style.display = 'none';
         } catch (e) {
-            document.getElementById('splash').innerHTML = "<div style='color:white; text-align:center;'>SYNKRONOINTI VIRHE<br>Aja GitHub Action.</div>";
+            document.getElementById('splash').innerHTML = "No menu.json found.";
         }
     }
 
     async function runAI() {
         const text = document.getElementById('ai-input').value;
-        if (!text) return alert("Kirjoita kuvaus ensin!");
+        if (!text) return alert("Kirjoita kuvaus!");
         
         const loader = document.getElementById('splash');
         loader.style.display = 'flex';
-        loader.innerHTML = "<div style='color:white; font-weight:800;'>AI IS ANALYZING...</div>";
+        loader.innerHTML = "<div style='color:white;'>GEMINI 2.5 ANALYSOI...</div>";
 
-        // VAKAIN URL GEMINI FLASHILLE
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-
-        const prompt = `Päivän menu: ${JSON.stringify(mealData.map(m=>m.name))}. Käyttäjä sanoo: "${text}". Arvioi annoskoot grammoina. Palauta VAIN puhdas JSON-objekti ilman koodiblokkeja: {"RuoanNimi": grammamäärä}. Käytä täsmälleen listan nimiä.`;
+        // PÄIVITETTY URL JA HEADERIT DOKUMENTAATION MUKAAN
+        const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
 
         try {
             const resp = await fetch(url, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'x-goog-api-key': GEMINI_API_KEY // Header-autentikointi
+                },
                 body: JSON.stringify({
-                    contents: [{ parts: [{ text: prompt }] }]
+                    contents: [{ parts: [{ text: `Menu: ${JSON.stringify(mealData.map(m=>m.name))}. Käyttäjä: "${text}". Arvioi annokset grammoina. Palauta VAIN JSON: {"RuokaNimi": grammamäärä}. Käytä täsmälleen listan nimiä.` }] }]
                 })
             });
 
             if (!resp.ok) {
-                const err = await resp.json();
-                console.error("API Error Details:", err);
+                const errData = await resp.json();
+                console.error("Gemini 2.5 Error:", errData);
                 throw new Error(`HTTP ${resp.status}`);
             }
 
             const d = await resp.json();
+            // Poimitaan vastaus candidates[0].content.parts[0].text polusta
             const aiText = d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim();
             const results = JSON.parse(aiText);
             
@@ -170,8 +158,8 @@
             });
             calc();
         } catch (e) { 
-            console.error("Fetch error:", e);
-            alert("Analyysi epäonnistui. Varmista API-avaimen oikeudet."); 
+            console.error(e);
+            alert("Analyysi epäonnistui Gemini 2.5:llä. Tarkista konsoli."); 
         }
         loader.style.display = 'none';
     }
@@ -191,8 +179,6 @@
         document.getElementById('res-r').innerText = Math.round(tr) + "g";
     }
 
-    const d = new Date();
-    document.getElementById('date-label').innerText = d.toLocaleDateString('fi-FI', { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase();
     init();
 </script>
 </body>
