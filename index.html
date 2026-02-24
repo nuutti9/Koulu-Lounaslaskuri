@@ -33,19 +33,19 @@
         .btn-row { display: flex; gap: 10px; margin-top: 10px; }
         .btn { flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .btn-pri { background: var(--accent); color: white; }
-        .food-card { background-color: var(--card); border-radius: 20px; padding: 18px; margin-bottom: 12px; }
+        .food-card { background-color: var(--card); border-radius: 20px; padding: 18px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.02); }
         .food-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .food-name { font-size: 17px; font-weight: 700; }
         .food-g { font-size: 13px; font-weight: 700; color: var(--accent); background: rgba(10, 132, 255, 0.1); padding: 4px 10px; border-radius: 8px; }
         .controls { display: flex; gap: 10px; }
-        input { flex: 1; background: #000; border: none; padding: 12px; border-radius: 10px; color: white; text-align: center; font-weight: 700; font-size: 18px; }
-        select { flex: 1.5; background: #000; border: none; padding: 12px; border-radius: 10px; color: var(--accent); font-weight: 700; }
-        #splash { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: black; display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        input { flex: 1; background: #000; border: none; padding: 12px; border-radius: 10px; color: white; text-align: center; font-weight: 700; font-size: 18px; outline: none; }
+        select { flex: 1.5; background: #000; border: none; padding: 12px; border-radius: 10px; color: var(--accent); font-weight: 700; appearance: none; text-align: center; }
+        #splash { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: black; display: flex; align-items: center; justify-content: center; z-index: 1000; transition: opacity 0.5s; }
     </style>
 </head>
 <body>
 
-<div id="splash"><div style="font-weight: 800; color: white;">LADATAAN...</div></div>
+<div id="splash"><div style="font-weight: 800; color: white;">SYNCING...</div></div>
 
 <div class="container">
     <header>
@@ -55,7 +55,7 @@
 
     <div class="hero">
         <span class="kcal-val" id="res-kcal">0</span>
-        <div style="color: var(--text-dim); font-weight: 600;">kcal yhteensä</div>
+        <div style="color: var(--text-dim); font-weight: 600;">kcal consumed</div>
         <div class="macro-row">
             <div class="m-box"><span style="color:var(--p); font-size:11px;">PROT</span><span class="m-val" id="res-p">0g</span></div>
             <div class="m-box"><span style="color:var(--f); font-size:11px;">FAT</span><span class="m-val" id="res-r">0g</span></div>
@@ -115,7 +115,7 @@
             });
             document.getElementById('splash').style.display = 'none';
         } catch (e) {
-            document.getElementById('splash').innerHTML = "Virhe ladattaessa menu.json-tiedostoa.";
+            document.getElementById('splash').innerHTML = "No menu.json found. Run GitHub Action.";
         }
     }
 
@@ -123,11 +123,14 @@
         const text = document.getElementById('ai-input').value;
         if (!text) return alert("Kirjoita kuvaus ensin!");
         
-        document.getElementById('splash').style.display = 'flex';
-        document.getElementById('splash').innerHTML = "<div style='color:white;'>TEKOÄLY ANALYSOI...</div>";
+        const loader = document.getElementById('splash');
+        loader.style.display = 'flex';
+        loader.innerHTML = "<div style='color:white;'>AI IS ANALYZING...</div>";
 
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
-        const prompt = `Menu: ${JSON.stringify(mealData.map(m=>m.name))}. Käyttäjä: "${text}". Arvioi annokset grammoina. Palauta VAIN JSON: {"RuoanNimi": grammamäärä}.`;
+        // KORJATTU URL: v1-rajapinta ja gemini-1.5-flash
+        const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+        const prompt = `Päivän menu: ${JSON.stringify(mealData.map(m=>m.name))}. Käyttäjä sanoo: "${text}". Arvioi annoskoot grammoina. Palauta VAIN JSON-objekti: {"RuoanNimi": grammamäärä}.`;
 
         try {
             const resp = await fetch(url, {
@@ -135,6 +138,8 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
             });
+
+            if (!resp.ok) throw new Error(`HTTP error! status: ${resp.status}`);
 
             const d = await resp.json();
             const aiText = d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim();
@@ -147,8 +152,11 @@
                 }
             });
             calc();
-        } catch (e) { alert("Yhteysvirhe tekoälyyn."); }
-        document.getElementById('splash').style.display = 'none';
+        } catch (e) { 
+            console.error(e);
+            alert("AI Error. Check console (F12)."); 
+        }
+        loader.style.display = 'none';
     }
 
     function calc() {
@@ -166,6 +174,8 @@
         document.getElementById('res-r').innerText = Math.round(tr) + "g";
     }
 
+    const d = new Date();
+    document.getElementById('date-label').innerText = d.toLocaleDateString('fi-FI', { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase();
     init();
 </script>
 </body>
