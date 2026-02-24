@@ -1,0 +1,26 @@
+name: Päivitä ruokalista
+on:
+  schedule:
+    - cron: '0 5 * * *' # Suorittaa joka aamu klo 05:00 UTC
+  workflow_dispatch: # Mahdollistaa manuaalisen käynnistyksen
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Hae data
+        run: |
+          DATE=$(date +%Y-%m-%d)
+          URL="https://api.fi.poweresta.com/publicmenu/dates/muhosutajarvivaala/muhoskoulut/?menu=ruokalista&dates=$DATE"
+          curl -o menu.json "$URL"
+
+      - name: Commit ja Push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add menu.json
+          git commit -m "Päivitetty menu $(date +%Y-%m-%d)" || exit 0
+          git push
