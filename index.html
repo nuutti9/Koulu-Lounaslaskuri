@@ -137,39 +137,56 @@
     }
 
     async function runAI() {
-        const text = document.getElementById('ai-input').value;
-        if (!text) return alert("Kirjoita kuvaus ensin!");
-        
-        const loader = document.getElementById('splash');
-        loader.style.display = 'flex';
-        loader.style.opacity = '1';
-        loader.innerHTML = "<div style='color:white; font-weight:800;'>AI IS ANALYZING...</div>";
+    const text = document.getElementById('ai-input').value;
+    if (!text) return alert("Kirjoita kuvaus ensin!");
+    
+    const loader = document.getElementById('splash');
+    loader.style.display = 'flex';
+    loader.style.opacity = '1';
+    loader.innerHTML = "<div style='color:white; font-weight:800;'>AI IS ANALYZING...</div>";
 
-        const prompt = `Menu tänään: ${JSON.stringify(mealData.map(m=>m.name))}. Käyttäjä sanoo: "${text}". Arvioi annoskoot grammoina. Palauta VAIN JSON-objekti: {"RuoanNimi": grammamäärä}.`;
+    // KORJATTU URL: gemini-1.5-flash -> gemini-1.5-flash-latest
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
 
-        try {
-            const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-                method: 'POST',
-                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-            });
-            const d = await resp.json();
-            const aiText = d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim();
-            const results = JSON.parse(aiText);
-            
-            mealData.forEach((item, i) => {
-                if (results[item.name]) {
-                    document.getElementById(`q-${i}`).value = results[item.name];
-                    document.getElementById(`u-${i}`).value = "g";
-                }
-            });
-            calc();
-        } catch (e) { 
-            console.error(e);
-            alert("AI Error - tarkista onko ruoan nimi täsmälleen sama."); 
+    const prompt = `Menu tänään: ${JSON.stringify(mealData.map(m=>m.name))}. 
+    Käyttäjä sanoo: "${text}". 
+    Arvioi annoskoot grammoina. 
+    Palauta VAIN puhdas JSON-objekti ilman selityksiä: {"RuoanNimi": grammamäärä}. 
+    Käytä vain listassa olevia nimiä.`;
+
+    try {
+        const resp = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                contents: [{ parts: [{ text: prompt }] }] 
+            })
+        });
+
+        if (!resp.ok) {
+            const errorData = await resp.json();
+            console.error("API VIRHE:", errorData);
+            throw new Error("API vastasi virheellä");
         }
-        loader.style.opacity = '0';
-        setTimeout(() => loader.style.display = 'none', 500);
+
+        const d = await resp.json();
+        const aiText = d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim();
+        const results = JSON.parse(aiText);
+        
+        mealData.forEach((item, i) => {
+            if (results[item.name]) {
+                document.getElementById(`q-${i}`).value = results[item.name];
+                document.getElementById(`u-${i}`).value = "g";
+            }
+        });
+        calc();
+    } catch (e) { 
+        console.error(e);
+        alert("AI-analyysi epäonnistui. Tarkista konsoli (F12) nähdäksesi virheen."); 
     }
+    loader.style.opacity = '0';
+    setTimeout(() => loader.style.display = 'none', 500);
+}
 
     function calc() {
         let tk=0, tp=0, th=0, tr=0;
