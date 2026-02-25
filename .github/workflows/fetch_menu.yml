@@ -5,8 +5,10 @@ on:
     - cron: '0 5 * * *'
   workflow_dispatch:
   push:
-    branches:
-      - main
+    branches: [ main ]
+
+permissions:
+  contents: write # Antaa robotille luvan tallentaa tiedostoja
 
 jobs:
   build:
@@ -21,7 +23,7 @@ jobs:
           URL="https://api.fi.poweresta.com/publicmenu/dates/muhosutajarvivaala/muhoskoulut/?menu=ruokalista&dates=$DATE"
           curl -o menu.json "$URL"
 
-      - name: Luo konfiguraatio (config.js)
+      - name: Luo konfiguraatio
         run: |
           echo "const CONFIG = { API_KEY: '${{ secrets.GEMINI_API_KEY }}' };" > config.js
 
@@ -29,7 +31,6 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          # -f pakottaa lisäämään config.js tiedoston, vaikka se olisi .gitignore-listalla
           git add -f menu.json config.js
-          git commit -m "Robotti päivitti ruokalistan ja konfiguraation" || exit 0
+          git commit -m "Päivitetty menu ja config" || exit 0
           git push
