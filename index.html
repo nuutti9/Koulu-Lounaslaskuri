@@ -13,7 +13,7 @@
             --bg: #000000; --card: #1C1C1E; --card-sec: #2C2C2E; --accent: #0A84FF;
             --p: #FF453A; --f: #FFD60A; --c: #32D74B; --text: #FFFFFF; --text-dim: #8E8E93;
             --radius: 20px;
-            --font-main: "Manrope", "Manrope Fallback", ui-sans-serif, system-ui, sans-serif;
+            --font-main: "Manrope", sans-serif;
         }
 
         html, body {
@@ -26,7 +26,6 @@
         }
 
         .container { width: 100%; max-width: 414px; padding: 20px; margin: 0 auto; box-sizing: border-box; }
-        
         header { margin: 30px 0 20px 5px; }
         .date { font-size: 13px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
         h1 { font-size: 34px; font-weight: 800; margin: 2px 0 0; letter-spacing: -1px; }
@@ -44,11 +43,10 @@
             background: rgba(255,255,255,0.01);
         }
 
-        /* Käytetään 30px kokoa kcal-lukemassa ja muissa painotetuissa kohdissa */
         .kcal-val { font-size: 48px; font-weight: 800; line-height: 1; display: block; }
-        .macro-row { display: grid; grid-template-columns: 1fr 1fr 1fr; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--card-sec); }
+        .macro-row { display: grid; grid-template-columns: 1fr 1fr 1.2fr; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--card-sec); }
         .m-val { font-size: 18px; font-weight: 700; display: block; }
-        .m-lbl { font-size: 11px; font-weight: 800; color: var(--text-dim); margin-bottom: 2px; }
+        .m-lbl { font-size: 10px; font-weight: 800; color: var(--text-dim); margin-bottom: 2px; letter-spacing: 0.5px; }
 
         .ai-zone { background: var(--card); border-radius: var(--radius); padding: 16px; margin-bottom: 25px; }
         textarea { 
@@ -66,16 +64,24 @@
 
         .food-card { background: var(--card); border-radius: 18px; padding: 18px; margin-bottom: 12px; }
         .food-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        /* Ruoan nimi on nyt selkeä ja isompi */
         .food-name { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
         .extra-tag { font-size: 10px; font-weight: 800; color: var(--accent); border: 1px solid var(--accent); padding: 1px 5px; border-radius: 4px; margin-left: 6px; text-transform: uppercase; }
 
         .input-wrapper { position: relative; display: flex; align-items: center; background: #000; border-radius: 12px; overflow: hidden; }
+        
+        /* Poistetaan nuolipalkit numerokentistä */
         input[type="number"] { 
             flex: 1; background: transparent; border: none; color: white; 
             font-weight: 700; font-size: 22px; font-family: inherit; 
             padding: 12px 45px 12px 15px; outline: none; text-align: left;
+            -moz-appearance: textfield;
         }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
         .input-suffix { position: absolute; right: 15px; color: var(--text-dim); font-weight: 700; font-size: 18px; pointer-events: none; }
 
         #splash { position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; z-index: 1000; transition: opacity 0.4s; pointer-events: none; opacity:0; display:none; }
@@ -87,7 +93,7 @@
 
 <div class="container">
     <header>
-        <div class="date" id="date-label">Muhos Schools</div>
+        <div class="date" id="date-label">MUHOS SCHOOLS</div>
         <h1>Lounas</h1>
     </header>
 
@@ -99,15 +105,15 @@
             </div>
         </div>
         <div class="macro-row">
-            <div class="m-box"><span class="m-lbl" style="color:var(--p)">PROT</span><span class="m-val" id="res-p">0g</span></div>
+            <div class="m-box"><span class="m-lbl" style="color:var(--p)">PROTEIINI</span><span class="m-val" id="res-p">0g</span></div>
             <div class="m-box"><span class="m-lbl" style="color:var(--f)">RASVA</span><span class="m-val" id="res-r">0g</span></div>
-            <div class="m-box"><span class="m-lbl" style="color:var(--c)">HIILIT</span><span class="m-val" id="res-h">0g</span></div>
+            <div class="m-box"><span class="m-lbl" style="color:var(--c)">HIILIHYDRAATTI</span><span class="m-val" id="res-h">0g</span></div>
         </div>
     </div>
 
     <div class="ai-zone">
         <img id="preview" class="image-preview">
-        <textarea id="ai-input" oninput="autoExpand(this)" placeholder="Kuvaile, mitä söit tänään..."></textarea>
+        <textarea id="ai-input" oninput="autoExpand(this)" placeholder="Kuvaile, mitä söit tänään. (esim. 2 keskikokoista kauhaa lihakeittoa, kourallinen porkkanoita, yksi kokonainen sämpylä, jossa päällä kasvirasvaa ja lasi rasvatonta maitoa)"></textarea>
         <div class="btn-row">
             <button class="btn-upload" onclick="document.getElementById('camera-input').click()">Lisää kuva</button>
             <button class="btn-analyze" onclick="runAI()">Analysoi</button>
@@ -138,6 +144,7 @@
                 document.getElementById('preview').src = e.target.result;
                 document.getElementById('preview').style.display = 'block';
                 selectedImageData = e.target.result.split(',')[1];
+                autoExpand(document.getElementById('ai-input'));
             };
             reader.readAsDataURL(file);
         }
@@ -227,6 +234,8 @@
             loader.style.display = 'none';
             document.getElementById('preview').style.display = 'none';
             selectedImageData = null;
+            document.getElementById('ai-input').value = "";
+            document.getElementById('ai-input').style.height = 'auto';
         }, 500);
     }
 
