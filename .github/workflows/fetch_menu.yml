@@ -7,9 +7,6 @@ on:
   push:
     branches: [ main ]
 
-permissions:
-  contents: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,15 +20,12 @@ jobs:
           URL="https://api.fi.poweresta.com/publicmenu/dates/muhosutajarvivaala/muhoskoulut/?menu=ruokalista&dates=$DATE"
           curl -o menu.json "$URL"
 
-      - name: Luo konfiguraatio
+      - name: Luo väliaikainen konfiguraatio
         run: |
           echo "const CONFIG = { API_KEY: '${{ secrets.GEMINI_API_KEY }}' };" > config.js
 
-      - name: Pakota päivitys Gittiin
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          # Pakotetaan config.js mukaan vaikka .gitignore kieltäisi
-          git add -f menu.json config.js
-          git commit -m "Robotti päivitti tiedostot" || exit 0
-          git push
+      - name: Julkaise GitHub Pagesiin
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: . # Julkaisee koko kansion sisältäen väliaikaisen config.js:n
+          branch: gh-pages # Julkaisee tiedostot tähän haaraan
