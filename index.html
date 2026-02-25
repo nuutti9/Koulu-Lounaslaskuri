@@ -16,60 +16,48 @@
             --font-main: "Manrope", sans-serif;
         }
 
-        /* Tärkeä korjaus: Varmistetaan että sticky toimii */
         html, body {
-            width: 100%;
-            background-color: var(--bg); color: var(--text);
-            margin: 0; padding: 0;
-            font-family: var(--font-main);
-            -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
+            width: 100%; background-color: var(--bg); color: var(--text);
+            margin: 0; padding: 0; font-family: var(--font-main);
+            -webkit-font-smoothing: antialiased; overflow-x: hidden;
         }
 
-        .container { width: 100%; max-width: 414px; padding: 0 20px 20px; margin: 0 auto; box-sizing: border-box; }
-
-        /* KIINTEÄ YLÄPALKKI */
+        /* LUKITTU YLÄPALKKI - KOHDISTUS KORJATTU */
         header { 
-            position: sticky; 
-            top: 0; 
-            z-index: 1000; 
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            padding: 50px 20px 15px; 
-            margin: 0 -20px 20px;
+            position: sticky; top: 0; z-index: 1000; 
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            padding: 50px 20px 15px 20px; /* Kohdistus linjaan containerin kanssa */
+            margin-bottom: 20px;
             border-bottom: 1px solid rgba(255,255,255,0.05);
-            transition: padding 0.3s ease;
         }
 
-        .header-content { position: relative; }
-        .date { font-size: 13px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
-        h1 { font-size: 34px; font-weight: 800; margin: 2px 0 0; letter-spacing: -1px; transition: font-size 0.3s; }
+        .header-content { 
+            max-width: 374px; /* Sama leveys kuin containerin sisältö */
+            margin: 0 auto; position: relative; 
+        }
 
-        /* SMOOTH FADE STATS (Pienet statsit yläpalkissa) */
+        .date { font-size: 13px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+        h1 { font-size: 34px; font-weight: 800; margin: 2px 0 0; letter-spacing: -1px; }
+
+        /* MINI STATS YLÄPALKKIIN (FADE) */
         .sticky-stats {
-            position: absolute;
-            right: 0;
-            bottom: 5px;
-            display: flex;
-            gap: 12px;
-            opacity: 0; /* Aluksi piilossa */
+            position: absolute; right: 0; bottom: 5px;
+            display: flex; gap: 10px; opacity: 0;
             transform: translateY(10px);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             pointer-events: none;
         }
 
-        .sticky-stats.visible {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
-        }
+        .sticky-stats.visible { opacity: 1; transform: translateY(0); }
 
-        .stat-item { text-align: right; }
-        .stat-val { font-size: 14px; font-weight: 800; display: block; line-height: 1; }
-        .stat-lbl { font-size: 8px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; }
+        .s-item { text-align: right; }
+        .s-val { font-size: 14px; font-weight: 800; display: block; line-height: 1; }
+        .s-lbl { font-size: 8px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; }
 
-        /* HERO ALUE */
+        .container { width: 100%; max-width: 414px; padding: 0 20px 20px; margin: 0 auto; box-sizing: border-box; }
+
+        /* HERO & LAUTASYMPYRÄ */
         .hero {
             background: linear-gradient(145deg, #1c1c1e, #131314);
             border-radius: var(--radius); padding: 30px; margin-bottom: 25px;
@@ -80,41 +68,41 @@
             width: 150px; height: 150px; border-radius: 50%;
             border: 6px solid var(--card-sec); margin: 0 auto 15px;
             display: flex; align-items: center; justify-content: center;
-            background: rgba(255,255,255,0.01);
-            transition: transform 0.5s ease;
         }
 
         .kcal-val { font-size: 48px; font-weight: 800; line-height: 1; display: block; }
-        
         .macro-row { display: grid; grid-template-columns: 1fr 1fr 1.2fr; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--card-sec); }
         .m-val { font-size: 18px; font-weight: 700; display: block; }
-        .m-lbl { font-size: 10px; font-weight: 800; color: var(--text-dim); margin-bottom: 2px; letter-spacing: 0.5px; }
+        .m-lbl { font-size: 10px; font-weight: 800; color: var(--text-dim); margin-bottom: 2px; }
 
-        /* AI & KORTIT */
+        /* AI SYÖTTÖ */
         .ai-zone { background: var(--card); border-radius: var(--radius); padding: 16px; margin-bottom: 25px; }
         textarea { 
             width: 100%; background: transparent; border: none; color: white; 
             font-size: 16px; font-family: inherit; outline: none; resize: none; 
-            padding: 8px 0; box-sizing: border-box; min-height: 80px; 
-            line-height: 1.5; overflow: hidden;
+            padding: 8px 0; box-sizing: border-box; min-height: 80px; line-height: 1.5; overflow: hidden;
         }
 
         .btn-row { display: flex; gap: 12px; margin-top: 8px; }
         .btn-upload { background: #2C2C2E; color: var(--accent); flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: 700; font-size: 15px; cursor: pointer; }
         .btn-analyze { background: var(--accent); color: white; flex: 2; padding: 14px; border-radius: 12px; border: none; font-weight: 700; font-size: 15px; cursor: pointer; }
 
+        /* RUOKAKORTIT */
         .food-card { background: var(--card); border-radius: 18px; padding: 18px; margin-bottom: 12px; }
         .food-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .food-name { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
-        
+
         .input-wrapper { position: relative; display: flex; align-items: center; background: #000; border-radius: 12px; overflow: hidden; }
+        
         input[type="number"] { 
             flex: 1; background: transparent; border: none; color: white; 
             font-weight: 700; font-size: 22px; font-family: inherit; 
             padding: 12px 45px 12px 15px; outline: none; text-align: left;
             -moz-appearance: textfield;
         }
+        /* Poistetaan nuolet */
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
         .input-suffix { position: absolute; right: 15px; color: var(--text-dim); font-weight: 700; font-size: 18px; pointer-events: none; }
 
         #splash { position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; z-index: 2000; transition: opacity 0.4s; pointer-events: none; opacity:0; display:none; }
@@ -124,18 +112,15 @@
 
 <div id="splash"><div style="font-weight: 700; color: white; font-size: 20px; letter-spacing: 1px;">ANALYSOIDAAN</div></div>
 
-<header id="main-header">
-    <div class="container" style="padding:0;">
-        <div class="header-content">
-            <div class="date" id="date-label">MUHOS SCHOOLS</div>
-            <h1 id="header-title">Lounas</h1>
-            
-            <div class="sticky-stats" id="mini-stats">
-                <div class="stat-item"><span class="stat-lbl">KCAL</span><span class="stat-val" id="mini-kcal">0</span></div>
-                <div class="stat-item"><span class="stat-lbl" style="color:var(--p)">P</span><span class="stat-val" id="mini-p">0g</span></div>
-                <div class="stat-item"><span class="stat-lbl" style="color:var(--f)">R</span><span class="stat-val" id="mini-r">0g</span></div>
-                <div class="stat-item"><span class="stat-lbl" style="color:var(--c)">H</span><span class="stat-val" id="mini-h">0g</span></div>
-            </div>
+<header>
+    <div class="header-content">
+        <div class="date" id="date-label">Dashboard</div>
+        <h1>Lounas</h1>
+        <div class="sticky-stats" id="mini-stats">
+            <div class="s-item"><span class="s-lbl">KCAL</span><span class="s-val" id="mini-kcal">0</span></div>
+            <div class="s-item"><span class="s-lbl" style="color:var(--p)">P</span><span class="s-val" id="mini-p">0g</span></div>
+            <div class="s-item"><span class="s-lbl" style="color:var(--f)">R</span><span class="s-val" id="mini-r">0g</span></div>
+            <div class="s-item"><span class="s-lbl" style="color:var(--c)">H</span><span class="s-val" id="mini-h">0g</span></div>
         </div>
     </div>
 </header>
@@ -174,25 +159,27 @@
     let extraData = [];
     let selectedImageData = null;
 
-    // --- SCROLL ANIMAATIO ---
+    // SCROLL FADE LOGIIKKA
     window.addEventListener('scroll', () => {
-        const hero = document.getElementById('hero-section');
+        const trigger = document.getElementById('hero-section').offsetHeight + 40;
         const miniStats = document.getElementById('mini-stats');
-        const headerTitle = document.getElementById('header-title');
-        
-        // Lasketaan milloin hero-osio poistuu näkyvistä
-        const triggerPoint = hero.offsetTop + hero.offsetHeight - 120;
-        
-        if (window.scrollY > triggerPoint) {
+        if (window.scrollY > trigger) {
             miniStats.classList.add('visible');
-            headerTitle.style.fontSize = '24px';
         } else {
             miniStats.classList.remove('visible');
-            headerTitle.style.fontSize = '34px';
         }
     });
 
     function autoExpand(el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; }
+
+    function handleFile(input) {
+        const file = input.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => { selectedImageData = e.target.result.split(',')[1]; };
+            reader.readAsDataURL(file);
+        }
+    }
 
     async function init() {
         try {
@@ -215,17 +202,18 @@
                         <div class="input-wrapper"><input type="number" id="q-${i}" value="0" oninput="calc()"><span class="input-suffix">g</span></div>
                     </div>`;
             });
-        } catch (e) { console.error("Menu failed"); }
+        } catch (e) { }
     }
 
     async function runAI() {
-        if (!GEMINI_API_KEY) return;
+        if (!GEMINI_API_KEY) return alert("API-avain ei latautunut. Aja 'Päivitä ruokalista' robotti GitHubissa.");
         const loader = document.getElementById('splash');
         loader.style.display = 'flex'; loader.style.opacity = '1';
 
         let prompt = `Menu: ${JSON.stringify(mealData.map(m=>m.name))}. Tehtävä: Arvioi annos grammoina. Sääntö: 1 kauha = 150g. Palauta JSON: {"menuResults": {"Nimi": g}, "extraItems": [{"name": "Nimi", "grams": 0, "kcal": 0, "p": 0, "r": 0, "h": 0}]}`;
         let body = { contents: [{ parts: [{ text: prompt + ` Kuvaus: "${document.getElementById('ai-input').value}"` }] }] };
-        
+        if (selectedImageData) body.contents[0].parts.push({ inline_data: { mime_type: "image/jpeg", data: selectedImageData } });
+
         try {
             const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
                 method: 'POST',
@@ -236,7 +224,7 @@
             const results = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
             mealData.forEach((item, i) => { document.getElementById(`q-${i}`).value = results.menuResults[item.name] || 0; });
             calc();
-        } catch (e) { console.error(e); }
+        } catch (e) { alert("AI Virhe. Tarkista avain."); }
         loader.style.opacity = '0'; setTimeout(() => loader.style.display = 'none', 500);
     }
 
@@ -247,12 +235,14 @@
             tk += (w * item.kcal) / 100; tp += (w * item.p) / 100; th += (w * item.h) / 100; tr += (w * item.r) / 100;
         });
         
-        // Päivitä molemmat (Hero ja Mini-stats)
-        const update = (id, val) => document.getElementById(id).innerText = val;
-        update('res-kcal', Math.round(tk)); update('mini-kcal', Math.round(tk));
-        update('res-p', Math.round(tp) + "g"); update('mini-p', Math.round(tp) + "g");
-        update('res-r', Math.round(tr) + "g"); update('mini-r', Math.round(tr) + "g");
-        update('res-h', Math.round(th) + "g"); update('mini-h', Math.round(th) + "g");
+        document.getElementById('res-kcal').innerText = Math.round(tk);
+        document.getElementById('mini-kcal').innerText = Math.round(tk);
+        document.getElementById('res-p').innerText = Math.round(tp) + "g";
+        document.getElementById('mini-p').innerText = Math.round(tp) + "g";
+        document.getElementById('res-r').innerText = Math.round(tr) + "g";
+        document.getElementById('mini-r').innerText = Math.round(tr) + "g";
+        document.getElementById('res-h').innerText = Math.round(th) + "g";
+        document.getElementById('mini-h').innerText = Math.round(th) + "g";
     }
 
     const d = new Date();
