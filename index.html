@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Lounas</title>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="./config.js"></script>
     <style>
         :root {
@@ -17,15 +17,15 @@
             width: 100%; height: 100%; 
             background-color: var(--bg); color: var(--text);
             margin: 0; padding: 0; font-family: var(--font-main);
-            -webkit-font-smoothing: antialiased;
+            -webkit-font-smoothing: antialiased; overflow: hidden;
         }
 
-        /* VARMA STICKY/FIXED HEADER */
+        /* KIINTEÄ YLÄPALKKI */
         header { 
             position: fixed; top: 0; left: 0; right: 0; z-index: 2000; 
             background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            padding: 50px 20px 15px; 
+            padding: 55px 20px 15px; 
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
@@ -33,6 +33,7 @@
         .date { font-size: 12px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
         h1 { font-size: 32px; font-weight: 800; margin: 0; letter-spacing: -1px; }
 
+        /* MINI STATS YLÄPALKKIIN */
         .sticky-stats {
             position: absolute; right: 0; bottom: 0;
             display: flex; gap: 12px; opacity: 0;
@@ -43,14 +44,15 @@
         .s-val { font-size: 14px; font-weight: 800; display: block; line-height: 1; }
         .s-lbl { font-size: 8px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; margin-bottom: 2px; }
 
-        /* SISÄLTÖALUE JOKA SKROLLAA HEADERIN ALLA */
+        /* SKROLLAAVA ALUE */
         .scroll-area {
             height: 100vh; overflow-y: scroll; -webkit-overflow-scrolling: touch;
-            padding-top: 130px; /* Tilaa headerille */
+            padding-top: 140px; /* Tilaa kiinteälle headerille */
         }
 
         .container { width: 100%; max-width: 414px; padding: 0 20px 40px; margin: 0 auto; box-sizing: border-box; }
 
+        /* HERO-KORTTI */
         .hero {
             background: linear-gradient(145deg, #1c1c1e, #131314);
             border-radius: 28px; padding: 35px 20px; margin-bottom: 25px;
@@ -63,28 +65,48 @@
             display: flex; align-items: center; justify-content: center;
         }
 
-        .kcal-val { font-size: 48px; font-weight: 800; }
+        .kcal-val { font-size: 48px; font-weight: 800; letter-spacing: -1px; }
         
-        .macro-row { display: flex; justify-content: space-around; margin-top: 25px; padding-top: 25px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .macro-row { 
+            display: flex; justify-content: space-around; 
+            margin-top: 25px; padding-top: 25px; 
+            border-top: 1px solid rgba(255,255,255,0.1); 
+        }
         .m-box { flex: 1; }
         .m-val { font-size: 19px; font-weight: 700; display: block; }
         .m-lbl { font-size: 9px; font-weight: 800; color: var(--text-dim); margin-bottom: 5px; }
 
+        /* AI-KIRJOITUSALUE */
         .ai-zone { background: var(--card); border-radius: 22px; padding: 20px; margin-bottom: 25px; }
-        textarea { width: 100%; background: transparent; border: none; color: white; font-size: 17px; font-family: inherit; outline: none; resize: none; min-height: 80px; line-height: 1.5; }
+        textarea { 
+            width: 100%; background: transparent; border: none; color: white; 
+            font-size: 17px; font-family: inherit; outline: none; resize: none; 
+            min-height: 80px; line-height: 1.5; overflow: hidden;
+        }
 
         .btn-row { display: flex; gap: 12px; margin-top: 15px; }
-        .btn-upload { background: #2C2C2E; color: var(--accent); flex: 1; padding: 16px; border-radius: 14px; border: none; font-weight: 700; }
-        .btn-analyze { background: var(--accent); color: white; flex: 2; padding: 16px; border-radius: 14px; border: none; font-weight: 700; }
+        .btn-upload { background: #2C2C2E; color: var(--accent); flex: 1; padding: 16px; border-radius: 14px; border: none; font-weight: 700; font-size: 15px; }
+        .btn-analyze { background: var(--accent); color: white; flex: 2; padding: 16px; border-radius: 14px; border: none; font-weight: 700; font-size: 15px; }
 
+        /* RUOKAKORTIT */
         .food-card { background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 12px; }
         .food-name { font-size: 18px; font-weight: 700; display: block; margin-bottom: 15px; }
 
         .input-wrapper { position: relative; display: flex; align-items: center; background: #000; border-radius: 14px; }
-        input[type="number"] { flex: 1; background: transparent; border: none; color: white; font-weight: 700; font-size: 24px; font-family: inherit; padding: 14px 45px 14px 18px; outline: none; }
+        input[type="number"] { 
+            flex: 1; background: transparent; border: none; color: white; 
+            font-weight: 700; font-size: 24px; font-family: inherit; 
+            padding: 14px 45px 14px 18px; outline: none;
+        }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         .input-suffix { position: absolute; right: 18px; color: var(--text-dim); font-weight: 700; font-size: 18px; }
 
-        #splash { position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); z-index: 3000; display: none; align-items: center; justify-content: center; }
+        /* LATAUSRUUTU */
+        #splash { 
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9); 
+            backdrop-filter: blur(10px); z-index: 3000; 
+            display: none; align-items: center; justify-content: center; 
+        }
     </style>
 </head>
 <body>
@@ -93,7 +115,7 @@
 
 <header id="main-header">
     <div class="header-content">
-        <div class="date" id="date-label">Dashboard</div>
+        <div class="date" id="date-label">MUHOS SCHOOLS</div>
         <h1>Lounas</h1>
         <div class="sticky-stats" id="mini-stats">
             <div class="s-item"><span class="s-lbl">KCAL</span><span class="s-val" id="mini-kcal">0</span></div>
@@ -121,7 +143,7 @@
         </div>
 
         <div class="ai-zone">
-            <textarea id="ai-input" placeholder="Mitä söit tänään?"></textarea>
+            <textarea id="ai-input" oninput="autoExpand(this)" placeholder="Mitä söit tänään?"></textarea>
             <div class="btn-row">
                 <button class="btn-upload" onclick="document.getElementById('camera-input').click()">Lisää kuva</button>
                 <button class="btn-analyze" onclick="runAI()">Analysoi</button>
@@ -140,11 +162,26 @@
     let extraData = [];
     let selectedImageData = null;
 
-    // SCROLL EFEKTI
+    // --- SCROLL EFEKTI ---
     document.getElementById('scroller').addEventListener('scroll', (e) => {
         const miniStats = document.getElementById('mini-stats');
-        document.getElementById('mini-stats').classList.toggle('visible', e.target.scrollTop > 100);
+        if (e.target.scrollTop > 100) {
+            miniStats.classList.add('visible');
+        } else {
+            miniStats.classList.remove('visible');
+        }
     });
+
+    function autoExpand(el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; }
+
+    function handleFile(input) {
+        const file = input.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => { selectedImageData = e.target.result.split(',')[1]; };
+            reader.readAsDataURL(file);
+        }
+    }
 
     async function init() {
         try {
@@ -171,30 +208,38 @@
     }
 
     async function runAI() {
-        if (!GEMINI_API_KEY) return alert("Avain ei latautunut.");
+        if (!GEMINI_API_KEY) return alert("Avain puuttuu config.js-tiedostosta.");
         document.getElementById('splash').style.display = 'flex';
 
-        let prompt = `Menu: ${JSON.stringify(mealData.map(m=>m.name))}. Tunnista annos grammoina. Palauta vain JSON: {"menuResults": {"Ruoka": g}, "extraItems": []}`;
+        // Käytetään gemini-1.5-flashia
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+        const prompt = `Menu: ${JSON.stringify(mealData.map(m=>m.name))}. Tunnista annos grammoina. Palauta vain JSON: {"menuResults": {"Ruoka": g}, "extraItems": []}`;
         
         try {
-            const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+            const resp = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: [{ parts: [{ text: prompt + ` Kuvaus: "${document.getElementById('ai-input').value}"` }] }] })
+                body: JSON.stringify({ 
+                    contents: [{ parts: [{ text: prompt + ` Kuvaus: "${document.getElementById('ai-input').value}"` }] }] 
+                })
             });
 
-            if (!resp.ok) throw new Error("API hylkäsi pyynnön (403). Tarkista avaimen asetukset.");
+            if (!resp.ok) {
+                if (resp.status === 403) throw new Error("403 Forbidden: Varmista, että selaat osoitteessa nuutti9.github.io rajoituksen takia.");
+                throw new Error(`API-virhe: ${resp.status}`);
+            }
 
             const d = await resp.json();
-            if (!d.candidates || !d.candidates[0].content) throw new Error("AI ei antanut vastausta.");
+            const aiText = d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim();
+            const results = JSON.parse(aiText);
             
-            const results = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
             mealData.forEach((item, i) => { document.getElementById(`q-${i}`).value = results.menuResults[item.name] || 0; });
             calc();
         } catch (e) {
             alert(e.message);
+        } finally {
+            document.getElementById('splash').style.display = 'none';
         }
-        document.getElementById('splash').style.display = 'none';
     }
 
     function calc() {
@@ -211,7 +256,7 @@
     }
 
     const d = new Date();
-    document.getElementById('date-label').innerText = d.toLocaleDateString('fi-FI', { weekday: 'long', day: 'numeric', month: 'long' });
+    document.getElementById('date-label').innerText = d.toLocaleDateString('fi-FI', { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase();
     init();
 </script>
 </body>
