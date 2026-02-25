@@ -1,8 +1,10 @@
 name: Päivitä ruokalista
 on:
   schedule:
-    - cron: '0 5 * * *' # Suorittaa joka aamu klo 05:00 UTC
-  workflow_dispatch: # Mahdollistaa manuaalisen käynnistyksen
+    - cron: '0 5 * * *'
+  workflow_dispatch:
+  push:
+    branches: [ main ]
 
 jobs:
   build:
@@ -17,10 +19,15 @@ jobs:
           URL="https://api.fi.poweresta.com/publicmenu/dates/muhosutajarvivaala/muhoskoulut/?menu=ruokalista&dates=$DATE"
           curl -o menu.json "$URL"
 
+      # TÄMÄ VAIHE PUUTTUI TAI OLI VIRHEELLINEN:
+      - name: Luo config.js
+        run: |
+          echo "const CONFIG = { API_KEY: '${{ secrets.GEMINI_API_KEY }}' };" > config.js
+
       - name: Commit ja Push
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add menu.json config.js  # Varmista, että config.js on tässä listassa!
+          git add menu.json config.js
           git commit -m "Robotti päivitti datat" || exit 0
           git push
