@@ -1,0 +1,55 @@
+name: Rakenna iOS IPA
+on:
+  workflow_dispatch: # Käynnistys manuaalisesti Actions-valikosta
+
+jobs:
+  build:
+    runs-on: macos-13 # Xcode 14/15 tuki
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: npm install
+
+      # Luodaan config.js, jotta API-avain on mukana sovelluksessa
+      - name: Create config.js
+        run: |
+          echo "const CONFIG = { API_KEY: '${{ secrets.GEMINI_API_KEY }}' };" > config.js
+
+      - name: Initialize Capacitor
+        run: |
+          npx cap init Lounas fi.nuutti.lounas --web-dir .
+          npx cap add ios
+
+      - name: Capacitor Sync
+        run: npx cap sync ios
+
+      - name: Build Xcode Project (Unsigned)
+        run: |
+          xcodebuild -workspace ios/App/App.xcworkspace \
+                     -scheme App \
+                     -configuration Release \
+                     -sdk iphoneos \
+                     -derivedDataPath build \
+                     CODE_SIGNING_ALLOWED=NO \
+                     CODE_SIGNING_REQUIRED=NO \
+                     CODE_SIGN_IDENTITY="" \
+                     AD_HOC_CODE_SIGNING_ALLOWED=YES
+
+      - name: Create IPA (Payload folder method)
+        run: |
+          mkdir -p Payload
+          cp -r build/Build/Products/Release-iphoneos/App.app Payload/
+          zip -r Lounas.ipa Payload
+          
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Lounas-Sideload-Version
+          path: Lounas.ipa
