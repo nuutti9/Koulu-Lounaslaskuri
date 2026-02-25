@@ -21,6 +21,6 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add menu.json
-          git commit -m "Päivitetty menu $(date +%Y-%m-%d)" || exit 0
+          git add menu.json config.js  # Varmista, että config.js on tässä listassa!
+          git commit -m "Robotti päivitti datat" || exit 0
           git push
