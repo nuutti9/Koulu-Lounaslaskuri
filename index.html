@@ -12,18 +12,16 @@
             --radius: 20px;
         }
 
-        /* Lukitus sivusuuntaisen liikkeen estämiseksi */
         html, body {
             overflow-x: hidden; width: 100%; position: relative;
             background-color: var(--bg); color: var(--text);
             margin: 0; padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif;
             -webkit-font-smoothing: antialiased;
             touch-action: pan-y;
         }
 
         .container { width: 100%; max-width: 414px; padding: 20px; margin: 0 auto; box-sizing: border-box; }
-
         header { margin: 30px 0 20px 5px; }
         .date { font-size: 13px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.6px; }
         h1 { font-size: 34px; font-weight: 800; margin: 2px 0 0; letter-spacing: -0.5px; }
@@ -49,50 +47,31 @@
         .ai-zone { background: var(--card); border-radius: var(--radius); padding: 16px; margin-bottom: 25px; }
         textarea { 
             width: 100%; background: transparent; border: none; color: white; 
-            font-size: 17px; font-family: inherit; outline: none; resize: none; 
-            padding: 8px 0; box-sizing: border-box; min-height: 44px;
+            font-size: 16px; font-family: inherit; outline: none; resize: none; 
+            padding: 8px 0; box-sizing: border-box; min-height: 80px; line-height: 1.4;
         }
 
-        .image-preview { 
-            display: none; width: 100%; height: 120px; object-fit: cover; 
-            border-radius: 12px; margin-bottom: 12px;
-        }
+        .image-preview { display: none; width: 100%; height: 120px; object-fit: cover; border-radius: 12px; margin-bottom: 12px; }
 
-        /* Apple-tyyliset painikkeet */
         .btn-row { display: flex; gap: 12px; margin-top: 8px; }
-        
-        .btn-upload { 
-            background: #2C2C2E; color: var(--accent); flex: 1; 
-            padding: 14px; border-radius: 12px; border: none; 
-            font-weight: 600; font-size: 15px; cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-        }
+        .btn-upload { background: #2C2C2E; color: var(--accent); flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: 600; font-size: 15px; cursor: pointer; }
+        .btn-analyze { background: var(--accent); color: white; flex: 2; padding: 14px; border-radius: 12px; border: none; font-weight: 600; font-size: 15px; cursor: pointer; }
 
-        .btn-analyze { 
-            background: var(--accent); color: white; flex: 2; 
-            padding: 14px; border-radius: 12px; border: none; 
-            font-weight: 600; font-size: 15px; cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        /* Ruokakortit */
-        .food-card { background: var(--card); border-radius: 18px; padding: 18px; margin-bottom: 12px; }
-        .food-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .food-card { background: var(--card); border-radius: 18px; padding: 18px; margin-bottom: 12px; transition: transform 0.2s; }
+        .food-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .food-name { font-size: 17px; font-weight: 600; letter-spacing: -0.2px; }
-        .food-g-label { font-size: 13px; font-weight: 700; color: var(--accent); }
+        .extra-badge { font-size: 10px; background: var(--accent); color: white; padding: 2px 6px; border-radius: 4px; vertical-align: middle; margin-left: 5px; }
 
-        .input-row { 
-            display: flex; align-items: center; background: #000; 
-            border-radius: 12px; padding: 10px 15px;
-        }
+        /* Sisäänrakennettu G-merkki */
+        .input-wrapper { position: relative; display: flex; align-items: center; background: #000; border-radius: 12px; overflow: hidden; }
         input[type="number"] { 
-            flex: 1; background: transparent; border: none; 
-            color: white; font-weight: 700; font-size: 20px; 
-            font-family: inherit; outline: none; text-align: left;
+            flex: 1; background: transparent; border: none; color: white; 
+            font-weight: 700; font-size: 20px; font-family: inherit; 
+            padding: 12px 40px 12px 15px; outline: none; text-align: left;
         }
-        .unit-tag { color: var(--text-dim); font-weight: 600; font-size: 16px; }
+        .input-suffix { position: absolute; right: 15px; color: var(--text-dim); font-weight: 600; font-size: 18px; pointer-events: none; }
 
-        #splash { position: fixed; inset: 0; background: black; display: flex; align-items: center; justify-content: center; z-index: 1000; transition: opacity 0.4s; pointer-events: none; opacity:0; display:none; }
+        #splash { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 1000; transition: opacity 0.4s; pointer-events: none; opacity:0; display:none; }
     </style>
 </head>
 <body>
@@ -121,7 +100,7 @@
 
     <div class="ai-zone">
         <img id="preview" class="image-preview">
-        <textarea id="ai-input" placeholder="Mitä söit tänään?"></textarea>
+        <textarea id="ai-input" placeholder="Kuvaile, mitä söit tänään. (esim. 2 keskikokoista kauhaa lihakeittoa, kourallinen porkkanoita, yksi kokonainen sämpylä, jossa päällä kasvirasvaa ja lasi rasvatonta maitoa)"></textarea>
         <div class="btn-row">
             <button class="btn-upload" onclick="document.getElementById('camera-input').click()">Lisää kuva</button>
             <button class="btn-analyze" onclick="runAI()">Analysoi</button>
@@ -130,11 +109,13 @@
     </div>
 
     <div id="food-list"></div>
+    <div id="extra-food-list"></div>
 </div>
 
 <script>
     const GEMINI_API_KEY = typeof CONFIG !== 'undefined' ? CONFIG.API_KEY : "";
     let mealData = [];
+    let extraData = [];
     let selectedImageData = null;
 
     function handleFile(input) {
@@ -172,10 +153,10 @@
 
                 container.innerHTML += `
                     <div class="food-card">
-                        <div class="food-header"><span class="food-name">${item.name}</span><span class="food-g-label" id="w-${i}">0 g</span></div>
-                        <div class="input-row">
+                        <div class="food-header"><span class="food-name">${item.name}</span></div>
+                        <div class="input-wrapper">
                             <input type="number" id="q-${i}" value="0" oninput="calc()">
-                            <span class="unit-tag">g</span>
+                            <span class="input-suffix">g</span>
                         </div>
                     </div>`;
             });
@@ -192,7 +173,14 @@
 
         let prompt = `Menu: ${JSON.stringify(mealData.map(m=>m.name))}.
         Tehtävä: Tunnista ruoat ja arvioi määrä grammoina.
-        Säännöt: Yksi kauha keittoa on 150g. Palauta vain JSON: {"RuokaNimi": määräGrammoina}.`;
+        Säännöt: 
+        1. 1 keskikokoinen kauha keittoa = 150g. 
+        2. Jos mainittu ruoka EI ole menussa, arvioi sen ravintoarvot (kcal, p, r, h) per 100g.
+        Palauta vain JSON tässä muodossa:
+        {
+          "menuResults": {"RuoanNimi": grammamäärä},
+          "extraItems": [{"name": "Nimi", "grams": 0, "kcal": 0, "p": 0, "r": 0, "h": 0}]
+        }`;
 
         let body = { contents: [{ parts: [{ text: prompt }] }] };
         if (selectedImageData) body.contents[0].parts.push({ inline_data: { mime_type: "image/jpeg", data: selectedImageData } });
@@ -205,11 +193,30 @@
                 body: JSON.stringify(body)
             });
             const d = await resp.json();
-            const results = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
+            const rawText = d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim();
+            const results = JSON.parse(rawText);
             
+            // Päivitä menun ruoat
             mealData.forEach((item, i) => {
-                document.getElementById(`q-${i}`).value = results[item.name] || 0;
+                document.getElementById(`q-${i}`).value = results.menuResults[item.name] || 0;
             });
+
+            // Lisää uudet (menun ulkopuoliset) ruoat
+            const extraContainer = document.getElementById('extra-food-list');
+            if (results.extraItems && results.extraItems.length > 0) {
+                results.extraItems.forEach(item => {
+                    const id = extraData.length;
+                    extraData.push(item);
+                    extraContainer.innerHTML += `
+                        <div class="food-card">
+                            <div class="food-header"><span class="food-name">${item.name}<span class="extra-badge">Lisätty</span></span></div>
+                            <div class="input-wrapper">
+                                <input type="number" id="extra-q-${id}" value="${item.grams}" oninput="calc()">
+                                <span class="input-suffix">g</span>
+                            </div>
+                        </div>`;
+                });
+            }
             calc();
         } catch (e) { console.error(e); }
         
@@ -223,11 +230,19 @@
 
     function calc() {
         let tk=0, tp=0, th=0, tr=0;
+        
+        // Menun ruoat
         mealData.forEach((item, i) => {
             const w = parseFloat(document.getElementById(`q-${i}`).value) || 0;
-            document.getElementById(`w-${i}`).innerText = Math.round(w) + " g";
             tk += (w * item.kcal) / 100; tp += (w * item.p) / 100; th += (w * item.h) / 100; tr += (w * item.r) / 100;
         });
+
+        // Lisätyt ruoat
+        extraData.forEach((item, i) => {
+            const w = parseFloat(document.getElementById(`extra-q-${i}`).value) || 0;
+            tk += (w * item.kcal) / 100; tp += (w * item.p) / 100; th += (w * item.h) / 100; tr += (w * item.r) / 100;
+        });
+
         document.getElementById('res-kcal').innerText = Math.round(tk);
         document.getElementById('res-p').innerText = Math.round(tp) + "g";
         document.getElementById('res-h').innerText = Math.round(th) + "g";
