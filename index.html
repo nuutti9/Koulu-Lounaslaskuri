@@ -94,9 +94,18 @@
         .container {
             width: 100%;
             max-width: 414px;
-            padding: 0 20px 40px;
+            padding: 0 20px 250px;
             margin: 0 auto;
             box-sizing: border-box;
+        }
+
+        .img-preview {
+            width: 100%;
+            max-height: 250px;
+            object-fit: cover;
+            border-radius: 14px;
+            margin-top: 15px;
+            display: none;
         }
 
         .hero {
@@ -227,13 +236,13 @@
             <div class="date" id="date-label">MUHOS SCHOOLS</div>
             <h1>Lounas</h1>
             <div class="sticky-stats" id="mini-stats">
-                <div class="s-item"><span class="s-val" id="mini-kcal">0</span><span class="s-lbl">kcal</span></div>
-                <div class="s-item"><span class="s-val" id="mini-p" style="color:var(--p)">0g</span><span
-                        class="s-lbl">P</span></div>
-                <div class="s-item"><span class="s-val" id="mini-r" style="color:var(--f)">0g</span><span
-                        class="s-lbl">R</span></div>
-                <div class="s-item"><span class="s-val" id="mini-h" style="color:var(--c)">0g</span><span
-                        class="s-lbl">H</span></div>
+                <div class="s-item"><span class="s-val" id="mini-kcal">0</span> <span class="s-lbl">kcal</span></div>
+                <div class="s-item"><span class="s-val" id="mini-p">0g</span>&nbsp;<span class="s-lbl"
+                        style="color:var(--p)">P</span></div>
+                <div class="s-item"><span class="s-val" id="mini-r">0g</span>&nbsp;<span class="s-lbl"
+                        style="color:var(--f)">R</span></div>
+                <div class="s-item"><span class="s-val" id="mini-h">0g</span>&nbsp;<span class="s-lbl"
+                        style="color:var(--c)">H</span></div>
             </div>
         </div>
     </header>
@@ -255,8 +264,15 @@
                 </div>
             </div>
             <div class="ai-zone">
-                <textarea id="ai-input" placeholder="Mitä söit tänään?"></textarea>
-                <div class="btn-row"><button class="btn-analyze" onclick="runAI()">Analysoi</button></div>
+                <textarea id="ai-input" placeholder="Mitä söit tänään? Tai ota kuva!"></textarea>
+                <img id="img-preview" class="img-preview" />
+                <div class="btn-row">
+                    <input type="file" id="image-upload" accept="image/*" style="display:none;"
+                        onchange="previewImage(event)">
+                    <button class="btn-analyze" style="background:var(--card-sec);flex:0.3;font-size:20px;"
+                        onclick="document.getElementById('image-upload').click()">📷</button>
+                    <button class="btn-analyze" onclick="runAI()">Analysoi</button>
+                </div>
             </div>
             <div id="food-list"></div>
         </div>
@@ -264,9 +280,28 @@
     <script>
         const GEMINI_API_KEY = typeof CONFIG !== 'undefined' ? CONFIG.API_KEY : "";
         let mealData = [];
+        let uploadedImageData = null;
+
+        const uDate = new Date();
+        document.getElementById('date-label').innerText = uDate.toLocaleDateString('fi-FI', { weekday: 'long', day: 'numeric', month: 'numeric' }).replace('.', '. ').toUpperCase();
+
         document.getElementById('scroller').addEventListener('scroll', (e) => {
             document.getElementById('mini-stats').classList.toggle('visible', e.target.scrollTop > 100);
         });
+
+        function previewImage(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                uploadedImageData = ev.target.result;
+                const img = document.getElementById('img-preview');
+                img.src = uploadedImageData;
+                img.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
         async function init() {
             try {
                 const r = await fetch('./menu.json');
@@ -289,10 +324,19 @@
             if (!GEMINI_API_KEY) return alert("AI-avain puuttuu palvelimelta.");
             document.getElementById('splash').style.display = 'flex';
             try {
+                const parts = [{ text: `Menu: ${JSON.stringify(mealData.map(m => m.name))}. Tunnista annos grammoina. Palauta vain JSON: {"menuResults": {"Ruoka": g}}. Kuvaus: "${document.getElementById('ai-input').value}"` }];
+                if (uploadedImageData) {
+                    parts.push({
+                        inlineData: {
+                            data: uploadedImageData.split(',')[1],
+                            mimeType: uploadedImageData.match(/data:(.*?);/)[1]
+                        }
+                    });
+                }
                 const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: `Menu: ${JSON.stringify(mealData.map(m => m.name))}. Tunnista annos grammoina. Palauta vain JSON: {"menuResults": {"Ruoka": g}} Kuvaus: "${document.getElementById('ai-input').value}"` }] }] })
+                    body: JSON.stringify({ contents: [{ parts: parts }] })
                 });
                 const d = await resp.json();
                 if (!resp.ok) {
