@@ -23,6 +23,7 @@ jobs:
       - name: Luo väliaikainen konfiguraatio
         run: |
           echo "const CONFIG = { API_KEY: '${{ secrets.GEMINI_API_KEY }}' };" > config.js
+          sed -i '/config.js/d' .gitignore
 
       - name: Julkaise GitHub Pagesiin
         uses: JamesIves/github-pages-deploy-action@v4
