@@ -1,10 +1,10 @@
 name: Rakenna iOS IPA
 on:
-  workflow_dispatch: # Käynnistys manuaalisesti Actions-valikosta
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: macos-13 # Xcode 14/15 tuki
+    runs-on: macos-latest # Päivitetty toimivaan versioon
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -17,7 +17,7 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      # Luodaan config.js, jotta API-avain on mukana sovelluksessa
+      # Luodaan konfiguraatio ennen synkronointia
       - name: Create config.js
         run: |
           echo "const CONFIG = { API_KEY: '${{ secrets.GEMINI_API_KEY }}' };" > config.js
