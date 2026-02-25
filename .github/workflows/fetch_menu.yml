@@ -8,7 +8,7 @@ on:
     branches: [ main ]
 
 permissions:
-  contents: write # Antaa robotille luvan tallentaa tiedostoja
+  contents: write
 
 jobs:
   build:
@@ -27,10 +27,11 @@ jobs:
         run: |
           echo "const CONFIG = { API_KEY: '${{ secrets.GEMINI_API_KEY }}' };" > config.js
 
-      - name: Commit ja Push muutokset
+      - name: Pakota päivitys Gittiin
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+          # Pakotetaan config.js mukaan vaikka .gitignore kieltäisi
           git add -f menu.json config.js
-          git commit -m "Päivitetty menu ja config" || exit 0
+          git commit -m "Robotti päivitti tiedostot" || exit 0
           git push
