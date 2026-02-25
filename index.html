@@ -16,33 +16,60 @@
             --font-main: "Manrope", sans-serif;
         }
 
+        /* Tärkeä korjaus: Varmistetaan että sticky toimii */
         html, body {
-            overflow-x: hidden; width: 100%; position: relative;
+            width: 100%;
             background-color: var(--bg); color: var(--text);
             margin: 0; padding: 0;
             font-family: var(--font-main);
             -webkit-font-smoothing: antialiased;
-            touch-action: pan-y;
+            overflow-x: hidden;
         }
 
         .container { width: 100%; max-width: 414px; padding: 0 20px 20px; margin: 0 auto; box-sizing: border-box; }
 
-        /* Lukittu yläpalkki */
+        /* KIINTEÄ YLÄPALKKI */
         header { 
             position: sticky; 
             top: 0; 
-            z-index: 100; 
-            background: rgba(0, 0, 0, 0.8); /* Läpinäkyvä musta */
-            backdrop-filter: blur(20px); /* Apple-tyylinen sumennus */
-            -webkit-backdrop-filter: blur(20px);
-            padding: 40px 0 15px 5px; 
-            margin: 0 -20px 20px -20px; /* Levitetään reunoille saakka */
-            padding-left: 25px; /* Korjataan marginaali takaisin */
+            z-index: 1000; 
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            padding: 50px 20px 15px; 
+            margin: 0 -20px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: padding 0.3s ease;
         }
 
+        .header-content { position: relative; }
         .date { font-size: 13px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
-        h1 { font-size: 34px; font-weight: 800; margin: 2px 0 0; letter-spacing: -1px; }
+        h1 { font-size: 34px; font-weight: 800; margin: 2px 0 0; letter-spacing: -1px; transition: font-size 0.3s; }
 
+        /* SMOOTH FADE STATS (Pienet statsit yläpalkissa) */
+        .sticky-stats {
+            position: absolute;
+            right: 0;
+            bottom: 5px;
+            display: flex;
+            gap: 12px;
+            opacity: 0; /* Aluksi piilossa */
+            transform: translateY(10px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+
+        .sticky-stats.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .stat-item { text-align: right; }
+        .stat-val { font-size: 14px; font-weight: 800; display: block; line-height: 1; }
+        .stat-lbl { font-size: 8px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; }
+
+        /* HERO ALUE */
         .hero {
             background: linear-gradient(145deg, #1c1c1e, #131314);
             border-radius: var(--radius); padding: 30px; margin-bottom: 25px;
@@ -54,13 +81,16 @@
             border: 6px solid var(--card-sec); margin: 0 auto 15px;
             display: flex; align-items: center; justify-content: center;
             background: rgba(255,255,255,0.01);
+            transition: transform 0.5s ease;
         }
 
         .kcal-val { font-size: 48px; font-weight: 800; line-height: 1; display: block; }
+        
         .macro-row { display: grid; grid-template-columns: 1fr 1fr 1.2fr; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--card-sec); }
         .m-val { font-size: 18px; font-weight: 700; display: block; }
         .m-lbl { font-size: 10px; font-weight: 800; color: var(--text-dim); margin-bottom: 2px; letter-spacing: 0.5px; }
 
+        /* AI & KORTIT */
         .ai-zone { background: var(--card); border-radius: var(--radius); padding: 16px; margin-bottom: 25px; }
         textarea { 
             width: 100%; background: transparent; border: none; color: white; 
@@ -69,47 +99,49 @@
             line-height: 1.5; overflow: hidden;
         }
 
-        .image-preview { display: none; width: 100%; height: 120px; object-fit: cover; border-radius: 12px; margin-bottom: 12px; }
-
         .btn-row { display: flex; gap: 12px; margin-top: 8px; }
-        .btn-upload { background: #2C2C2E; color: var(--accent); flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: 700; font-size: 15px; cursor: pointer; font-family: inherit; }
-        .btn-analyze { background: var(--accent); color: white; flex: 2; padding: 14px; border-radius: 12px; border: none; font-weight: 700; font-size: 15px; cursor: pointer; font-family: inherit; }
+        .btn-upload { background: #2C2C2E; color: var(--accent); flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: 700; font-size: 15px; cursor: pointer; }
+        .btn-analyze { background: var(--accent); color: white; flex: 2; padding: 14px; border-radius: 12px; border: none; font-weight: 700; font-size: 15px; cursor: pointer; }
 
         .food-card { background: var(--card); border-radius: 18px; padding: 18px; margin-bottom: 12px; }
         .food-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .food-name { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
-        .extra-tag { font-size: 10px; font-weight: 800; color: var(--accent); border: 1px solid var(--accent); padding: 1px 5px; border-radius: 4px; margin-left: 6px; text-transform: uppercase; }
-
-        .input-wrapper { position: relative; display: flex; align-items: center; background: #000; border-radius: 12px; overflow: hidden; }
         
+        .input-wrapper { position: relative; display: flex; align-items: center; background: #000; border-radius: 12px; overflow: hidden; }
         input[type="number"] { 
             flex: 1; background: transparent; border: none; color: white; 
             font-weight: 700; font-size: 22px; font-family: inherit; 
             padding: 12px 45px 12px 15px; outline: none; text-align: left;
             -moz-appearance: textfield;
         }
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         .input-suffix { position: absolute; right: 15px; color: var(--text-dim); font-weight: 700; font-size: 18px; pointer-events: none; }
 
-        #splash { position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; z-index: 1000; transition: opacity 0.4s; pointer-events: none; opacity:0; display:none; }
+        #splash { position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; z-index: 2000; transition: opacity 0.4s; pointer-events: none; opacity:0; display:none; }
     </style>
 </head>
 <body>
 
 <div id="splash"><div style="font-weight: 700; color: white; font-size: 20px; letter-spacing: 1px;">ANALYSOIDAAN</div></div>
 
-<div class="container">
-    <header>
-        <div class="date" id="date-label">MUHOS SCHOOLS</div>
-        <h1>Lounas</h1>
-    </header>
+<header id="main-header">
+    <div class="container" style="padding:0;">
+        <div class="header-content">
+            <div class="date" id="date-label">MUHOS SCHOOLS</div>
+            <h1 id="header-title">Lounas</h1>
+            
+            <div class="sticky-stats" id="mini-stats">
+                <div class="stat-item"><span class="stat-lbl">KCAL</span><span class="stat-val" id="mini-kcal">0</span></div>
+                <div class="stat-item"><span class="stat-lbl" style="color:var(--p)">P</span><span class="stat-val" id="mini-p">0g</span></div>
+                <div class="stat-item"><span class="stat-lbl" style="color:var(--f)">R</span><span class="stat-val" id="mini-r">0g</span></div>
+                <div class="stat-item"><span class="stat-lbl" style="color:var(--c)">H</span><span class="stat-val" id="mini-h">0g</span></div>
+            </div>
+        </div>
+    </div>
+</header>
 
-    <div class="hero">
+<div class="container">
+    <div class="hero" id="hero-section">
         <div class="plate-circle">
             <div>
                 <span class="kcal-val" id="res-kcal">0</span>
@@ -124,7 +156,6 @@
     </div>
 
     <div class="ai-zone">
-        <img id="preview" class="image-preview">
         <textarea id="ai-input" oninput="autoExpand(this)" placeholder="Kuvaile, mitä söit tänään..."></textarea>
         <div class="btn-row">
             <button class="btn-upload" onclick="document.getElementById('camera-input').click()">Lisää kuva</button>
@@ -143,24 +174,25 @@
     let extraData = [];
     let selectedImageData = null;
 
-    function autoExpand(el) {
-        el.style.height = 'auto';
-        el.style.height = el.scrollHeight + 'px';
-    }
-
-    function handleFile(input) {
-        const file = input.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                document.getElementById('preview').src = e.target.result;
-                document.getElementById('preview').style.display = 'block';
-                selectedImageData = e.target.result.split(',')[1];
-                autoExpand(document.getElementById('ai-input'));
-            };
-            reader.readAsDataURL(file);
+    // --- SCROLL ANIMAATIO ---
+    window.addEventListener('scroll', () => {
+        const hero = document.getElementById('hero-section');
+        const miniStats = document.getElementById('mini-stats');
+        const headerTitle = document.getElementById('header-title');
+        
+        // Lasketaan milloin hero-osio poistuu näkyvistä
+        const triggerPoint = hero.offsetTop + hero.offsetHeight - 120;
+        
+        if (window.scrollY > triggerPoint) {
+            miniStats.classList.add('visible');
+            headerTitle.style.fontSize = '24px';
+        } else {
+            miniStats.classList.remove('visible');
+            headerTitle.style.fontSize = '34px';
         }
-    }
+    });
+
+    function autoExpand(el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; }
 
     async function init() {
         try {
@@ -175,41 +207,25 @@
                     const f = factors.find(fact => fact.nutritiveFactorNames[0].name === (isK ? "Energia" : lbl) && (!isK || fact.values[0].value100.includes("kcal")));
                     return f ? parseFloat(f.values[0].value100.replace(',','.').replace(/[^\d.]/g, '')) : 0;
                 };
-
-                const item = {
-                    name: row.names[0].name,
-                    kcal: getVal("Energia", true), p: getVal("Proteiini"), h: getVal("Hiilihydraatit"), r: getVal("Rasva")
-                };
+                const item = { name: row.names[0].name, kcal: getVal("Energia", true), p: getVal("Proteiini"), h: getVal("Hiilihydraatit"), r: getVal("Rasva") };
                 mealData.push(item);
-
                 container.innerHTML += `
                     <div class="food-card">
                         <div class="food-header"><span class="food-name">${item.name}</span></div>
-                        <div class="input-wrapper">
-                            <input type="number" id="q-${i}" value="0" oninput="calc()">
-                            <span class="input-suffix">g</span>
-                        </div>
+                        <div class="input-wrapper"><input type="number" id="q-${i}" value="0" oninput="calc()"><span class="input-suffix">g</span></div>
                     </div>`;
             });
         } catch (e) { console.error("Menu failed"); }
     }
 
     async function runAI() {
-        if (!GEMINI_API_KEY) return alert("API-avain puuttuu.");
-        const textInput = document.getElementById('ai-input').value;
-        if (!textInput && !selectedImageData) return;
-
+        if (!GEMINI_API_KEY) return;
         const loader = document.getElementById('splash');
         loader.style.display = 'flex'; loader.style.opacity = '1';
 
-        let prompt = `Menu: ${JSON.stringify(mealData.map(m=>m.name))}.
-        Tehtävä: Arvioi annos grammoina. Sääntö: 1 kauha keittoa = 150g. Jos ruoka ei ole menussa, arvioi makrot per 100g.
-        Palauta vain JSON: {"menuResults": {"Nimi": g}, "extraItems": [{"name": "Nimi", "grams": 0, "kcal": 0, "p": 0, "r": 0, "h": 0}]}`;
-
-        let body = { contents: [{ parts: [{ text: prompt }] }] };
-        if (selectedImageData) body.contents[0].parts.push({ inline_data: { mime_type: "image/jpeg", data: selectedImageData } });
-        if (textInput) body.contents[0].parts[0].text += ` Kuvaus: "${textInput}"`;
-
+        let prompt = `Menu: ${JSON.stringify(mealData.map(m=>m.name))}. Tehtävä: Arvioi annos grammoina. Sääntö: 1 kauha = 150g. Palauta JSON: {"menuResults": {"Nimi": g}, "extraItems": [{"name": "Nimi", "grams": 0, "kcal": 0, "p": 0, "r": 0, "h": 0}]}`;
+        let body = { contents: [{ parts: [{ text: prompt + ` Kuvaus: "${document.getElementById('ai-input').value}"` }] }] };
+        
         try {
             const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
                 method: 'POST',
@@ -218,37 +234,10 @@
             });
             const d = await resp.json();
             const results = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
-            
-            mealData.forEach((item, i) => {
-                document.getElementById(`q-${i}`).value = results.menuResults[item.name] || 0;
-            });
-
-            const extraContainer = document.getElementById('extra-food-list');
-            if (results.extraItems && results.extraItems.length > 0) {
-                results.extraItems.forEach(item => {
-                    const id = extraData.length;
-                    extraData.push(item);
-                    extraContainer.innerHTML += `
-                        <div class="food-card">
-                            <div class="food-header"><span class="food-name">${item.name}<span class="extra-tag">Muu</span></span></div>
-                            <div class="input-wrapper">
-                                <input type="number" id="extra-q-${id}" value="${item.grams}" oninput="calc()">
-                                <span class="input-suffix">g</span>
-                            </div>
-                        </div>`;
-                });
-            }
+            mealData.forEach((item, i) => { document.getElementById(`q-${i}`).value = results.menuResults[item.name] || 0; });
             calc();
         } catch (e) { console.error(e); }
-        
-        loader.style.opacity = '0'; 
-        setTimeout(() => { 
-            loader.style.display = 'none';
-            document.getElementById('preview').style.display = 'none';
-            selectedImageData = null;
-            document.getElementById('ai-input').value = "";
-            document.getElementById('ai-input').style.height = 'auto';
-        }, 500);
+        loader.style.opacity = '0'; setTimeout(() => loader.style.display = 'none', 500);
     }
 
     function calc() {
@@ -257,14 +246,13 @@
             const w = parseFloat(document.getElementById(`q-${i}`).value) || 0;
             tk += (w * item.kcal) / 100; tp += (w * item.p) / 100; th += (w * item.h) / 100; tr += (w * item.r) / 100;
         });
-        extraData.forEach((item, i) => {
-            const w = parseFloat(document.getElementById(`extra-q-${id}`) ? document.getElementById(`extra-q-${id}`).value : item.grams) || 0;
-            tk += (w * item.kcal) / 100; tp += (w * item.p) / 100; th += (w * item.h) / 100; tr += (w * item.r) / 100;
-        });
-        document.getElementById('res-kcal').innerText = Math.round(tk);
-        document.getElementById('res-p').innerText = Math.round(tp) + "g";
-        document.getElementById('res-h').innerText = Math.round(th) + "g";
-        document.getElementById('res-r').innerText = Math.round(tr) + "g";
+        
+        // Päivitä molemmat (Hero ja Mini-stats)
+        const update = (id, val) => document.getElementById(id).innerText = val;
+        update('res-kcal', Math.round(tk)); update('mini-kcal', Math.round(tk));
+        update('res-p', Math.round(tp) + "g"); update('mini-p', Math.round(tp) + "g");
+        update('res-r', Math.round(tr) + "g"); update('mini-r', Math.round(tr) + "g");
+        update('res-h', Math.round(th) + "g"); update('mini-h', Math.round(th) + "g");
     }
 
     const d = new Date();
