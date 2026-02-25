@@ -4,15 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Lounas</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="./config.js"></script>
     <style>
         :root {
             --bg: #000000; --card: #1C1C1E; --card-sec: #2C2C2E; --accent: #0A84FF;
             --p: #FF453A; --f: #FFD60A; --c: #32D74B; --text: #FFFFFF; --text-dim: #8E8E93;
-            --radius: 20px;
             --font-main: "Manrope", sans-serif;
         }
 
@@ -22,45 +19,38 @@
             -webkit-font-smoothing: antialiased; overflow-x: hidden;
         }
 
-        /* LUKITTU YLÄPALKKI - KOHDISTUS KORJATTU */
+        /* FIXED HEADER */
         header { 
-            position: sticky; top: 0; z-index: 1000; 
-            background: rgba(0, 0, 0, 0.8);
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000; 
+            background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            padding: 50px 20px 15px 20px; /* Kohdistus linjaan containerin kanssa */
-            margin-bottom: 20px;
+            padding: 50px 20px 15px; 
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
-        .header-content { 
-            max-width: 374px; /* Sama leveys kuin containerin sisältö */
-            margin: 0 auto; position: relative; 
-        }
+        .header-content { max-width: 374px; margin: 0 auto; position: relative; }
+        .date { font-size: 13px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; }
+        h1 { font-size: 34px; font-weight: 800; margin: 0; letter-spacing: -1px; }
 
-        .date { font-size: 13px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
-        h1 { font-size: 34px; font-weight: 800; margin: 2px 0 0; letter-spacing: -1px; }
-
-        /* MINI STATS YLÄPALKKIIN (FADE) */
+        /* MINI STATS FADE */
         .sticky-stats {
             position: absolute; right: 0; bottom: 5px;
             display: flex; gap: 10px; opacity: 0;
             transform: translateY(10px);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            pointer-events: none;
+            transition: all 0.4s ease; pointer-events: none;
         }
-
         .sticky-stats.visible { opacity: 1; transform: translateY(0); }
-
-        .s-item { text-align: right; }
         .s-val { font-size: 14px; font-weight: 800; display: block; line-height: 1; }
         .s-lbl { font-size: 8px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; }
 
-        .container { width: 100%; max-width: 414px; padding: 0 20px 20px; margin: 0 auto; box-sizing: border-box; }
+        .container { 
+            width: 100%; max-width: 414px; padding: 140px 20px 40px; 
+            margin: 0 auto; box-sizing: border-box; 
+        }
 
-        /* HERO & LAUTASYMPYRÄ */
         .hero {
             background: linear-gradient(145deg, #1c1c1e, #131314);
-            border-radius: var(--radius); padding: 30px; margin-bottom: 25px;
+            border-radius: 24px; padding: 30px; margin-bottom: 25px;
             border: 1px solid rgba(255,255,255,0.05); text-align: center;
         }
 
@@ -70,51 +60,50 @@
             display: flex; align-items: center; justify-content: center;
         }
 
-        .kcal-val { font-size: 48px; font-weight: 800; line-height: 1; display: block; }
-        .macro-row { display: grid; grid-template-columns: 1fr 1fr 1.2fr; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--card-sec); }
-        .m-val { font-size: 18px; font-weight: 700; display: block; }
-        .m-lbl { font-size: 10px; font-weight: 800; color: var(--text-dim); margin-bottom: 2px; }
+        .kcal-val { font-size: 48px; font-weight: 800; }
+        .macro-row { display: grid; grid-template-columns: 1fr 1fr 1fr; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--card-sec); }
+        .m-val { font-size: 18px; font-weight: 700; }
+        .m-lbl { font-size: 10px; font-weight: 800; color: var(--text-dim); }
 
-        /* AI SYÖTTÖ */
-        .ai-zone { background: var(--card); border-radius: var(--radius); padding: 16px; margin-bottom: 25px; }
+        .ai-zone { background: var(--card); border-radius: 20px; padding: 16px; margin-bottom: 25px; }
         textarea { 
             width: 100%; background: transparent; border: none; color: white; 
             font-size: 16px; font-family: inherit; outline: none; resize: none; 
-            padding: 8px 0; box-sizing: border-box; min-height: 80px; line-height: 1.5; overflow: hidden;
+            min-height: 80px; line-height: 1.5; overflow: hidden;
         }
 
         .btn-row { display: flex; gap: 12px; margin-top: 8px; }
-        .btn-upload { background: #2C2C2E; color: var(--accent); flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: 700; font-size: 15px; cursor: pointer; }
-        .btn-analyze { background: var(--accent); color: white; flex: 2; padding: 14px; border-radius: 12px; border: none; font-weight: 700; font-size: 15px; cursor: pointer; }
+        .btn-upload { background: #2C2C2E; color: var(--accent); flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: 700; }
+        .btn-analyze { background: var(--accent); color: white; flex: 2; padding: 14px; border-radius: 12px; border: none; font-weight: 700; }
 
-        /* RUOKAKORTIT */
         .food-card { background: var(--card); border-radius: 18px; padding: 18px; margin-bottom: 12px; }
-        .food-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .food-name { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+        .food-name { font-size: 18px; font-weight: 700; display: block; margin-bottom: 12px; }
 
-        .input-wrapper { position: relative; display: flex; align-items: center; background: #000; border-radius: 12px; overflow: hidden; }
-        
+        .input-wrapper { position: relative; display: flex; align-items: center; background: #000; border-radius: 12px; }
         input[type="number"] { 
             flex: 1; background: transparent; border: none; color: white; 
             font-weight: 700; font-size: 22px; font-family: inherit; 
-            padding: 12px 45px 12px 15px; outline: none; text-align: left;
-            -moz-appearance: textfield;
+            padding: 12px 45px 12px 15px; outline: none;
+            -webkit-appearance: none; margin: 0;
         }
-        /* Poistetaan nuolet */
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .input-suffix { position: absolute; right: 15px; color: var(--text-dim); font-weight: 700; }
 
-        .input-suffix { position: absolute; right: 15px; color: var(--text-dim); font-weight: 700; font-size: 18px; pointer-events: none; }
-
-        #splash { position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; z-index: 2000; transition: opacity 0.4s; pointer-events: none; opacity:0; display:none; }
+        /* SPLASH KORJAUS */
+        #splash { 
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9); 
+            backdrop-filter: blur(10px); z-index: 9999; 
+            display: none; align-items: center; justify-content: center; 
+        }
     </style>
 </head>
 <body>
 
-<div id="splash"><div style="font-weight: 700; color: white; font-size: 20px; letter-spacing: 1px;">ANALYSOIDAAN</div></div>
+<div id="splash"><div style="font-weight: 800; color: white; font-size: 20px;">ANALYSOIDAAN...</div></div>
 
 <header>
     <div class="header-content">
-        <div class="date" id="date-label">Dashboard</div>
+        <div class="date" id="date-label">Lataus...</div>
         <h1>Lounas</h1>
         <div class="sticky-stats" id="mini-stats">
             <div class="s-item"><span class="s-lbl">KCAL</span><span class="s-val" id="mini-kcal">0</span></div>
@@ -141,7 +130,7 @@
     </div>
 
     <div class="ai-zone">
-        <textarea id="ai-input" oninput="autoExpand(this)" placeholder="Kuvaile, mitä söit tänään..."></textarea>
+        <textarea id="ai-input" oninput="autoExpand(this)" placeholder="Mitä söit? (esim. 150g keittoa ja porkkana)"></textarea>
         <div class="btn-row">
             <button class="btn-upload" onclick="document.getElementById('camera-input').click()">Lisää kuva</button>
             <button class="btn-analyze" onclick="runAI()">Analysoi</button>
@@ -159,15 +148,10 @@
     let extraData = [];
     let selectedImageData = null;
 
-    // SCROLL FADE LOGIIKKA
+    // FADE ANIMATION
     window.addEventListener('scroll', () => {
-        const trigger = document.getElementById('hero-section').offsetHeight + 40;
-        const miniStats = document.getElementById('mini-stats');
-        if (window.scrollY > trigger) {
-            miniStats.classList.add('visible');
-        } else {
-            miniStats.classList.remove('visible');
-        }
+        const trigger = document.getElementById('hero-section').offsetHeight + 50;
+        document.getElementById('mini-stats').classList.toggle('visible', window.scrollY > trigger);
     });
 
     function autoExpand(el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; }
@@ -198,7 +182,7 @@
                 mealData.push(item);
                 container.innerHTML += `
                     <div class="food-card">
-                        <div class="food-header"><span class="food-name">${item.name}</span></div>
+                        <span class="food-name">${item.name}</span>
                         <div class="input-wrapper"><input type="number" id="q-${i}" value="0" oninput="calc()"><span class="input-suffix">g</span></div>
                     </div>`;
             });
@@ -206,11 +190,15 @@
     }
 
     async function runAI() {
-        if (!GEMINI_API_KEY) return alert("API-avain ei latautunut. Aja 'Päivitä ruokalista' robotti GitHubissa.");
-        const loader = document.getElementById('splash');
-        loader.style.display = 'flex'; loader.style.opacity = '1';
+        if (!GEMINI_API_KEY) return alert("API-avain puuttuu robotin virheen takia.");
+        document.getElementById('splash').style.display = 'flex';
 
-        let prompt = `Menu: ${JSON.stringify(mealData.map(m=>m.name))}. Tehtävä: Arvioi annos grammoina. Sääntö: 1 kauha = 150g. Palauta JSON: {"menuResults": {"Nimi": g}, "extraItems": [{"name": "Nimi", "grams": 0, "kcal": 0, "p": 0, "r": 0, "h": 0}]}`;
+        // TIUKEMPI PROMPTI
+        let prompt = `Menu: ${JSON.stringify(mealData.map(m=>m.name))}. 
+        Tehtävä: Tunnista ruoat ja grammamäärät. 
+        SääntÖ: Aseta grammoiksi 0 kaikille niille menun tuotteille, joita käyttäjä ei selvästi mainitse tai joita ei näy kuvassa. Älä arvaile ylimääräistä.
+        Palauta VAIN JSON: {"menuResults": {"Nimi": grammamäärä}, "extraItems": []}`;
+
         let body = { contents: [{ parts: [{ text: prompt + ` Kuvaus: "${document.getElementById('ai-input').value}"` }] }] };
         if (selectedImageData) body.contents[0].parts.push({ inline_data: { mime_type: "image/jpeg", data: selectedImageData } });
 
@@ -222,10 +210,17 @@
             });
             const d = await resp.json();
             const results = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
-            mealData.forEach((item, i) => { document.getElementById(`q-${i}`).value = results.menuResults[item.name] || 0; });
+            
+            // Päivitä kaikki nollaksi ensin varmuuden vuoksi
+            mealData.forEach((item, i) => { document.getElementById(`q-${i}`).value = 0; });
+            // Aseta vain AI:n löytämät arvot
+            for (let name in results.menuResults) {
+                const idx = mealData.findIndex(m => m.name === name);
+                if (idx !== -1) document.getElementById(`q-${idx}`).value = results.menuResults[name];
+            }
             calc();
-        } catch (e) { alert("AI Virhe. Tarkista avain."); }
-        loader.style.opacity = '0'; setTimeout(() => loader.style.display = 'none', 500);
+        } catch (e) { }
+        document.getElementById('splash').style.display = 'none';
     }
 
     function calc() {
@@ -234,19 +229,15 @@
             const w = parseFloat(document.getElementById(`q-${i}`).value) || 0;
             tk += (w * item.kcal) / 100; tp += (w * item.p) / 100; th += (w * item.h) / 100; tr += (w * item.r) / 100;
         });
-        
-        document.getElementById('res-kcal').innerText = Math.round(tk);
-        document.getElementById('mini-kcal').innerText = Math.round(tk);
-        document.getElementById('res-p').innerText = Math.round(tp) + "g";
-        document.getElementById('mini-p').innerText = Math.round(tp) + "g";
-        document.getElementById('res-r').innerText = Math.round(tr) + "g";
-        document.getElementById('mini-r').innerText = Math.round(tr) + "g";
-        document.getElementById('res-h').innerText = Math.round(th) + "g";
-        document.getElementById('mini-h').innerText = Math.round(th) + "g";
+        const set = (id, val) => document.getElementById(id).innerText = val;
+        set('res-kcal', Math.round(tk)); set('mini-kcal', Math.round(tk));
+        set('res-p', Math.round(tp) + "g"); set('mini-p', Math.round(tp) + "g");
+        set('res-r', Math.round(tr) + "g"); set('mini-r', Math.round(tr) + "g");
+        set('res-h', Math.round(th) + "g"); set('mini-h', Math.round(th) + "g");
     }
 
     const d = new Date();
-    document.getElementById('date-label').innerText = d.toLocaleDateString('fi-FI', { weekday: 'long', day: 'numeric', month: 'long' });
+    document.getElementById('date-label').innerText = d.toLocaleDateString('fi-FI', { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase();
     init();
 </script>
 </body>
