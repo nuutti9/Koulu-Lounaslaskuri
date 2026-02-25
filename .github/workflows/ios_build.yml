@@ -4,20 +4,19 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest # Päivitetty toimivaan versioon
+    runs-on: macos-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # Päivitetty v4
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4 # Päivitetty v4
         with:
           node-version: 18
 
       - name: Install Dependencies
         run: npm install
 
-      # Luodaan konfiguraatio ennen synkronointia
       - name: Create config.js
         run: |
           echo "const CONFIG = { API_KEY: '${{ secrets.GEMINI_API_KEY }}' };" > config.js
@@ -49,7 +48,7 @@ jobs:
           zip -r Lounas.ipa Payload
           
       - name: Upload IPA Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4 # Päivitetty v4
         with:
           name: Lounas-Sideload-Version
           path: Lounas.ipa
