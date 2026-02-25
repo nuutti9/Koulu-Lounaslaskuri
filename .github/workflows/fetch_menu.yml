@@ -19,15 +19,35 @@ jobs:
           URL="https://api.fi.poweresta.com/publicmenu/dates/muhosutajarvivaala/muhoskoulut/?menu=ruokalista&dates=$DATE"
           curl -o menu.json "$URL"
 
-      # TÄMÄ VAIHE PUUTTUI TAI OLI VIRHEELLINEN:
       - name: Luo config.js
         run: |
           echo "const CONFIG = { API_KEY: '${{ secrets.GEMINI_API_KEY }}' };" > config.js
 
-      - name: Commit ja Push
+      - name: Commit ja Push menu.json
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add menu.json config.js
-          git commit -m "Robotti päivitti datat" || exit 0
+          git add menu.json
+          # Emme lisää config.js tiedostoa git-historiaan!
+          git commit -m "Robotti päivitti ruokalistan" || exit 0
           git push
+
+      # Julkaistaan kaikki tiedostot (myös config.js) GitHub Pagesiin
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+  deploy:
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
