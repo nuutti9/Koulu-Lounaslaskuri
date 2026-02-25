@@ -49,7 +49,7 @@
 
 <div class="container">
     <header>
-        <div class="date" id="date-label">Dashboard</div>
+        <div class="date" id="date-label">MUHOS SCHOOLS</div>
         <h1>Lounas</h1>
     </header>
 
@@ -64,7 +64,7 @@
     </div>
 
     <div class="ai-zone">
-        <textarea id="ai-input" rows="2" placeholder="Kuvaile mitä söit tänään..."></textarea>
+        <textarea id="ai-input" rows="2" placeholder="Esim: 150g keittoa ja sämpylä"></textarea>
         <button class="btn-pri" onclick="runAI()">✨ ANALYSOI (GEMINI 2.5)</button>
     </div>
 
@@ -72,11 +72,9 @@
 </div>
 
 <script>
-    // Haetaan avain CONFIG-objektista (robotti luo config.js:n)
     const GEMINI_API_KEY = typeof CONFIG !== 'undefined' ? CONFIG.API_KEY : "";
-    
     let mealData = [];
-    const UNITS = { "kauha": 130, "dl": 100, "kpl": 60, "g": 1 };
+    const UNITS = { "kauha": 150, "dl": 100, "kpl": 60, "g": 1 };
 
     async function init() {
         try {
@@ -109,7 +107,9 @@
                         <div class="controls">
                             <input type="number" id="q-${i}" value="0" oninput="calc()">
                             <select id="u-${i}" onchange="calc()">
-                                <option value="kauha">Kauha</option><option value="dl">Desi</option><option value="g">Gramma</option>
+                                <option value="g">Gramma</option>
+                                <option value="kauha">Kauha</option>
+                                <option value="dl">Desi</option>
                             </select>
                         </div>
                     </div>`;
@@ -129,10 +129,7 @@
     async function runAI() {
         const text = document.getElementById('ai-input').value;
         if (!text) return alert("Kirjoita kuvaus!");
-        
-        if (!GEMINI_API_KEY) {
-            return alert("API-avain puuttuu. Varmista, että robotti on ajettu onnistuneesti.");
-        }
+        if (!GEMINI_API_KEY) return alert("API-avain puuttuu config-tiedostosta.");
 
         const loader = document.getElementById('splash');
         loader.style.display = 'flex';
@@ -142,26 +139,35 @@
         try {
             const resp = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent", {
                 method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'x-goog-api-key': GEMINI_API_KEY 
-                },
+                headers: { 'Content-Type': 'application/json', 'x-goog-api-key': GEMINI_API_KEY },
                 body: JSON.stringify({
                     contents: [{ 
                         parts: [{ 
-                            text: `Menu: ${JSON.stringify(mealData.map(m=>m.name))}. Käyttäjä: "${text}". Arvioi annokset grammoina. Palauta VAIN JSON-objekti: {"RuokaNimi": grammamäärä}.` 
+                            text: `Tässä on päivän menu: ${JSON.stringify(mealData.map(m=>m.name))}. 
+                            Käyttäjä sanoo: "${text}". 
+                            TEHTÄVÄ: Tunnista mistä menun ruoasta on kyse ja määritä määrä grammoina.
+                            SÄÄNNÖT:
+                            1. ÄLÄ lisää mitään ylimääräisiä lisukkeita, joita käyttäjä ei mainitse.
+                            2. Jos käyttäjä sanoo vain määrän ja ruoan tyypin (esim. "150g keittoa"), yhdistä se oikeaan nimeen menussa.
+                            3. Palauta VAIN puhdas JSON-objekti: {"RuokaNimi": määräGrammoina}.
+                            4. Jos jotain menun ruokaa ei mainita, ÄLÄ sisällytä sitä vastaukseen.`
                         }] 
                     }]
                 })
             });
 
             const d = await resp.json();
-            
             if (!resp.ok) throw new Error(d.error?.message || "API Virhe");
 
             const aiText = d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim();
             const results = JSON.parse(aiText);
             
+            // Nollataan kaikki kentät ennen uutta analyysia
+            mealData.forEach((item, i) => {
+                document.getElementById(`q-${i}`).value = 0;
+            });
+
+            // Täytetään vain tunnistetut
             mealData.forEach((item, i) => {
                 if (results[item.name]) {
                     document.getElementById(`q-${i}`).value = results[item.name];
@@ -170,8 +176,8 @@
             });
             calc();
         } catch (e) { 
-            console.error("DEBUG:", e);
-            alert("Analyysi epäonnistui: " + e.message); 
+            console.error(e);
+            alert("Analyysi epäonnistui."); 
         }
         hideSplash();
     }
