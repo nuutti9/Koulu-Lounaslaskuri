@@ -243,6 +243,13 @@
             font-size: 24px;
             padding: 14px 45px 14px 18px;
             outline: none;
+            -moz-appearance: textfield;
+        }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
 
         #splash {
@@ -253,24 +260,65 @@
             z-index: 3000;
             display: none;
             align-items: center;
+            align-items: center;
             justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 3px solid #FFF;
+            border-radius: 50%;
+            display: inline-block;
+            position: relative;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+
+        .loader::after {
+            content: '';
+            box-sizing: border-box;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-bottom-color: var(--accent);
+        }
+
+        @keyframes rotation {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
 
 <body>
     <div id="splash">
+        <span class="loader"></span>
         <div style="font-weight: 800; color: white; font-size: 20px;">ANALYSOIDAAN</div>
     </div>
     <header id="main-header">
         <div class="header-content">
             <div class="date" id="date-label">MUHOS SCHOOLS</div>
-            <h1 id="main-title" style="display: flex; align-items: center; gap: 8px;">Muhos <svg
-                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                    style="width: 28px; height: 28px; color: var(--accent);">
+            <h1 id="main-title" style="display: flex; align-items: center; gap: 8px;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                    style="width: 25px; height: 25px; color: var(--accent);">
                     <path
                         d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                </svg></h1>
+                </svg>
+                Muhos
+            </h1>
             <div class="sticky-stats" id="mini-stats">
                 <div class="s-item"><span class="s-val" id="mini-kcal">0</span> <span class="s-lbl">kcal</span></div>
                 <div class="s-item"><span class="s-val" id="mini-p">0g</span>&nbsp;<span class="s-lbl"
@@ -368,7 +416,16 @@
             if (!GEMINI_API_KEY) return alert("AI-avain puuttuu palvelimelta.");
             document.getElementById('splash').style.display = 'flex';
             try {
-                const parts = [{ text: `Menu: ${JSON.stringify(mealData.map(m => m.name))}. Tunnista annos grammoina. Palauta vain JSON: {"menuResults": {"Ruoka": g}}. Kuvaus: "${document.getElementById('ai-input').value}"` }];
+                const promptString = `Olet ruoan painon arvioija.
+Käytössäsi on seuraava valikko ruokia: ${JSON.stringify(mealData.map(m => m.name))}.
+Käyttäjä kuvailee annostaan seuraavasti: "${document.getElementById('ai-input').value}"
+
+Tunnista mittayksikkö tai vertaus. Arvioi tilavuus (ml) ja muunna grammoiksi tiheyden perusteella (keitot ≈ 1g/ml, riisi ≈ 0.8g/ml, pasta ≈ 0.7g/ml).
+Jos käyttäjä antaa "keksikokoinen kauhallinen lihakeittoa", arvio on ≈ 100-150g.
+Palauta VAIN JSON-tiedosto muodossa:
+{"menuResults": {"Ruoka1 Nimi Valikosta": gramma_määrä_numerona, "Ruoka2": gramma_määrä}}`;
+
+                const parts = [{ text: promptString }];
                 if (uploadedImageData) {
                     parts.push({
                         inlineData: {
