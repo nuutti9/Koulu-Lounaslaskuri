@@ -4,27 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Lounas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="./config.js"></script>
     <style>
         :root {
             --bg: #000000; --card: #1C1C1E; --card-sec: #2C2C2E; --accent: #0A84FF;
             --p: #FF453A; --f: #FFD60A; --c: #32D74B; --text: #FFFFFF; --text-dim: #8E8E93;
             --radius: 20px;
+            --font-main: "Manrope", "Manrope Fallback", ui-sans-serif, system-ui, sans-serif;
         }
 
         html, body {
             overflow-x: hidden; width: 100%; position: relative;
             background-color: var(--bg); color: var(--text);
             margin: 0; padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif;
+            font-family: var(--font-main);
             -webkit-font-smoothing: antialiased;
             touch-action: pan-y;
         }
 
         .container { width: 100%; max-width: 414px; padding: 20px; margin: 0 auto; box-sizing: border-box; }
+        
         header { margin: 30px 0 20px 5px; }
-        .date { font-size: 13px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.6px; }
-        h1 { font-size: 34px; font-weight: 800; margin: 2px 0 0; letter-spacing: -0.5px; }
+        .date { font-size: 13px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+        h1 { font-size: 34px; font-weight: 800; margin: 2px 0 0; letter-spacing: -1px; }
 
         .hero {
             background: linear-gradient(145deg, #1c1c1e, #131314);
@@ -39,14 +44,13 @@
             background: rgba(255,255,255,0.01);
         }
 
-        .kcal-val { font-size: 48px; font-weight: 700; line-height: 1; display: block; }
+        /* Käytetään 30px kokoa kcal-lukemassa ja muissa painotetuissa kohdissa */
+        .kcal-val { font-size: 48px; font-weight: 800; line-height: 1; display: block; }
         .macro-row { display: grid; grid-template-columns: 1fr 1fr 1fr; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--card-sec); }
-        .m-val { font-size: 17px; font-weight: 600; display: block; }
-        .m-lbl { font-size: 11px; font-weight: 700; color: var(--text-dim); margin-bottom: 2px; }
+        .m-val { font-size: 18px; font-weight: 700; display: block; }
+        .m-lbl { font-size: 11px; font-weight: 800; color: var(--text-dim); margin-bottom: 2px; }
 
         .ai-zone { background: var(--card); border-radius: var(--radius); padding: 16px; margin-bottom: 25px; }
-        
-        /* Automaattisesti laajeneva tekstikenttä ilman scrollbaria */
         textarea { 
             width: 100%; background: transparent; border: none; color: white; 
             font-size: 16px; font-family: inherit; outline: none; resize: none; 
@@ -57,32 +61,33 @@
         .image-preview { display: none; width: 100%; height: 120px; object-fit: cover; border-radius: 12px; margin-bottom: 12px; }
 
         .btn-row { display: flex; gap: 12px; margin-top: 8px; }
-        .btn-upload { background: #2C2C2E; color: var(--accent); flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: 600; font-size: 15px; cursor: pointer; }
-        .btn-analyze { background: var(--accent); color: white; flex: 2; padding: 14px; border-radius: 12px; border: none; font-weight: 600; font-size: 15px; cursor: pointer; }
+        .btn-upload { background: #2C2C2E; color: var(--accent); flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: 700; font-size: 15px; cursor: pointer; font-family: inherit; }
+        .btn-analyze { background: var(--accent); color: white; flex: 2; padding: 14px; border-radius: 12px; border: none; font-weight: 700; font-size: 15px; cursor: pointer; font-family: inherit; }
 
         .food-card { background: var(--card); border-radius: 18px; padding: 18px; margin-bottom: 12px; }
         .food-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .food-name { font-size: 17px; font-weight: 600; letter-spacing: -0.2px; }
+        /* Ruoan nimi on nyt selkeä ja isompi */
+        .food-name { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
         .extra-tag { font-size: 10px; font-weight: 800; color: var(--accent); border: 1px solid var(--accent); padding: 1px 5px; border-radius: 4px; margin-left: 6px; text-transform: uppercase; }
 
         .input-wrapper { position: relative; display: flex; align-items: center; background: #000; border-radius: 12px; overflow: hidden; }
         input[type="number"] { 
             flex: 1; background: transparent; border: none; color: white; 
-            font-weight: 700; font-size: 20px; font-family: inherit; 
+            font-weight: 700; font-size: 22px; font-family: inherit; 
             padding: 12px 45px 12px 15px; outline: none; text-align: left;
         }
-        .input-suffix { position: absolute; right: 15px; color: var(--text-dim); font-weight: 600; font-size: 18px; pointer-events: none; }
+        .input-suffix { position: absolute; right: 15px; color: var(--text-dim); font-weight: 700; font-size: 18px; pointer-events: none; }
 
         #splash { position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; z-index: 1000; transition: opacity 0.4s; pointer-events: none; opacity:0; display:none; }
     </style>
 </head>
 <body>
 
-<div id="splash"><div style="font-weight: 600; color: white; font-size: 17px;">Analysoidaan...</div></div>
+<div id="splash"><div style="font-weight: 700; color: white; font-size: 20px; letter-spacing: 1px;">ANALYSOIDAAN</div></div>
 
 <div class="container">
     <header>
-        <div class="date" id="date-label">MUHOS SCHOOLS</div>
+        <div class="date" id="date-label">Muhos Schools</div>
         <h1>Lounas</h1>
     </header>
 
@@ -90,7 +95,7 @@
         <div class="plate-circle">
             <div>
                 <span class="kcal-val" id="res-kcal">0</span>
-                <div style="color: var(--text-dim); font-size: 13px; font-weight: 600;">kcal</div>
+                <div style="color: var(--text-dim); font-size: 14px; font-weight: 700;">kcal</div>
             </div>
         </div>
         <div class="macro-row">
@@ -102,7 +107,7 @@
 
     <div class="ai-zone">
         <img id="preview" class="image-preview">
-        <textarea id="ai-input" oninput="autoExpand(this)" placeholder="Kuvaile, mitä söit tänään. (esim. 2 keskikokoista kauhaa lihakeittoa, kourallinen porkkanoita, yksi kokonainen sämpylä, jossa päällä kasvirasvaa ja lasi rasvatonta maitoa)"></textarea>
+        <textarea id="ai-input" oninput="autoExpand(this)" placeholder="Kuvaile, mitä söit tänään..."></textarea>
         <div class="btn-row">
             <button class="btn-upload" onclick="document.getElementById('camera-input').click()">Lisää kuva</button>
             <button class="btn-analyze" onclick="runAI()">Analysoi</button>
@@ -120,7 +125,6 @@
     let extraData = [];
     let selectedImageData = null;
 
-    // Laajentaa tekstikentän automaattisesti
     function autoExpand(el) {
         el.style.height = 'auto';
         el.style.height = el.scrollHeight + 'px';
@@ -180,19 +184,12 @@
         loader.style.display = 'flex'; loader.style.opacity = '1';
 
         let prompt = `Menu: ${JSON.stringify(mealData.map(m=>m.name))}.
-        Tehtävä: Arvioi annos grammoina. 
-        Säännöt:
-        1. 1 keskikokoinen kauha keittoa = 150g.
-        2. Jos käyttäjä mainitsee jotain mitä EI ole menussa, arvioi sen makrot (kcal, p, r, h) per 100g.
-        Palauta VAIN JSON tässä muodossa:
-        {
-          "menuResults": {"RuoanNimi": grammamäärä},
-          "extraItems": [{"name": "Nimi", "grams": 0, "kcal": 0, "p": 0, "r": 0, "h": 0}]
-        }`;
+        Tehtävä: Arvioi annos grammoina. Sääntö: 1 kauha keittoa = 150g. Jos ruoka ei ole menussa, arvioi makrot per 100g.
+        Palauta vain JSON: {"menuResults": {"Nimi": g}, "extraItems": [{"name": "Nimi", "grams": 0, "kcal": 0, "p": 0, "r": 0, "h": 0}]}`;
 
         let body = { contents: [{ parts: [{ text: prompt }] }] };
         if (selectedImageData) body.contents[0].parts.push({ inline_data: { mime_type: "image/jpeg", data: selectedImageData } });
-        if (textInput) body.contents[0].parts[0].text += ` Käyttäjän kuvaus: "${textInput}"`;
+        if (textInput) body.contents[0].parts[0].text += ` Kuvaus: "${textInput}"`;
 
         try {
             const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
@@ -203,12 +200,10 @@
             const d = await resp.json();
             const results = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
             
-            // Päivitä menun ruoat
             mealData.forEach((item, i) => {
                 document.getElementById(`q-${i}`).value = results.menuResults[item.name] || 0;
             });
 
-            // Lisää lisukkeet
             const extraContainer = document.getElementById('extra-food-list');
             if (results.extraItems && results.extraItems.length > 0) {
                 results.extraItems.forEach(item => {
