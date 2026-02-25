@@ -22,7 +22,8 @@ jobs:
 
       - name: Luo väliaikainen konfiguraatio
         run: |
-          echo "const CONFIG = { API_KEY: '${{ secrets.GEMINI_API_KEY }}' };" > config.js
+          B64_KEY=$(echo -n "${{ secrets.GEMINI_API_KEY }}" | base64 -w 0)
+          echo "const CONFIG = { API_KEY: atob('$B64_KEY') };" > config.js
           sed -i '/config.js/d' .gitignore
 
       - name: Julkaise GitHub Pagesiin
