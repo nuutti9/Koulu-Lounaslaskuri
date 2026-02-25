@@ -283,7 +283,9 @@
         let uploadedImageData = null;
 
         const uDate = new Date();
-        document.getElementById('date-label').innerText = uDate.toLocaleDateString('fi-FI', { weekday: 'long', day: 'numeric', month: 'numeric' }).replace('.', '. ').toUpperCase();
+        const dNames = ["SUNNUNTAI", "MAANANTAI", "TIISTAI", "KESKIVIIKKO", "TORSTAI", "PERJANTAI", "LAUANTAI"];
+        const mNames = ["TAMMIKUUTA", "HELMIKUUTA", "MAALISKUUTA", "HUHTIKUUTA", "TOUKOKUUTA", "KESÄKUUTA", "HEINÄKUUTA", "ELOKUUTA", "SYYSKUUTA", "LOKAKUUTA", "MARRASKUUTA", "JOULUKUUTA"];
+        document.getElementById('date-label').innerText = `${dNames[uDate.getDay()]}, ${uDate.getDate()} ${mNames[uDate.getMonth()]}`;
 
         document.getElementById('scroller').addEventListener('scroll', (e) => {
             document.getElementById('mini-stats').classList.toggle('visible', e.target.scrollTop > 100);
