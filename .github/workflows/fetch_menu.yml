@@ -1,53 +1,37 @@
 name: Päivitä ruokalista
+
 on:
   schedule:
+    # Ajaa päivityksen joka aamu klo 05:00 UTC (n. klo 07:00 Suomen aikaa)
     - cron: '0 5 * * *'
-  workflow_dispatch:
+  workflow_dispatch: # Mahdollistaa manuaalisen käynnistyksen Actions-välilehdeltä
   push:
-    branches: [ main ]
+    branches:
+      - main # Ajaa päivityksen aina, kun muokkaat index.html-tiedostoa
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Hae data
+      - name: Hae ruokalistan data
         run: |
           DATE=$(date +%Y-%m-%d)
           URL="https://api.fi.poweresta.com/publicmenu/dates/muhosutajarvivaala/muhoskoulut/?menu=ruokalista&dates=$DATE"
           curl -o menu.json "$URL"
 
-      - name: Luo config.js
+      - name: Luo konfiguraatio (config.js)
         run: |
+          # Tämä vaihe luo tiedoston, jota index.html tarvitsee AI-toimintoihin
           echo "const CONFIG = { API_KEY: '${{ secrets.GEMINI_API_KEY }}' };" > config.js
 
-      - name: Commit ja Push menu.json
+      - name: Commit ja Push muutokset
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add menu.json
-          # Emme lisää config.js tiedostoa git-historiaan!
-          git commit -m "Robotti päivitti ruokalistan" || exit 0
+          git add menu.json config.js
+          # Commit epäonnistuu, jos mikään ei ole muuttunut, siksi "|| exit 0"
+          git commit -m "Robotti päivitti ruokalistan ja API-konfiguraation" || exit 0
           git push
-
-      # Julkaistaan kaikki tiedostot (myös config.js) GitHub Pagesiin
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: '.'
-
-  deploy:
-    needs: build
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
