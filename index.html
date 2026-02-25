@@ -25,8 +25,21 @@
             touch-action: pan-y;
         }
 
-        .container { width: 100%; max-width: 414px; padding: 20px; margin: 0 auto; box-sizing: border-box; }
-        header { margin: 30px 0 20px 5px; }
+        .container { width: 100%; max-width: 414px; padding: 0 20px 20px; margin: 0 auto; box-sizing: border-box; }
+
+        /* Lukittu yläpalkki */
+        header { 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+            background: rgba(0, 0, 0, 0.8); /* Läpinäkyvä musta */
+            backdrop-filter: blur(20px); /* Apple-tyylinen sumennus */
+            -webkit-backdrop-filter: blur(20px);
+            padding: 40px 0 15px 5px; 
+            margin: 0 -20px 20px -20px; /* Levitetään reunoille saakka */
+            padding-left: 25px; /* Korjataan marginaali takaisin */
+        }
+
         .date { font-size: 13px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
         h1 { font-size: 34px; font-weight: 800; margin: 2px 0 0; letter-spacing: -1px; }
 
@@ -69,7 +82,6 @@
 
         .input-wrapper { position: relative; display: flex; align-items: center; background: #000; border-radius: 12px; overflow: hidden; }
         
-        /* Poistetaan nuolipalkit numerokentistä */
         input[type="number"] { 
             flex: 1; background: transparent; border: none; color: white; 
             font-weight: 700; font-size: 22px; font-family: inherit; 
@@ -113,7 +125,7 @@
 
     <div class="ai-zone">
         <img id="preview" class="image-preview">
-        <textarea id="ai-input" oninput="autoExpand(this)" placeholder="Kuvaile, mitä söit tänään. (esim. 2 keskikokoista kauhaa lihakeittoa, kourallinen porkkanoita, yksi kokonainen sämpylä, jossa päällä kasvirasvaa ja lasi rasvatonta maitoa)"></textarea>
+        <textarea id="ai-input" oninput="autoExpand(this)" placeholder="Kuvaile, mitä söit tänään..."></textarea>
         <div class="btn-row">
             <button class="btn-upload" onclick="document.getElementById('camera-input').click()">Lisää kuva</button>
             <button class="btn-analyze" onclick="runAI()">Analysoi</button>
@@ -246,7 +258,7 @@
             tk += (w * item.kcal) / 100; tp += (w * item.p) / 100; th += (w * item.h) / 100; tr += (w * item.r) / 100;
         });
         extraData.forEach((item, i) => {
-            const w = parseFloat(document.getElementById(`extra-q-${i}`).value) || 0;
+            const w = parseFloat(document.getElementById(`extra-q-${id}`) ? document.getElementById(`extra-q-${id}`).value : item.grams) || 0;
             tk += (w * item.kcal) / 100; tp += (w * item.p) / 100; th += (w * item.h) / 100; tr += (w * item.r) / 100;
         });
         document.getElementById('res-kcal').innerText = Math.round(tk);
