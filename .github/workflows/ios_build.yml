@@ -7,23 +7,27 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4 # Päivitetty v4
+        uses: actions/checkout@v4
 
       - name: Setup Node
-        uses: actions/setup-node@v4 # Päivitetty v4
+        uses: actions/setup-node@v4
         with:
           node-version: 18
 
       - name: Install Dependencies
         run: npm install
 
-      - name: Create config.js
+      # Luodaan www-kansio ja kopioidaan tiedostot sinne
+      - name: Prepare Web Assets
         run: |
-          echo "const CONFIG = { API_KEY: '${{ secrets.GEMINI_API_KEY }}' };" > config.js
+          mkdir -p www
+          echo "const CONFIG = { API_KEY: '${{ secrets.GEMINI_API_KEY }}' };" > www/config.js
+          cp index.html www/
+          cp menu.json www/
 
       - name: Initialize Capacitor
         run: |
-          npx cap init Lounas fi.nuutti.lounas --web-dir .
+          npx cap init Lounas fi.nuutti.lounas --web-dir www
           npx cap add ios
 
       - name: Capacitor Sync
@@ -41,14 +45,14 @@ jobs:
                      CODE_SIGN_IDENTITY="" \
                      AD_HOC_CODE_SIGNING_ALLOWED=YES
 
-      - name: Create IPA (Payload folder method)
+      - name: Create IPA
         run: |
           mkdir -p Payload
           cp -r build/Build/Products/Release-iphoneos/App.app Payload/
           zip -r Lounas.ipa Payload
           
       - name: Upload IPA Artifact
-        uses: actions/upload-artifact@v4 # Päivitetty v4
+        uses: actions/upload-artifact@v4
         with:
           name: Lounas-Sideload-Version
           path: Lounas.ipa
