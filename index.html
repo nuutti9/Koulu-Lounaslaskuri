@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Lounas Dashboard</title>
+    <script src="config.js"></script>
     <style>
         :root {
             --bg: #000000; --card: #1C1C1E; --card-sec: #2C2C2E; --accent: #0A84FF;
@@ -44,11 +45,11 @@
 </head>
 <body>
 
-<div id="splash" style="display: flex;"><div style="font-weight: 800; color: white;">VALMISTELLAAN...</div></div>
+<div id="splash" style="display: flex;"><div id="splash-text" style="font-weight: 800; color: white;">VALMISTELLAAN...</div></div>
 
 <div class="container">
     <header>
-        <div class="date" id="date-label">MUHOS SCHOOLS</div>
+        <div class="date" id="date-label">Dashboard</div>
         <h1>Lounas</h1>
     </header>
 
@@ -64,14 +65,16 @@
 
     <div class="ai-zone">
         <textarea id="ai-input" rows="2" placeholder="Kuvaile mitä söit tänään..."></textarea>
-        <button class="btn-pri" onclick="runAI()">✨ ANALYSOI (FLASH 2.5)</button>
+        <button class="btn-pri" onclick="runAI()">✨ ANALYSOI (GEMINI 2.5)</button>
     </div>
 
     <div id="food-list"></div>
 </div>
 
 <script>
-    const GEMINI_API_KEY = "AIzaSyDBxIHsj1chijnARGj5oh_W8swKbGnEsSo";
+    // Haetaan avain CONFIG-objektista (robotti luo config.js:n)
+    const GEMINI_API_KEY = typeof CONFIG !== 'undefined' ? CONFIG.API_KEY : "";
+    
     let mealData = [];
     const UNITS = { "kauha": 130, "dl": 100, "kpl": 60, "g": 1 };
 
@@ -113,7 +116,7 @@
             });
             hideSplash();
         } catch (e) {
-            document.getElementById('splash').innerHTML = "<div style='color:white;'>VIRHE: menu.json ei löytynyt. Aja GitHub Action.</div>";
+            document.getElementById('splash-text').innerHTML = "Odota robotin valmistumista...";
         }
     }
 
@@ -127,33 +130,35 @@
         const text = document.getElementById('ai-input').value;
         if (!text) return alert("Kirjoita kuvaus!");
         
-        const s = document.getElementById('splash');
-        s.style.display = 'flex';
-        s.style.opacity = '1';
-        s.innerHTML = "<div style='color:white; font-weight:800;'>FLASH 2.5 ANALYSOI...</div>";
+        if (!GEMINI_API_KEY) {
+            return alert("API-avain puuttuu. Varmista, että robotti on ajettu onnistuneesti.");
+        }
 
-        // URL dokumentaatiosi mukaan
-        const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+        const loader = document.getElementById('splash');
+        loader.style.display = 'flex';
+        loader.style.opacity = '1';
+        document.getElementById('splash-text').innerHTML = "ANALYSOIDAAN...";
 
         try {
-            const resp = await fetch(url, {
+            const resp = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent", {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
-                    'x-goog-api-key': GEMINI_API_KEY
+                    'x-goog-api-key': GEMINI_API_KEY 
                 },
                 body: JSON.stringify({
-                    contents: [{ parts: [{ text: `Ruokalista: ${JSON.stringify(mealData.map(m=>m.name))}. Käyttäjä: "${text}". Arvioi annokset grammoina. Palauta VAIN JSON: {"RuokaNimi": grammamäärä}. Käytä täsmälleen listan nimiä.` }] }]
+                    contents: [{ 
+                        parts: [{ 
+                            text: `Menu: ${JSON.stringify(mealData.map(m=>m.name))}. Käyttäjä: "${text}". Arvioi annokset grammoina. Palauta VAIN JSON-objekti: {"RuokaNimi": grammamäärä}.` 
+                        }] 
+                    }]
                 })
             });
 
-            if (!resp.ok) {
-                const err = await resp.json();
-                console.error("DEBUG:", err);
-                throw new Error(err.error.message || "403 Forbidden");
-            }
-
             const d = await resp.json();
+            
+            if (!resp.ok) throw new Error(d.error?.message || "API Virhe");
+
             const aiText = d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim();
             const results = JSON.parse(aiText);
             
@@ -165,7 +170,8 @@
             });
             calc();
         } catch (e) { 
-            alert("AI VIRHE: " + e.message + "\n\nTarkista konsoli (F12) nähdäksesi lisätiedot."); 
+            console.error("DEBUG:", e);
+            alert("Analyysi epäonnistui: " + e.message); 
         }
         hideSplash();
     }
