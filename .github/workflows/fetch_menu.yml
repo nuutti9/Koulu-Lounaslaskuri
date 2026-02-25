@@ -2,12 +2,11 @@ name: Päivitä ruokalista
 
 on:
   schedule:
-    # Ajaa päivityksen joka aamu klo 05:00 UTC (n. klo 07:00 Suomen aikaa)
     - cron: '0 5 * * *'
-  workflow_dispatch: # Mahdollistaa manuaalisen käynnistyksen Actions-välilehdeltä
+  workflow_dispatch:
   push:
     branches:
-      - main # Ajaa päivityksen aina, kun muokkaat index.html-tiedostoa
+      - main
 
 jobs:
   build:
@@ -24,14 +23,13 @@ jobs:
 
       - name: Luo konfiguraatio (config.js)
         run: |
-          # Tämä vaihe luo tiedoston, jota index.html tarvitsee AI-toimintoihin
           echo "const CONFIG = { API_KEY: '${{ secrets.GEMINI_API_KEY }}' };" > config.js
 
       - name: Commit ja Push muutokset
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add menu.json config.js
-          # Commit epäonnistuu, jos mikään ei ole muuttunut, siksi "|| exit 0"
+          # Käytetään -f lippua, jotta .gitignore ei estä tallennusta
+          git add -f menu.json config.js
           git commit -m "Robotti päivitti ruokalistan ja API-konfiguraation" || exit 0
           git push
