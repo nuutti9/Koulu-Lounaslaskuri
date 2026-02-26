@@ -1,0 +1,102 @@
+[
+  {
+    "id": "alavus",
+    "name": "Alavus (Kyläkoulut)"
+  },
+  {
+    "id": "eurajoki",
+    "name": "Eurajoki"
+  },
+  {
+    "id": "ikaalinen",
+    "name": "Ikaalinen"
+  },
+  {
+    "id": "kalajoki",
+    "name": "Kalajoki"
+  },
+  {
+    "id": "kannus",
+    "name": "Kannus"
+  },
+  {
+    "id": "kauhava",
+    "name": "Kauhava"
+  },
+  {
+    "id": "kauniainen",
+    "name": "Kauniainen"
+  },
+  {
+    "id": "kirkkonummi",
+    "name": "Kirkkonummi"
+  },
+  {
+    "id": "laukaa",
+    "name": "Laukaa"
+  },
+  {
+    "id": "lieto",
+    "name": "Lieto"
+  },
+  {
+    "id": "muhos",
+    "name": "Muhos"
+  },
+  {
+    "id": "utajarvi",
+    "name": "Utajärvi"
+  },
+  {
+    "id": "vaala",
+    "name": "Vaala"
+  },
+  {
+    "id": "nousiainen",
+    "name": "Nousiainen"
+  },
+  {
+    "id": "orimattila",
+    "name": "Orimattila"
+  },
+  {
+    "id": "rusko",
+    "name": "Rusko"
+  },
+  {
+    "id": "sipoo",
+    "name": "Sipoo"
+  },
+  {
+    "id": "somero",
+    "name": "Somero"
+  },
+  {
+    "id": "ulvila",
+    "name": "Ulvila"
+  },
+  {
+    "id": "hyria",
+    "name": "Hyria"
+  },
+  {
+    "id": "lappia",
+    "name": "Lappia"
+  },
+  {
+    "id": "luovi",
+    "name": "Ammattiopisto Luovi"
+  },
+  {
+    "id": "sskky",
+    "name": "SSKKY"
+  },
+  {
+    "id": "winnova_pori",
+    "name": "WinNova (Pori)"
+  },
+  {
+    "id": "winnova_rauma",
+    "name": "WinNova (Rauma)"
+  }
+]
