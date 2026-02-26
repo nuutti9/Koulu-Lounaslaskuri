@@ -36,8 +36,9 @@
             margin: 0;
             padding: 0;
             font-family: var(--font-main);
-            overflow: hidden; /* Estää koko sivun hyllyvän skrollauksen */
-            position: fixed; /* iOS bugin esto */
+            /* Korjaus 1: Estetään sivuttaisliike */
+            overflow: hidden; 
+            position: fixed; 
         }
 
         header {
@@ -51,31 +52,24 @@
             -webkit-backdrop-filter: blur(25px);
             padding: 55px 20px 15px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: padding 0.3s ease, background 0.3s;
+        }
+
+        /* Korjaus 2: Headerin muutos skrollatessa */
+        header.scrolled {
+            padding: 45px 20px 10px;
         }
 
         .header-content {
             max-width: 374px;
             margin: 0 auto;
             position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            transition: all 0.4s ease;
-        }
-
-        /* Kun skrollattu: header pienenee hieman */
-        header.scrolled {
-            padding-top: 50px;
-            padding-bottom: 10px;
         }
 
         .date, h1 {
-            transition: all 0.3s ease;
-            opacity: 1;
+            transition: opacity 0.2s ease, transform 0.2s ease;
         }
 
-        /* Tekstien häivytys */
         header.scrolled .date, 
         header.scrolled h1 {
             opacity: 0;
@@ -97,26 +91,30 @@
             letter-spacing: -1px;
         }
 
-        /* STICKY STATS KESKITYS */
         .sticky-stats {
             position: absolute;
+            bottom: 0;
             left: 0;
             right: 0;
-            bottom: 0;
             display: flex;
-            justify-content: flex-end; /* Aluksi oikealla */
             gap: 12px;
             opacity: 0;
             transform: translateY(5px);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            justify-content: flex-end; /* Aluksi oikealla */
         }
 
+        /* Keskitys skrollatessa */
         header.scrolled .sticky-stats {
             opacity: 1;
-            transform: translateY(-8px);
-            justify-content: center; /* Keskittää makrot skrollatessa */
-            pointer-events: auto;
+            transform: translateY(-5px);
+            justify-content: center; 
+        }
+
+        .sticky-stats .s-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .s-val { font-size: 14px; font-weight: 800; }
@@ -125,7 +123,7 @@
         .scroll-area {
             height: 100vh;
             overflow-y: scroll;
-            overflow-x: hidden; /* Estää sivuttaisliikkeen sisältöalueella */
+            overflow-x: hidden; /* Korjaus 1 jatkuu */
             -webkit-overflow-scrolling: touch;
             padding-top: 140px;
         }
@@ -254,7 +252,10 @@
             background: #3A3A3C;
         }
 
-        .btn-camera svg { width: 24px; height: 24px; }
+        .btn-camera svg {
+            width: 24px;
+            height: 24px;
+        }
 
         .food-card {
             background: var(--card);
@@ -334,10 +335,9 @@
         <span class="loader"></span>
         <div style="font-weight: 800; color: white; font-size: 20px;">ANALYSOIDAAN</div>
     </div>
-
     <header id="main-header">
         <div class="header-content">
-            <div class="date" id="date-label">LATAUS...</div>
+            <div class="date" id="date-label">MUHOS SCHOOLS</div>
             <h1 id="main-title" style="display: flex; align-items: center; gap: 8px;">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                     style="width: 25px; height: 25px; color: var(--accent);">
@@ -348,13 +348,15 @@
             </h1>
             <div class="sticky-stats" id="mini-stats">
                 <div class="s-item"><span class="s-val" id="mini-kcal">0</span> <span class="s-lbl">kcal</span></div>
-                <div class="s-item"><span class="s-val" id="mini-p" style="color:var(--p)">0g</span> <span class="s-lbl">P</span></div>
-                <div class="s-item"><span class="s-val" id="mini-r" style="color:var(--f)">0g</span> <span class="s-lbl">R</span></div>
-                <div class="s-item"><span class="s-val" id="mini-h" style="color:var(--c)">0g</span> <span class="s-lbl">H</span></div>
+                <div class="s-item"><span class="s-val" id="mini-p">0g</span>&nbsp;<span class="s-lbl"
+                        style="color:var(--p)">P</span></div>
+                <div class="s-item"><span class="s-val" id="mini-r">0g</span>&nbsp;<span class="s-lbl"
+                        style="color:var(--f)">R</span></div>
+                <div class="s-item"><span class="s-val" id="mini-h">0g</span>&nbsp;<span class="s-lbl"
+                        style="color:var(--c)">H</span></div>
             </div>
         </div>
     </header>
-
     <div class="scroll-area" id="scroller">
         <div class="container">
             <div class="hero" id="hero-section">
@@ -364,46 +366,54 @@
                     </div>
                 </div>
                 <div class="macro-row">
-                    <div class="m-box"><span class="m-lbl" style="color:var(--p)">PROTEIINI</span><span class="m-val" id="res-p">0g</span></div>
-                    <div class="m-box"><span class="m-lbl" style="color:var(--f)">RASVA</span><span class="m-val" id="res-r">0g</span></div>
-                    <div class="m-box"><span class="m-lbl" style="color:var(--c)">HIILIHYDRAATTI</span><span class="m-val" id="res-h">0g</span></div>
+                    <div class="m-box"><span class="m-lbl" style="color:var(--p)">PROTEIINI</span><span class="m-val"
+                            id="res-p">0g</span></div>
+                    <div class="m-box"><span class="m-lbl" style="color:var(--f)">RASVA</span><span class="m-val"
+                            id="res-r">0g</span></div>
+                    <div class="m-box"><span class="m-lbl" style="color:var(--c)">HIILIHYDRAATTI</span><span
+                            class="m-val" id="res-h">0g</span></div>
                 </div>
             </div>
-
             <div class="ai-zone">
                 <textarea id="ai-input" placeholder="Kuvaile, mitä söit tänään."></textarea>
                 <img id="img-preview" class="img-preview" />
                 <div class="btn-row">
-                    <input type="file" id="image-upload" accept="image/*" style="display:none;" onchange="previewImage(event)">
+                    <input type="file" id="image-upload" accept="image/*" style="display:none;"
+                        onchange="previewImage(event)">
                     <button class="btn-camera" onclick="document.getElementById('image-upload').click()">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z">
+                            </path>
                             <circle cx="12" cy="13" r="4"></circle>
                         </svg>
                     </button>
                     <button class="btn-analyze" onclick="runAI()">Analysoi</button>
                 </div>
             </div>
-
             <div id="food-list"></div>
         </div>
     </div>
-
     <script>
         const GEMINI_API_KEY = typeof CONFIG !== 'undefined' ? CONFIG.API_KEY : "";
         let mealData = [];
         let uploadedImageData = null;
 
-        // PÄIVÄMÄÄRÄ
         const uDate = new Date();
         const dNames = ["SUNNUNTAI", "MAANANTAI", "TIISTAI", "KESKIVIIKKO", "TORSTAI", "PERJANTAI", "LAUANTAI"];
         const mNames = ["TAMMIKUUTA", "HELMIKUUTA", "MAALISKUUTA", "HUHTIKUUTA", "TOUKOKUUTA", "KESÄKUUTA", "HEINÄKUUTA", "ELOKUUTA", "SYYSKUUTA", "LOKAKUUTA", "MARRASKUUTA", "JOULUKUUTA"];
         document.getElementById('date-label').innerText = `${dNames[uDate.getDay()]}, ${uDate.getDate()} ${mNames[uDate.getMonth()]}`;
 
-        // HEADER ANIMAATIO
+        // Headerin automaatio skrollatessa
         document.getElementById('scroller').addEventListener('scroll', (e) => {
-            const isScrolled = e.target.scrollTop > 60;
-            document.getElementById('main-header').classList.toggle('scrolled', isScrolled);
+            const header = document.getElementById('main-header');
+            if (e.target.scrollTop > 80) {
+                header.classList.add('scrolled');
+                document.getElementById('mini-stats').classList.add('visible');
+            } else {
+                header.classList.remove('scrolled');
+                document.getElementById('mini-stats').classList.remove('visible');
+            }
         });
 
         function previewImage(e) {
@@ -437,44 +447,55 @@
                 });
             } catch (e) { }
         }
-
+        
         async function runAI() {
             if (!GEMINI_API_KEY) return alert("AI-avain puuttuu palvelimelta.");
             document.getElementById('splash').style.display = 'flex';
             try {
-                const promptString = `Olet ruoan painon arvioija. Valikko: ${JSON.stringify(mealData.map(m => m.name))}. Kuvaus: "${document.getElementById('ai-input').value}". Palauta VAIN JSON: {"menuResults": {"Ruoka": grammaa}}`;
+                const promptString = `Olet ruoan painon arvioija.
+Käytössäsi on seuraava valikko ruokia: ${JSON.stringify(mealData.map(m => m.name))}.
+Käyttäjä kuvailee annostaan seuraavasti: "${document.getElementById('ai-input').value}"
+
+Tunnista mittayksikkö tai vertaus. Arvioi tilavuus (ml) ja muunna grammoiksi tiheyden perusteella (keitot ≈ 1g/ml, riisi ≈ 0.8g/ml, pasta ≈ 0.7g/ml).
+Jos käyttäjä antaa "keksikokoinen kauhallinen lihakeittoa", arvio on ≈ 100-150g.
+Palauta VAIN JSON-tiedosto muodossa:
+{"menuResults": {"Ruoka1 Nimi Valikosta": gramma_määrä_numerona, "Ruoka2": gramma_määrä}}`;
 
                 const parts = [{ text: promptString }];
                 if (uploadedImageData) {
-                    parts.push({ inlineData: { data: uploadedImageData.split(',')[1], mimeType: uploadedImageData.match(/data:(.*?);/)[1] } });
+                    parts.push({
+                        inlineData: {
+                            data: uploadedImageData.split(',')[1],
+                            mimeType: uploadedImageData.match(/data:(.*?);/)[1]
+                        }
+                    });
                 }
-
-                const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: parts }] })
                 });
-
                 const d = await resp.json();
+                if (!resp.ok) {
+                    throw new Error(d.error ? d.error.message : "Tuntematon API-virhe");
+                }
                 const results = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
                 mealData.forEach((item, i) => { document.getElementById(`q-${i}`).value = results.menuResults[item.name] || 0; });
                 calc();
             } catch (e) { alert("AI Virhe: " + e.message); }
             document.getElementById('splash').style.display = 'none';
         }
-
         function calc() {
             let tk = 0, tp = 0, th = 0, tr = 0;
             mealData.forEach((item, i) => {
                 const w = parseFloat(document.getElementById(`q-${i}`).value) || 0;
                 tk += (w * item.kcal) / 100; tp += (w * item.p) / 100; th += (w * item.h) / 100; tr += (w * item.r) / 100;
             });
-            const update = (id, val) => document.getElementById(id).innerText = val;
-            const r = Math.round;
-            update('res-kcal', r(tk)); update('mini-kcal', r(tk));
-            update('res-p', r(tp) + "g"); update('mini-p', r(tp) + "g");
-            update('res-r', r(tr) + "g"); update('mini-r', r(tr) + "g");
-            update('res-h', r(th) + "g"); update('mini-h', r(th) + "g");
+            document.getElementById('res-kcal').innerText = Math.round(tk);
+            document.getElementById('mini-kcal').innerText = Math.round(tk);
+            document.getElementById('res-p').innerText = document.getElementById('mini-p').innerText = Math.round(tp) + "g";
+            document.getElementById('res-r').innerText = document.getElementById('mini-r').innerText = Math.round(tr) + "g";
+            document.getElementById('res-h').innerText = document.getElementById('mini-h').innerText = Math.round(th) + "g";
         }
         init();
     </script>
