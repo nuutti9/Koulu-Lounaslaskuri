@@ -15,20 +15,31 @@ jobs:
           node-version: 18
 
       - name: Install Dependencies
-        run: npm install
+        run: |
+          npm install
+          npm install @capacitor/cli @capacitor/core @capacitor/ios @capacitor/assets
 
-      # Luodaan www-kansio ja kopioidaan tiedostot sinne
       - name: Prepare Web Assets
         run: |
           mkdir -p www
           echo "const CONFIG = { API_KEY: '${{ secrets.GEMINI_API_KEY }}' };" > www/config.js
           cp index.html www/
           cp menu.json www/
+          cp kr-logo.png www/
+          # Kopioidaan logo assets-kansioon kuvakkeiden generointia varten
+          mkdir -p assets
+          cp kr-logo.png assets/icon-only.png
 
       - name: Initialize Capacitor
         run: |
-          npx cap init Lounas fi.nuutti.lounas --web-dir www
+          # Nimi muutettu muotoon "KR TRACKER"
+          npx cap init "KR TRACKER" fi.nuutti.lounas --web-dir www
           npx cap add ios
+
+      - name: Generate App Icons
+        run: |
+          # Yritetään generoida kuvakkeet automaattisesti
+          npx capacitor-assets generate --ios --icon-only assets/icon-only.png
 
       - name: Capacitor Sync
         run: npx cap sync ios
@@ -49,10 +60,12 @@ jobs:
         run: |
           mkdir -p Payload
           cp -r build/Build/Products/Release-iphoneos/App.app Payload/
-          zip -r Lounas.ipa Payload
+          # Tiedostonimi välilyönnillä voi olla haastava, käytetään viivaa tiedostossa
+          zip -r KR-TRACKER.ipa Payload
           
       - name: Upload IPA Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Lounas-Sideload-Version
-          path: Lounas.ipa
+          # Artifact-nimi välilyönnillä
+          name: "KR TRACKER iOS Build"
+          path: KR-TRACKER.ipa
