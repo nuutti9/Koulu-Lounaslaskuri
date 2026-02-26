@@ -41,7 +41,15 @@
   },
   {
     "id": "muhos",
-    "name": "Muhos, Utajärvi ja Vaala"
+    "name": "Muhos"
+  },
+  {
+    "id": "utajarvi",
+    "name": "Utajärvi"
+  },
+  {
+    "id": "vaala",
+    "name": "Vaala"
   },
   {
     "id": "nousiainen",
