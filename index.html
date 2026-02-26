@@ -11,23 +11,29 @@
     <meta name="apple-mobile-web-app-title" content="KR TRACKER">
     <link rel="apple-touch-icon" href="./kr-logo.png">
     <link rel="icon" href="./kr-logo.png">
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <script src="./config.js"></script>
     <style>
         :root {
             --bg: #000000;
-            --card: #1C1C1E;
-            --card-sec: #2C2C2E;
+            --secondary-bg: #1C1C1E;
+            --tertiary-bg: #2C2C2E;
             --accent: #0A84FF;
             --p: #FF453A;
             --f: #FFD60A;
-            --c: #32D74B;
+            --c: #30D158;
             --text: #FFFFFF;
             --text-dim: #8E8E93;
-            --font-main: "Manrope", sans-serif;
+            --ios-border: 0.5px solid rgba(255, 255, 255, 0.15);
+            --blur: saturate(180%) blur(20px);
         }
 
-        html,
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
             width: 100%;
             height: 100%;
@@ -35,26 +41,44 @@
             color: var(--text);
             margin: 0;
             padding: 0;
-            font-family: var(--font-main);
+            font-family: 'Manrope', sans-serif;
             overflow: hidden;
+            position: fixed;
+            -webkit-font-smoothing: antialiased;
         }
 
+        /* --- HEADER --- */
         header {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             z-index: 2000;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(25px);
-            padding: 55px 20px 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            padding: 55px 20px 16px;
+            border-bottom: var(--ios-border);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        header.scrolled {
+            padding-top: 50px;
+            padding-bottom: 12px;
         }
 
         .header-content {
-            max-width: 374px;
+            max-width: 400px;
             margin: 0 auto;
-            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .header-titles {
+            transition: all 0.4s ease;
+            display: flex;
+            flex-direction: column;
         }
 
         .date {
@@ -62,34 +86,68 @@
             font-weight: 700;
             color: var(--text-dim);
             text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 2px;
         }
 
         h1 {
             font-size: 32px;
             font-weight: 800;
             margin: 0;
-            letter-spacing: -1px;
+            letter-spacing: -1.2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
+        header.scrolled .header-titles {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        /* --- STICKY STATS PILL --- */
         .sticky-stats {
             position: absolute;
+            left: 0;
             right: 0;
-            bottom: 0;
+            bottom: 12px;
             display: flex;
-            gap: 12px;
+            justify-content: center;
+            gap: 16px;
             opacity: 0;
-            transform: translateY(5px);
-            transition: all 0.3s ease;
+            transform: translateY(10px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
         }
 
-        .sticky-stats.visible {
+        header.scrolled .sticky-stats {
             opacity: 1;
             transform: translateY(0);
+            pointer-events: auto;
         }
 
+        .s-item {
+            display: flex;
+            align-items: baseline;
+            gap: 3px;
+        }
+
+        .s-val {
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .s-lbl {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-dim);
+        }
+
+        /* --- CONTENT AREA --- */
         .scroll-area {
             height: 100vh;
             overflow-y: scroll;
+            overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
             padding-top: 140px;
         }
@@ -97,70 +155,74 @@
         .container {
             width: 100%;
             max-width: 414px;
-            padding: 0 20px 250px;
+            padding: 0 16px 150px;
             margin: 0 auto;
-            box-sizing: border-box;
         }
 
-        .img-preview {
-            width: 100%;
-            max-height: 250px;
-            object-fit: cover;
-            border-radius: 14px;
-            margin-top: 15px;
-            display: none;
-        }
-
+        /* --- DASHBOARD HERO --- */
         .hero {
-            background: linear-gradient(145deg, #1c1c1e, #131314);
-            border-radius: 28px;
-            padding: 35px 20px;
-            margin-bottom: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            text-align: center;
-        }
-
-        .plate-circle {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            border: 6px solid var(--card-sec);
-            margin: 0 auto 25px;
+            background: var(--secondary-bg);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: var(--ios-border);
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 24px;
+        }
+
+        .kcal-box {
+            padding-right: 24px;
+            border-right: var(--ios-border);
+            text-align: center;
         }
 
         .kcal-val {
             font-size: 48px;
             font-weight: 800;
+            letter-spacing: -2px;
+            line-height: 1;
         }
 
-        .macro-row {
+        .kcal-lbl {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-dim);
+            margin-top: 6px;
+        }
+
+        .macro-list {
+            flex: 1;
             display: flex;
-            justify-content: space-around;
-            margin-top: 25px;
-            padding-top: 25px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            flex-direction: column;
+            gap: 10px;
         }
 
-        .m-val {
-            font-size: 19px;
-            font-weight: 700;
-            display: block;
+        .m-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .m-lbl {
-            font-size: 9px;
-            font-weight: 800;
+            font-size: 12px;
+            font-weight: 600;
             color: var(--text-dim);
         }
 
+        .m-val {
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        /* --- AI COMPOSER --- */
         .ai-zone {
-            background: var(--card);
-            border-radius: 22px;
-            padding: 20px;
-            margin-bottom: 25px;
+            background: var(--secondary-bg);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 30px;
+            border: var(--ios-border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
 
         textarea {
@@ -169,85 +231,106 @@
             border: none;
             color: white;
             font-size: 17px;
+            font-weight: 500;
             outline: none;
             resize: none;
-            min-height: 80px;
+            min-height: 60px;
+            font-family: inherit;
+            line-height: 1.5;
         }
 
-        .btn-row {
+        .ai-toolbar {
             display: flex;
-            gap: 12px;
-            margin-top: 15px;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 0.5px solid rgba(255, 255, 255, 0.08);
         }
 
-        .btn-analyze {
-            background: linear-gradient(180deg, #0A84FF 0%, #0062FE 100%);
-            box-shadow: 0 4px 14px rgba(10, 132, 255, 0.35);
+        .btn-icon {
+            background: transparent;
+            border: none;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--accent);
             color: white;
-            flex: 1;
-            padding: 16px;
-            border-radius: 14px;
+            padding: 10px 20px;
+            border-radius: 12px;
             border: none;
             font-weight: 700;
-            font-size: 17px;
-            transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.2s;
-            cursor: pointer;
+            font-size: 15px;
+            transition: opacity 0.2s;
         }
 
-        .btn-analyze:active {
-            transform: scale(0.96);
-            box-shadow: 0 2px 8px rgba(10, 132, 255, 0.25);
+        .btn-primary:active {
+            opacity: 0.7;
         }
 
-        .btn-camera {
-            background: var(--card-sec);
-            color: var(--accent);
-            flex: 0.25;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 14px;
-            border: none;
-            transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1), background 0.2s;
-            cursor: pointer;
+        /* --- LIST GROUP --- */
+        .section-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dim);
+            margin: 0 0 8px 12px;
+            text-transform: uppercase;
         }
 
-        .btn-camera:active {
-            transform: scale(0.92);
-            background: #3A3A3C;
-        }
-
-        .btn-camera svg {
-            width: 24px;
-            height: 24px;
-        }
-
-        .food-card {
-            background: var(--card);
+        .list-group {
+            background: var(--secondary-bg);
             border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 12px;
+            border: var(--ios-border);
+            overflow: hidden;
         }
 
-        .input-wrapper {
-            position: relative;
+        .list-item {
             display: flex;
             align-items: center;
+            padding: 14px 16px;
+            border-bottom: var(--ios-border);
+        }
+
+        .list-item:last-child {
+            border-bottom: none;
+        }
+
+        .food-name {
+            font-size: 17px;
+            font-weight: 500;
+            flex: 1;
+            padding-right: 16px;
+        }
+
+        .qty-input {
             background: #000;
-            border-radius: 14px;
+            border-radius: 10px;
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            width: 90px;
         }
 
         input[type="number"] {
-            flex: 1;
+            width: 100%;
             background: transparent;
             border: none;
             color: white;
             font-weight: 700;
-            font-size: 24px;
-            padding: 14px 45px 14px 18px;
+            font-size: 17px;
+            text-align: right;
             outline: none;
-            -moz-appearance: textfield;
             appearance: textfield;
+            -moz-appearance: textfield;
         }
 
         input[type="number"]::-webkit-inner-spin-button,
@@ -257,43 +340,34 @@
             margin: 0;
         }
 
+        .unit {
+            font-weight: 600;
+            color: var(--text-dim);
+            font-size: 13px;
+            margin-left: 4px;
+        }
+
+        /* --- SPLASH & LOADER --- */
         #splash {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: var(--blur);
             z-index: 3000;
             display: none;
             align-items: center;
-            align-items: center;
             justify-content: center;
             flex-direction: column;
-            gap: 20px;
+            gap: 24px;
         }
 
         .loader {
-            width: 48px;
-            height: 48px;
-            border: 3px solid #FFF;
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
             border-radius: 50%;
-            display: inline-block;
-            position: relative;
-            box-sizing: border-box;
-            animation: rotation 1s linear infinite;
-        }
-
-        .loader::after {
-            content: '';
-            box-sizing: border-box;
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            border: 3px solid transparent;
             border-bottom-color: var(--accent);
+            animation: rotation 1s linear infinite;
         }
 
         @keyframes rotation {
@@ -306,6 +380,7 @@
             }
         }
 
+        /* --- WELCOME SCREEN --- */
         #welcome-screen {
             position: fixed;
             inset: 0;
@@ -329,9 +404,9 @@
             width: 100%;
             padding: 16px 20px;
             border-radius: 14px;
-            background: var(--card);
+            background: var(--secondary-bg);
             color: var(--text);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: var(--ios-border);
             font-size: 17px;
             font-weight: 600;
             outline: none;
@@ -382,252 +457,268 @@
                 <option value="" disabled selected>Valitse koulu...</option>
             </select>
         </div>
-        <button onclick="selectSchool()" class="btn-analyze" style="max-width:320px; width:100%;">Valitse ja
+        <button onclick="selectSchool()" class="btn-primary"
+            style="max-width:320px; width:100%; box-sizing: border-box; padding: 16px; font-size: 17px;">Valitse ja
             jatka</button>
     </div>
 
     <div id="splash">
         <span class="loader"></span>
-        <div style="font-weight: 800; color: white; font-size: 20px;">ANALYSOIDAAN</div>
+        <div style="font-weight: 700; color: white; font-size: 20px; letter-spacing: -0.5px;">Analysoidaan...</div>
     </div>
+
     <header id="main-header">
         <div class="header-content">
-            <div class="date" id="date-label">MUHOS SCHOOLS</div>
-            <h1 id="main-title" style="display: flex; align-items: center; justify-content: space-between;">
-                <div class="school-header-selector" onclick="showWelcomeScreen()">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                        style="width: 25px; height: 25px; color: var(--accent); flex-shrink: 0;">
-                        <path
-                            d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                    </svg>
-                    <span id="header-school-name"
-                        style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px;">Muhos</span>
-                    <svg style="width: 20px; height: 20px; color: var(--text-dim); flex-shrink: 0;" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </div>
-            </h1>
+            <div class="header-titles">
+                <div class="date" id="date-label">Lataus...</div>
+                <h1>
+                    <div class="school-header-selector" onclick="showWelcomeScreen()">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            style="width: 25px; height: 25px; color: var(--accent); flex-shrink: 0;">
+                            <path
+                                d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                        </svg>
+                        <span id="header-school-name"
+                            style="font-size: 28px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px;">Lataus...</span>
+                        <svg style="width: 20px; height: 20px; color: var(--text-dim); flex-shrink: 0;" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                            </path>
+                        </svg>
+                    </div>
+                </h1>
+            </div>
             <div class="sticky-stats" id="mini-stats">
-                <div class="s-item"><span class="s-val" id="mini-kcal">0</span> <span class="s-lbl">kcal</span></div>
-                <div class="s-item"><span class="s-val" id="mini-p">0g</span>&nbsp;<span class="s-lbl"
-                        style="color:var(--p)">P</span></div>
-                <div class="s-item"><span class="s-val" id="mini-r">0g</span>&nbsp;<span class="s-lbl"
-                        style="color:var(--f)">R</span></div>
-                <div class="s-item"><span class="s-val" id="mini-h">0g</span>&nbsp;<span class="s-lbl"
-                        style="color:var(--c)">H</span></div>
+                <div class="s-item"><span class="s-val" id="mini-kcal">0</span><span class="s-lbl">kcal</span></div>
+                <div class="s-item"><span class="s-val" id="mini-p" style="color:var(--p)">0g</span><span
+                        class="s-lbl">P</span></div>
+                <div class="s-item"><span class="s-val" id="mini-r" style="color:var(--f)">0g</span><span
+                        class="s-lbl">R</span></div>
+                <div class="s-item"><span class="s-val" id="mini-h" style="color:var(--c)">0g</span><span
+                        class="s-lbl">H</span></div>
             </div>
         </div>
     </header>
+
     <div class="scroll-area" id="scroller">
         <div class="container">
-            <div class="hero" id="hero-section">
-                <div class="plate-circle">
-                    <div><span class="kcal-val" id="res-kcal">0</span>
-                        <div style="color:var(--text-dim);font-size:14px;font-weight:700;">kcal</div>
-                    </div>
+            <div class="hero">
+                <div class="kcal-box">
+                    <div class="kcal-val" id="res-kcal">0</div>
+                    <div class="kcal-lbl">KCAL</div>
                 </div>
-                <div class="macro-row">
-                    <div class="m-box"><span class="m-lbl" style="color:var(--p)">PROTEIINI</span><span class="m-val"
-                            id="res-p">0g</span></div>
-                    <div class="m-box"><span class="m-lbl" style="color:var(--f)">RASVA</span><span class="m-val"
-                            id="res-r">0g</span></div>
-                    <div class="m-box"><span class="m-lbl" style="color:var(--c)">HIILIHYDRAATTI</span><span
-                            class="m-val" id="res-h">0g</span></div>
+                <div class="macro-list">
+                    <div class="m-row"><span class="m-lbl">PROTEIINI</span><span class="m-val" id="res-p"
+                            style="color:var(--p)">0g</span></div>
+                    <div class="m-row"><span class="m-lbl">RASVA</span><span class="m-val" id="res-r"
+                            style="color:var(--f)">0g</span></div>
+                    <div class="m-row"><span class="m-lbl">HIILIHYDRAATTI</span><span class="m-val" id="res-h"
+                            style="color:var(--c)">0g</span></div>
                 </div>
             </div>
+
             <div class="ai-zone">
-                <textarea id="ai-input" placeholder="Kuvaile, mitä söit tänään."></textarea>
-                <img id="img-preview" class="img-preview" />
-                <div class="btn-row">
-                    <input type="file" id="image-upload" accept="image/*" style="display:none;"
-                        onchange="previewImage(event)">
-                    <button class="btn-camera" onclick="document.getElementById('image-upload').click()">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <textarea id="ai-input" placeholder="Kirjoita mitä söit..."></textarea>
+                <img id="img-preview"
+                    style="width:100%; max-height:200px; object-fit:cover; border-radius:20px; margin-top:15px; display:none; border: 0.5px solid rgba(255,255,255,0.1);" />
+                <div class="ai-toolbar">
+                    <button class="btn-icon" onclick="document.getElementById('image-upload').click()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
                             <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z">
                             </path>
                             <circle cx="12" cy="13" r="4"></circle>
                         </svg>
+                        Lisää kuva
                     </button>
-                    <button class="btn-analyze" onclick="runAI()">Analysoi</button>
+                    <input type="file" id="image-upload" accept="image/*" style="display:none;"
+                        onchange="previewImage(event)">
+                    <button class="btn-primary" onclick="runAI()">Analysoi</button>
                 </div>
             </div>
-            <div id="food-list"></div>
+
+            <div class="section-label">Päivän valikko</div>
+            <div class="list-group" id="food-list">
+            </div>
         </div>
     </div>
-    const GEMINI_API_KEY = typeof CONFIG !== 'undefined' ? CONFIG.API_KEY : "";
-    let mealData = [];
-    let uploadedImageData = null;
-    let allMenus = {};
-    let schoolsList = [];
-    let currentSchoolId = localStorage.getItem('kr_school_id');
 
-    const uDate = new Date();
-    const dNames = ["SUNNUNTAI", "MAANANTAI", "TIISTAI", "KESKIVIIKKO", "TORSTAI", "PERJANTAI", "LAUANTAI"];
-    const mNames = ["TAMMIKUUTA", "HELMIKUUTA", "MAALISKUUTA", "HUHTIKUUTA", "TOUKOKUUTA", "KESÄKUUTA", "HEINÄKUUTA",
-    "ELOKUUTA", "SYYSKUUTA", "LOKAKUUTA", "MARRASKUUTA", "JOULUKUUTA"];
-    document.getElementById('date-label').innerText = `${dNames[uDate.getDay()]}, ${uDate.getDate()}
-    ${mNames[uDate.getMonth()]}`;
+    <script>
+        // --- LOGIIKKA JA AI-INTEGRAATIO ---
+        const GEMINI_API_KEY = typeof CONFIG !== 'undefined' ? CONFIG.API_KEY : "";
+        let mealData = [];
+        let uploadedImageData = null;
+        let allMenus = {};
+        let schoolsList = [];
+        let currentSchoolId = localStorage.getItem('kr_school_id');
 
-    document.getElementById('scroller').addEventListener('scroll', (e) => {
-    document.getElementById('mini-stats').classList.toggle('visible', e.target.scrollTop > 100);
-    });
+        // Päivämäärän alustus
+        const uDate = new Date();
+        const options = { weekday: 'long', day: 'numeric', month: 'long' };
+        document.getElementById('date-label').innerText = uDate.toLocaleDateString('fi-FI', options).toUpperCase();
 
-    function previewImage(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-    uploadedImageData = ev.target.result;
-    const img = document.getElementById('img-preview');
-    img.src = uploadedImageData;
-    img.style.display = 'block';
-    };
-    reader.readAsDataURL(file);
-    }
+        // Skrollaus-efekti
+        document.getElementById('scroller').addEventListener('scroll', (e) => {
+            const isScrolled = e.target.scrollTop > 40;
+            document.getElementById('main-header').classList.toggle('scrolled', isScrolled);
+        });
 
-    async function init() {
-    try {
-    // Fetch schools metadata
-    const sr = await fetch('./schools.json');
-    if (sr.ok) {
-    schoolsList = await sr.json();
-    const select = document.getElementById('school-select');
-    schoolsList.forEach(s => {
-    const opt = document.createElement('option');
-    opt.value = s.id;
-    opt.innerText = s.name;
-    select.appendChild(opt);
-    });
-    }
+        // Kuvan esikatselu
+        function previewImage(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                uploadedImageData = ev.target.result;
+                const img = document.getElementById('img-preview');
+                img.src = uploadedImageData;
+                img.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
 
-    // Fetch all menus
-    const mr = await fetch('./menus.json');
-    if (mr.ok) {
-    allMenus = await mr.json();
-    }
+        async function init() {
+            try {
+                // Fetch schools metadata
+                const sr = await fetch('./schools.json');
+                if (sr.ok) {
+                    schoolsList = await sr.json();
+                    const select = document.getElementById('school-select');
+                    schoolsList.forEach(s => {
+                        const opt = document.createElement('option');
+                        opt.value = s.id;
+                        opt.innerText = s.name;
+                        select.appendChild(opt);
+                    });
+                }
 
-    if (!currentSchoolId || !schoolsList.find(s => s.id === currentSchoolId)) {
-    showWelcomeScreen();
-    } else {
-    loadSchool(currentSchoolId);
-    }
-    } catch (e) { console.error("Error init:", e); }
-    }
+                // Fetch all menus
+                const mr = await fetch('./menus.json');
+                if (mr.ok) {
+                    allMenus = await mr.json();
+                }
 
-    function showWelcomeScreen() {
-    document.getElementById('welcome-screen').style.display = 'flex';
-    if (currentSchoolId) {
-    document.getElementById('school-select').value = currentSchoolId;
-    }
-    }
+                if (!currentSchoolId || !schoolsList.find(s => s.id === currentSchoolId)) {
+                    showWelcomeScreen();
+                } else {
+                    loadSchool(currentSchoolId);
+                }
+            } catch (e) { console.error("Error init:", e); }
+        }
 
-    function selectSchool() {
-    const val = document.getElementById('school-select').value;
-    if (!val) return;
-    currentSchoolId = val;
-    localStorage.setItem('kr_school_id', currentSchoolId);
-    document.getElementById('welcome-screen').style.display = 'none';
-    loadSchool(currentSchoolId);
-    }
+        function showWelcomeScreen() {
+            document.getElementById('welcome-screen').style.display = 'flex';
+            if (currentSchoolId) {
+                document.getElementById('school-select').value = currentSchoolId;
+            }
+        }
 
-    function loadSchool(schoolId) {
-    mealData = [];
-    document.getElementById('food-list').innerHTML = '';
-    document.getElementById('res-kcal').innerText = '0';
-    document.getElementById('res-p').innerText = '0g';
-    document.getElementById('res-r').innerText = '0g';
-    document.getElementById('res-h').innerText = '0g';
-    document.getElementById('mini-kcal').innerText = '0';
-    document.getElementById('mini-p').innerText = '0g';
-    document.getElementById('mini-r').innerText = '0g';
-    document.getElementById('mini-h').innerText = '0g';
+        function selectSchool() {
+            const val = document.getElementById('school-select').value;
+            if (!val) return;
+            currentSchoolId = val;
+            localStorage.setItem('kr_school_id', currentSchoolId);
+            document.getElementById('welcome-screen').style.display = 'none';
+            loadSchool(currentSchoolId);
+        }
 
-    const schoolObj = schoolsList.find(s => s.id === schoolId);
-    if (schoolObj) {
-    document.getElementById('header-school-name').innerText = schoolObj.name;
-    }
+        function loadSchool(schoolId) {
+            mealData = [];
+            document.getElementById('food-list').innerHTML = '';
+            document.getElementById('res-kcal').innerText = '0';
+            document.getElementById('res-p').innerText = '0g';
+            document.getElementById('res-r').innerText = '0g';
+            document.getElementById('res-h').innerText = '0g';
+            document.getElementById('mini-kcal').innerText = '0';
+            document.getElementById('mini-p').innerText = '0g';
+            document.getElementById('mini-r').innerText = '0g';
+            document.getElementById('mini-h').innerText = '0g';
 
-    const data = allMenus[schoolId];
-    if (!data || !data[0] || !data[0].data || !data[0].data.mealOptions || !data[0].data.mealOptions[0]) {
-    document.getElementById('food-list').innerHTML = '<div
-        style="text-align:center; padding:30px 20px; color:var(--text-dim); background:var(--card); background-image:none; border-radius:20px; margin-top:10px;">
-        Ei ruokalistaa saatavilla täksi päiväksi.</div>';
-    return;
-    }
+            const schoolObj = schoolsList.find(s => s.id === schoolId);
+            if (schoolObj) {
+                document.getElementById('header-school-name').innerText = schoolObj.name;
+            }
 
-    const rows = data[0].data.mealOptions[0].rows;
-    const container = document.getElementById('food-list');
-    rows.forEach((row, i) => {
-    const factors = row.nutritiveItem.factors;
-    const getVal = (lbl, isK) => {
-    const f = factors.find(fact => fact.nutritiveFactorNames[0].name === (isK ? "Energia" : lbl) && (!isK ||
-    fact.values[0].value100.includes("kcal")));
-    return f ? parseFloat(f.values[0].value100.replace(',', '.').replace(/[^\d.]/g, '')) : 0;
-    };
-    const item = { name: row.names[0].name, kcal: getVal("Energia", true), p: getVal("Proteiini"), h:
-    getVal("Hiilihydraatit"), r: getVal("Rasva") };
-    mealData.push(item);
-    container.innerHTML += `<div class="food-card"><span class="food-name">${item.name}</span>
-        <div class="input-wrapper"><input type="number" id="q-${i}" value="0" oninput="calc()"><span
-                style="position:absolute;right:18px;color:var(--text-dim);font-weight:700;">g</span></div>
-    </div>`;
-    });
-    }
-    async function runAI() {
-    if (!GEMINI_API_KEY) return alert("AI-avain puuttuu palvelimelta.");
-    document.getElementById('splash').style.display = 'flex';
-    try {
-    const promptString = `Olet ruoan painon arvioija.
-    Käytössäsi on seuraava valikko ruokia: ${JSON.stringify(mealData.map(m => m.name))}.
-    Käyttäjä kuvailee annostaan seuraavasti: "${document.getElementById('ai-input').value}"
+            const data = allMenus[schoolId];
+            if (!data || !data[0] || !data[0].data || !data[0].data.mealOptions || !data[0].data.mealOptions[0]) {
+                document.getElementById('food-list').innerHTML = '<div style="text-align:center; padding:30px 20px; color:var(--text-dim); border-radius:20px; margin-top:10px;">Ei ruokalistaa saatavilla täksi päiväksi.</div>';
+                return;
+            }
 
-    Tunnista mittayksikkö tai vertaus. Arvioi tilavuus (ml) ja muunna grammoiksi tiheyden perusteella (keitot ≈ 1g/ml,
-    riisi ≈ 0.8g/ml, pasta ≈ 0.7g/ml).
-    Jos käyttäjä antaa "keksikokoinen kauhallinen lihakeittoa", arvio on ≈ 100-150g.
-    Palauta VAIN JSON-tiedosto muodossa:
-    {"menuResults": {"Ruoka1 Nimi Valikosta": gramma_määrä_numerona, "Ruoka2": gramma_määrä}}`;
+            const rows = data[0].data.mealOptions[0].rows;
+            const container = document.getElementById('food-list');
 
-    const parts = [{ text: promptString }];
-    if (uploadedImageData) {
-    parts.push({
-    inlineData: {
-    data: uploadedImageData.split(',')[1],
-    mimeType: uploadedImageData.match(/data:(.*?);/)[1]
-    }
-    });
-    }
-    const resp = await
-    fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`,
-    {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ contents: [{ parts: parts }] })
-    });
-    const d = await resp.json();
-    if (!resp.ok) {
-    throw new Error(d.error ? d.error.message : "Tuntematon API-virhe");
-    }
-    const results = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
-    mealData.forEach((item, i) => { document.getElementById(`q-${i}`).value = results.menuResults[item.name] || 0; });
-    calc();
-    } catch (e) { alert("AI Virhe: " + e.message); }
-    document.getElementById('splash').style.display = 'none';
-    }
-    function calc() {
-    let tk = 0, tp = 0, th = 0, tr = 0;
-    mealData.forEach((item, i) => {
-    const w = parseFloat(document.getElementById(`q-${i}`).value) || 0;
-    tk += (w * item.kcal) / 100; tp += (w * item.p) / 100; th += (w * item.h) / 100; tr += (w * item.r) / 100;
-    });
-    document.getElementById('res-kcal').innerText = Math.round(tk);
-    document.getElementById('mini-kcal').innerText = Math.round(tk);
-    document.getElementById('res-p').innerText = document.getElementById('mini-p').innerText = Math.round(tp) + "g";
-    document.getElementById('res-r').innerText = document.getElementById('mini-r').innerText = Math.round(tr) + "g";
-    document.getElementById('res-h').innerText = document.getElementById('mini-h').innerText = Math.round(th) + "g";
-    }
-    init();
+            rows.forEach((row, i) => {
+                const factors = row.nutritiveItem.factors;
+                const getVal = (lbl, isK) => {
+                    const f = factors.find(fact => fact.nutritiveFactorNames[0].name === (isK ? "Energia" : lbl) && (!isK || fact.values[0].value100.includes("kcal")));
+                    return f ? parseFloat(f.values[0].value100.replace(',', '.').replace(/[^\d.]/g, '')) : 0;
+                };
+                const item = { name: row.names[0].name, kcal: getVal("Energia", true), p: getVal("Proteiini"), h: getVal("Hiilihydraatit"), r: getVal("Rasva") };
+                mealData.push(item);
+
+                // Uusi tiivis list-item-rakenne
+                container.innerHTML += `
+                    <div class="list-item">
+                        <div class="food-name">${item.name}</div>
+                        <div class="qty-input">
+                            <input type="number" id="q-${i}" value="0" oninput="calc()" inputmode="decimal">
+                            <span class="unit">g</span>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        // AI-analyysi asiantuntija-promptilla
+        async function runAI() {
+            if (!GEMINI_API_KEY) return alert("AI-avain puuttuu config.js-tiedostosta.");
+            document.getElementById('splash').style.display = 'flex';
+            try {
+                const promptString = `Olet asiantunteva ravitsemusterapeutti ja ruoan painon arvioija. Tehtäväsi on arvioida annettujen ruokalajien paino grammoina käyttäjän kuvauksen perusteella.
+                Valikko: ${JSON.stringify(mealData.map(m => m.name))}
+                Käyttäjän kuvaus: "${document.getElementById('ai-input').value}"
+                Palauta VAIN JSON-muodossa: {"menuResults": {"Ruokalajin nimi": grammamäärä numeroina}}`;
+
+                const parts = [{ text: promptString }];
+                if (uploadedImageData) {
+                    parts.push({ inlineData: { data: uploadedImageData.split(',')[1], mimeType: uploadedImageData.match(/data:(.*?);/)[1] } });
+                }
+
+                const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: parts }] })
+                });
+
+                const d = await resp.json();
+                const results = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
+
+                mealData.forEach((item, i) => {
+                    const val = results.menuResults[item.name] || 0;
+                    document.getElementById(`q-${i}`).value = val;
+                });
+                calc();
+            } catch (e) { alert("AI Virhe: " + e.message); }
+            document.getElementById('splash').style.display = 'none';
+        }
+
+        // Ravintoarvojen laskenta
+        function calc() {
+            let tk = 0, tp = 0, th = 0, tr = 0;
+            mealData.forEach((item, i) => {
+                const w = parseFloat(document.getElementById(`q-${i}`).value) || 0;
+                tk += (w * item.kcal) / 100; tp += (w * item.p) / 100; th += (w * item.h) / 100; tr += (w * item.r) / 100;
+            });
+            const r = Math.round;
+            document.getElementById('res-kcal').innerText = r(tk);
+            document.getElementById('mini-kcal').innerText = r(tk);
+            document.getElementById('res-p').innerText = document.getElementById('mini-p').innerText = r(tp) + "g";
+            document.getElementById('res-r').innerText = document.getElementById('mini-r').innerText = r(tr) + "g";
+            document.getElementById('res-h').innerText = document.getElementById('mini-h').innerText = r(th) + "g";
+        }
+
+        // Käynnistys
+        init();
     </script>
 </body>
 

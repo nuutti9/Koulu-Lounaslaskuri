@@ -15,23 +15,45 @@ jobs:
           node-version: 18
 
       - name: Install Dependencies
-        run: npm install
+        run: |
+          npm install
+          npm install @capacitor/cli @capacitor/core @capacitor/ios
 
-      # Luodaan www-kansio ja kopioidaan tiedostot sinne
       - name: Prepare Web Assets
         run: |
           mkdir -p www
+          # Luodaan API-konfiguraatio suoraan www-kansioon
           echo "const CONFIG = { API_KEY: '${{ secrets.GEMINI_API_KEY }}' };" > www/config.js
           cp index.html www/
           cp menu.json www/
+          cp kr-logo.png www/
 
       - name: Initialize Capacitor
         run: |
-          npx cap init Lounas fi.nuutti.lounas --web-dir www
+          # Asetetaan sovelluksen nimeksi välilyönnillä varustettu KR TRACKER
+          npx cap init "KR TRACKER" fi.nuutti.lounas --web-dir www
           npx cap add ios
 
       - name: Capacitor Sync
         run: npx cap sync ios
+
+      # UX-KORJAUS: Asetetaan sovelluskuvakkeet manuaalisesti kopioimalla
+      - name: Set App Icon Manually
+        run: |
+          mkdir -p ios/App/App/Assets.xcassets/AppIcon.appiconset
+          # Kopioidaan kr-logo.png kaikkiin Xcode-projektin vaatimiin ikonikokoihin
+          cp kr-logo.png ios/App/App/Assets.xcassets/AppIcon.appiconset/icon-20@2x.png
+          cp kr-logo.png ios/App/App/Assets.xcassets/AppIcon.appiconset/icon-20@3x.png
+          cp kr-logo.png ios/App/App/Assets.xcassets/AppIcon.appiconset/icon-29@2x.png
+          cp kr-logo.png ios/App/App/Assets.xcassets/AppIcon.appiconset/icon-29@3x.png
+          cp kr-logo.png ios/App/App/Assets.xcassets/AppIcon.appiconset/icon-40@2x.png
+          cp kr-logo.png ios/App/App/Assets.xcassets/AppIcon.appiconset/icon-40@3x.png
+          cp kr-logo.png ios/App/App/Assets.xcassets/AppIcon.appiconset/icon-60@2x.png
+          cp kr-logo.png ios/App/App/Assets.xcassets/AppIcon.appiconset/icon-60@3x.png
+          cp kr-logo.png ios/App/App/Assets.xcassets/AppIcon.appiconset/icon-76.png
+          cp kr-logo.png ios/App/App/Assets.xcassets/AppIcon.appiconset/icon-76@2x.png
+          cp kr-logo.png ios/App/App/Assets.xcassets/AppIcon.appiconset/icon-83.5@2x.png
+          cp kr-logo.png ios/App/App/Assets.xcassets/AppIcon.appiconset/icon-1024.png
 
       - name: Build Xcode Project (Unsigned)
         run: |
@@ -49,10 +71,12 @@ jobs:
         run: |
           mkdir -p Payload
           cp -r build/Build/Products/Release-iphoneos/App.app Payload/
-          zip -r Lounas.ipa Payload
+          # Pakataan lopullinen IPA-tiedosto
+          zip -r KR-TRACKER.ipa Payload
           
       - name: Upload IPA Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Lounas-Sideload-Version
-          path: Lounas.ipa
+          # Nimi, joka näkyy GitHubin Actions-listauksessa
+          name: "KR TRACKER iOS Build"
+          path: KR-TRACKER.ipa
