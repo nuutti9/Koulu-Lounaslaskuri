@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html lang="fi">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>KR TRACKER</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -16,22 +14,24 @@
     <style>
         :root {
             --bg: #000000;
-            --card: #1C1C1E;
-            --card-sec: #2C2C2E;
+            --secondary-bg: #1C1C1E;
+            --tertiary-bg: #2C2C2E;
             --accent: #0A84FF;
             --p: #FF453A;
             --f: #FFD60A;
-            --c: #32D74B;
+            --c: #30D158;
             --text: #FFFFFF;
             --text-dim: #8E8E93;
-            --font-main: "Manrope", sans-serif;
+            --ios-border: 0.5px solid rgba(255, 255, 255, 0.15);
             --blur: saturate(180%) blur(20px);
         }
 
-        html, body {
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
             width: 100%; height: 100%;
             background-color: var(--bg); color: var(--text);
-            margin: 0; padding: 0; font-family: var(--font-main);
+            margin: 0; padding: 0; font-family: 'Manrope', sans-serif;
             overflow: hidden; position: fixed;
             -webkit-font-smoothing: antialiased;
         }
@@ -39,145 +39,126 @@
         /* --- HEADER --- */
         header {
             position: fixed; top: 0; left: 0; right: 0; z-index: 2000;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
             backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
-            padding: 55px 24px 16px;
-            border-bottom: 0.5px solid rgba(255, 255, 255, 0.15);
+            padding: 55px 20px 16px;
+            border-bottom: var(--ios-border);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         header.scrolled { padding-top: 50px; padding-bottom: 12px; }
 
-        .header-content { max-width: 400px; margin: 0 auto; position: relative; }
+        .header-content { max-width: 400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-end; }
 
-        .date {
-            font-size: 13px; font-weight: 600; color: var(--text-dim);
-            text-transform: uppercase; letter-spacing: 0.5px;
-            transition: all 0.3s ease;
-        }
+        .header-titles { transition: all 0.4s ease; }
+        .date { font-size: 12px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 2px; }
+        h1 { font-size: 32px; font-weight: 800; margin: 0; letter-spacing: -1.2px; }
 
-        h1 {
-            font-size: 34px; font-weight: 800; margin: 2px 0 0;
-            letter-spacing: -1px; transition: all 0.3s ease;
-        }
+        header.scrolled .header-titles { opacity: 0; transform: translateY(-10px); }
 
-        header.scrolled .date, header.scrolled h1 {
-            opacity: 0; transform: translateY(-8px) scale(0.95); pointer-events: none;
-        }
-
-        /* --- STICKY STATS (PILL STYLE) --- */
+        /* --- STICKY STATS PILL --- */
         .sticky-stats {
-            position: absolute; bottom: 0; left: 50%;
-            transform: translate(-50%, 10px);
-            display: flex; gap: 16px; opacity: 0;
+            position: absolute; left: 0; right: 0; bottom: 12px;
+            display: flex; justify-content: center; gap: 16px; opacity: 0;
+            transform: translateY(10px);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            background: rgba(44, 44, 46, 0.8);
-            padding: 8px 20px; border-radius: 40px;
-            border: 0.5px solid rgba(255,255,255,0.1);
+            pointer-events: none;
         }
 
-        header.scrolled .sticky-stats { opacity: 1; transform: translate(-50%, -4px); }
+        header.scrolled .sticky-stats { opacity: 1; transform: translateY(0); pointer-events: auto; }
 
-        .s-item { display: flex; align-items: baseline; gap: 4px; }
-        .s-val { font-size: 15px; font-weight: 700; }
-        .s-lbl { font-size: 11px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; }
+        .s-item { display: flex; align-items: baseline; gap: 3px; }
+        .s-val { font-size: 15px; font-weight: 800; }
+        .s-lbl { font-size: 10px; font-weight: 700; color: var(--text-dim); }
 
-        /* --- SCROLL AREA --- */
+        /* --- CONTENT AREA --- */
         .scroll-area {
             height: 100vh; overflow-y: scroll; overflow-x: hidden;
-            -webkit-overflow-scrolling: touch; padding-top: 150px;
+            -webkit-overflow-scrolling: touch; padding-top: 140px;
         }
 
-        .container { width: 100%; max-width: 414px; padding: 0 20px 250px; margin: 0 auto; box-sizing: border-box; }
+        .container { width: 100%; max-width: 414px; padding: 0 16px 150px; margin: 0 auto; }
 
-        /* --- HERO CARD --- */
+        /* --- DASHBOARD HERO --- */
         .hero {
-            background: var(--card); border-radius: 32px;
-            padding: 40px 24px; margin-bottom: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            border: 0.5px solid rgba(255,255,255,0.08);
+            background: var(--secondary-bg); border-radius: 24px;
+            padding: 24px; margin-bottom: 20px;
+            border: var(--ios-border);
+            display: flex; align-items: center; gap: 24px;
+        }
+
+        .kcal-box {
+            padding-right: 24px; border-right: var(--ios-border);
             text-align: center;
         }
 
-        .plate-circle {
-            width: 150px; height: 150px; border-radius: 50%;
-            background: radial-gradient(circle at center, #2c2c2e 0%, #1c1c1e 100%);
-            border: 8px solid #2c2c2e; margin: 0 auto 30px;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
-        }
+        .kcal-val { font-size: 48px; font-weight: 800; letter-spacing: -2px; line-height: 1; }
+        .kcal-lbl { font-size: 11px; font-weight: 800; color: var(--text-dim); margin-top: 6px; }
 
-        .kcal-val { font-size: 52px; font-weight: 800; letter-spacing: -2px; }
+        .macro-list { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+        .m-row { display: flex; justify-content: space-between; align-items: center; }
+        .m-lbl { font-size: 12px; font-weight: 600; color: var(--text-dim); }
+        .m-val { font-size: 15px; font-weight: 800; }
 
-        .macro-row {
-            display: flex; justify-content: space-between;
-            margin-top: 24px; padding-top: 24px;
-            border-top: 0.5px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .m-val { font-size: 20px; font-weight: 700; display: block; margin-bottom: 2px; }
-        .m-lbl { font-size: 10px; font-weight: 700; color: var(--text-dim); letter-spacing: 0.5px; }
-
-        /* --- AI ZONE --- */
+        /* --- AI COMPOSER --- */
         .ai-zone {
-            background: var(--card); border-radius: 28px;
-            padding: 24px; margin-bottom: 24px;
-            border: 0.5px solid rgba(255,255,255,0.08);
+            background: var(--secondary-bg); border-radius: 20px;
+            padding: 16px; margin-bottom: 30px; border: var(--ios-border);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         }
 
         textarea {
             width: 100%; background: transparent; border: none; color: white;
-            font-size: 18px; font-weight: 500; outline: none; resize: none;
-            min-height: 90px; font-family: inherit; line-height: 1.4;
+            font-size: 17px; font-weight: 500; outline: none; resize: none;
+            min-height: 60px; font-family: inherit; line-height: 1.5;
         }
 
-        .btn-row { display: flex; gap: 12px; margin-top: 20px; }
-
-        .btn-analyze {
-            background: var(--accent);
-            color: white; flex: 1; padding: 18px;
-            border-radius: 18px; border: none;
-            font-weight: 700; font-size: 17px;
-            box-shadow: 0 8px 20px rgba(10, 132, 255, 0.3);
-            transition: all 0.2s ease;
+        .ai-toolbar {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-top: 12px; padding-top: 12px;
+            border-top: 0.5px solid rgba(255,255,255,0.08);
         }
 
-        .btn-analyze:active { transform: scale(0.97); opacity: 0.9; }
-
-        .btn-camera {
-            background: var(--card-sec); color: var(--accent);
-            width: 60px; height: 60px; flex-shrink: 0;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 18px; border: none; transition: all 0.2s ease;
-        }
-        
-        .btn-camera svg { width: 26px; height: 26px; }
-
-        /* --- FOOD CARDS --- */
-        .food-card {
-            background: var(--card); border-radius: 24px;
-            padding: 20px 24px; margin-bottom: 12px;
-            border: 0.5px solid rgba(255,255,255,0.05);
+        .btn-icon {
+            background: transparent; border: none; color: var(--accent);
+            display: flex; align-items: center; gap: 8px;
+            font-size: 15px; font-weight: 600; padding: 0; cursor: pointer;
         }
 
-        .food-name { font-size: 17px; font-weight: 600; display: block; margin-bottom: 16px; color: #f2f2f7; }
-
-        .input-wrapper {
-            position: relative; display: flex; align-items: center;
-            background: rgba(0,0,0,0.3); border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: border 0.3s ease;
+        .btn-primary {
+            background: var(--accent); color: white;
+            padding: 10px 20px; border-radius: 12px; border: none;
+            font-weight: 700; font-size: 15px;
+            transition: opacity 0.2s;
         }
 
-        .input-wrapper:focus-within { border-color: var(--accent); }
+        .btn-primary:active { opacity: 0.7; }
+
+        /* --- LIST GROUP --- */
+        .section-label { font-size: 13px; font-weight: 600; color: var(--text-dim); margin: 0 0 8px 12px; text-transform: uppercase; }
+
+        .list-group { background: var(--secondary-bg); border-radius: 20px; border: var(--ios-border); overflow: hidden; }
+
+        .list-item {
+            display: flex; align-items: center;
+            padding: 14px 16px; border-bottom: var(--ios-border);
+        }
+        .list-item:last-child { border-bottom: none; }
+
+        .food-name { font-size: 17px; font-weight: 500; flex: 1; padding-right: 16px; }
+
+        .qty-input {
+            background: #000; border-radius: 10px;
+            padding: 6px 12px; display: flex; align-items: center;
+            border: 1px solid rgba(255,255,255,0.08); width: 90px;
+        }
 
         input[type="number"] {
-            flex: 1; background: transparent; border: none; color: white;
-            font-weight: 700; font-size: 26px; padding: 16px 50px 16px 20px;
-            outline: none; -webkit-appearance: none;
+            width: 100%; background: transparent; border: none; color: white;
+            font-weight: 700; font-size: 17px; text-align: right; outline: none;
         }
 
-        .input-unit { position: absolute; right: 20px; font-weight: 700; color: var(--text-dim); font-size: 18px; }
+        .unit { font-weight: 600; color: var(--text-dim); font-size: 13px; margin-left: 4px; }
 
         /* --- SPLASH & LOADER --- */
         #splash {
@@ -205,13 +186,15 @@
 
     <header id="main-header">
         <div class="header-content">
-            <div class="date" id="date-label">Lataus...</div>
-            <h1 id="main-title">Lounas</h1>
+            <div class="header-titles">
+                <div class="date" id="date-label">Lataus...</div>
+                <h1>KR Tracker</h1>
+            </div>
             <div class="sticky-stats" id="mini-stats">
-                <div class="s-item"><span class="s-val" id="mini-kcal">0</span> <span class="s-lbl">kcal</span></div>
-                <div class="s-item"><span class="s-val" id="mini-p" style="color:var(--p)">0g</span> <span class="s-lbl">P</span></div>
-                <div class="s-item"><span class="s-val" id="mini-r" style="color:var(--f)">0g</span> <span class="s-lbl">R</span></div>
-                <div class="s-item"><span class="s-val" id="mini-h" style="color:var(--c)">0g</span> <span class="s-lbl">H</span></div>
+                <div class="s-item"><span class="s-val" id="mini-kcal">0</span><span class="s-lbl">kcal</span></div>
+                <div class="s-item"><span class="s-val" id="mini-p" style="color:var(--p)">0g</span><span class="s-lbl">P</span></div>
+                <div class="s-item"><span class="s-val" id="mini-r" style="color:var(--f)">0g</span><span class="s-lbl">R</span></div>
+                <div class="s-item"><span class="s-val" id="mini-h" style="color:var(--c)">0g</span><span class="s-lbl">H</span></div>
             </div>
         </div>
     </header>
@@ -219,50 +202,54 @@
     <div class="scroll-area" id="scroller">
         <div class="container">
             <div class="hero">
-                <div class="plate-circle">
-                    <div>
-                        <span class="kcal-val" id="res-kcal">0</span>
-                        <div style="color:var(--text-dim);font-size:15px;font-weight:700; margin-top: -5px;">KCAL</div>
-                    </div>
+                <div class="kcal-box">
+                    <div class="kcal-val" id="res-kcal">0</div>
+                    <div class="kcal-lbl">KCAL</div>
                 </div>
-                <div class="macro-row">
-                    <div class="m-box"><span class="m-lbl" style="color:var(--p)">PROTEIINI</span><span class="m-val" id="res-p">0g</span></div>
-                    <div class="m-box"><span class="m-lbl" style="color:var(--f)">RASVA</span><span class="m-val" id="res-r">0g</span></div>
-                    <div class="m-box"><span class="m-lbl" style="color:var(--c)">HIILIHYDRAATTI</span><span class="m-val" id="res-h">0g</span></div>
+                <div class="macro-list">
+                    <div class="m-row"><span class="m-lbl">PROTEIINI</span><span class="m-val" id="res-p" style="color:var(--p)">0g</span></div>
+                    <div class="m-row"><span class="m-lbl">RASVA</span><span class="m-val" id="res-r" style="color:var(--f)">0g</span></div>
+                    <div class="m-row"><span class="m-lbl">HIILIHYDRAATTI</span><span class="m-val" id="res-h" style="color:var(--c)">0g</span></div>
                 </div>
             </div>
 
             <div class="ai-zone">
-                <textarea id="ai-input" placeholder="Mitä söit tänään?"></textarea>
+                <textarea id="ai-input" placeholder="Kirjoita mitä söit..."></textarea>
                 <img id="img-preview" style="width:100%; max-height:200px; object-fit:cover; border-radius:20px; margin-top:15px; display:none; border: 0.5px solid rgba(255,255,255,0.1);" />
-                <div class="btn-row">
-                    <input type="file" id="image-upload" accept="image/*" style="display:none;" onchange="previewImage(event)">
-                    <button class="btn-camera" onclick="document.getElementById('image-upload').click()">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                <div class="ai-toolbar">
+                    <button class="btn-icon" onclick="document.getElementById('image-upload').click()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                        Lisää kuva
                     </button>
-                    <button class="btn-analyze" onclick="runAI()">Analysoi annos</button>
+                    <input type="file" id="image-upload" accept="image/*" style="display:none;" onchange="previewImage(event)">
+                    <button class="btn-primary" onclick="runAI()">Analysoi</button>
                 </div>
             </div>
 
-            <div id="food-list"></div>
+            <div class="section-label">Päivän valikko</div>
+            <div class="list-group" id="food-list">
+                </div>
         </div>
     </div>
 
     <script>
-        // --- AI & TOIMINNALLISUUS (Pidetty ennallaan) ---
+        // --- LOGIIKKA JA AI-INTEGRAATIO ---
         const GEMINI_API_KEY = typeof CONFIG !== 'undefined' ? CONFIG.API_KEY : "";
         let mealData = [];
         let uploadedImageData = null;
 
+        // Päivämäärän alustus
         const uDate = new Date();
         const options = { weekday: 'long', day: 'numeric', month: 'long' };
         document.getElementById('date-label').innerText = uDate.toLocaleDateString('fi-FI', options).toUpperCase();
 
+        // Skrollaus-efekti
         document.getElementById('scroller').addEventListener('scroll', (e) => {
-            const isScrolled = e.target.scrollTop > 80;
+            const isScrolled = e.target.scrollTop > 40;
             document.getElementById('main-header').classList.toggle('scrolled', isScrolled);
         });
 
+        // Kuvan esikatselu
         function previewImage(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -276,12 +263,14 @@
             reader.readAsDataURL(file);
         }
 
+        // Ruokalistan lataus Poweresta-datasta
         async function init() {
             try {
                 const r = await fetch('./menu.json');
                 const data = await r.json();
                 const rows = data[0].data.mealOptions[0].rows;
                 const container = document.getElementById('food-list');
+                
                 rows.forEach((row, i) => {
                     const factors = row.nutritiveItem.factors;
                     const getVal = (lbl, isK) => {
@@ -290,54 +279,54 @@
                     };
                     const item = { name: row.names[0].name, kcal: getVal("Energia", true), p: getVal("Proteiini"), h: getVal("Hiilihydraatit"), r: getVal("Rasva") };
                     mealData.push(item);
+                    
+                    // Uusi tiivis list-item-rakenne
                     container.innerHTML += `
-                        <div class="food-card">
-                            <span class="food-name">${item.name}</span>
-                            <div class="input-wrapper">
+                        <div class="list-item">
+                            <div class="food-name">${item.name}</div>
+                            <div class="qty-input">
                                 <input type="number" id="q-${i}" value="0" oninput="calc()" inputmode="decimal">
-                                <span class="input-unit">g</span>
+                                <span class="unit">g</span>
                             </div>
                         </div>`;
                 });
-            } catch (e) { }
+            } catch (e) { console.error("Menu-virhe:", e); }
         }
 
+        // AI-analyysi asiantuntija-promptilla
         async function runAI() {
-            if (!GEMINI_API_KEY) return alert("AI-avain puuttuu.");
+            if (!GEMINI_API_KEY) return alert("AI-avain puuttuu config.js-tiedostosta.");
             document.getElementById('splash').style.display = 'flex';
             try {
-                const promptString = `Olet asiantunteva ravitsemusterapeutti ja ruoan painon arvioija. 
-Tehtäväsi on arvioida annettujen ruokalajien paino grammoina käyttäjän kuvauksen perusteella.
-
-**Käytettävissä oleva valikko:** ${JSON.stringify(mealData.map(m => m.name))}
-
-**Käyttäjän kuvaus:** "${document.getElementById('ai-input').value}"
-
-**Ohjeet arviointiin:**
-1. Analysoi kuvauksesta annoskokoa indikoivat sanat (esim. "iso kourallinen", "pieni loraus", "puoli lautasellista").
-2. Käytä standardiyleistyksiä: esimerkiksi keskiverto peruna on n. 60g, annos riisiä n. 150-200g, ja lihanpala n. 100-150g, ellei kuvaus viittaa muuhun.
-3. Jos käyttäjä ei määrittele kokoa, käytä "normaalia" ravintola-annoskokoa.
-4. Varmista, että vastaat vain valikossa olevilla nimillä.
-
-**Palauta VAIN JSON-muodossa:** {"menuResults": {"Ruokalajin nimi": grammamäärä numeroina}}`;
+                const promptString = `Olet asiantunteva ravitsemusterapeutti ja ruoan painon arvioija. Tehtäväsi on arvioida annettujen ruokalajien paino grammoina käyttäjän kuvauksen perusteella.
+                Valikko: ${JSON.stringify(mealData.map(m => m.name))}
+                Käyttäjän kuvaus: "${document.getElementById('ai-input').value}"
+                Palauta VAIN JSON-muodossa: {"menuResults": {"Ruokalajin nimi": grammamäärä numeroina}}`;
 
                 const parts = [{ text: promptString }];
                 if (uploadedImageData) {
                     parts.push({ inlineData: { data: uploadedImageData.split(',')[1], mimeType: uploadedImageData.match(/data:(.*?);/)[1] } });
                 }
+
                 const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: parts }] })
                 });
+
                 const d = await resp.json();
                 const results = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
-                mealData.forEach((item, i) => { document.getElementById(`q-${i}`).value = results.menuResults[item.name] || 0; });
+                
+                mealData.forEach((item, i) => { 
+                    const val = results.menuResults[item.name] || 0;
+                    document.getElementById(`q-${i}`).value = val;
+                });
                 calc();
             } catch (e) { alert("AI Virhe: " + e.message); }
             document.getElementById('splash').style.display = 'none';
         }
 
+        // Ravintoarvojen laskenta
         function calc() {
             let tk = 0, tp = 0, th = 0, tr = 0;
             mealData.forEach((item, i) => {
@@ -351,6 +340,8 @@ Tehtäväsi on arvioida annettujen ruokalajien paino grammoina käyttäjän kuva
             document.getElementById('res-r').innerText = document.getElementById('mini-r').innerText = r(tr) + "g";
             document.getElementById('res-h').innerText = document.getElementById('mini-h').innerText = r(th) + "g";
         }
+
+        // Käynnistys
         init();
     </script>
 </body>
