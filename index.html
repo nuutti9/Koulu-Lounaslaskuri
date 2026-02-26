@@ -1,504 +1,941 @@
 <!DOCTYPE html>
+
 <html lang="fi">
 
+
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport"
+
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
     <title>KR TRACKER</title>
+
     <meta name="apple-mobile-web-app-capable" content="yes">
+
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <meta name="apple-mobile-web-app-title" content="KR TRACKER">
+
     <link rel="apple-touch-icon" href="./kr-logo.png">
+
     <link rel="icon" href="./kr-logo.png">
+
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+
     <script src="./config.js"></script>
+
     <style>
+
         :root {
+
             --bg: #000000;
+
             --card: #1C1C1E;
+
             --card-sec: #2C2C2E;
+
             --accent: #0A84FF;
+
             --p: #FF453A;
+
             --f: #FFD60A;
+
             --c: #32D74B;
+
             --text: #FFFFFF;
+
             --text-dim: #8E8E93;
+
             --font-main: "Manrope", sans-serif;
+
         }
+
+
 
         html,
+
         body {
+
             width: 100%;
+
             height: 100%;
+
             background-color: var(--bg);
+
             color: var(--text);
+
             margin: 0;
+
             padding: 0;
+
             font-family: var(--font-main);
-            /* Korjaus 1: Estetään sivuttaisliike */
-            overflow: hidden; 
-            position: fixed; 
+
+            overflow: hidden;
+
         }
+
+
 
         header {
+
             position: fixed;
+
             top: 0;
+
             left: 0;
+
             right: 0;
+
             z-index: 2000;
+
             background: rgba(0, 0, 0, 0.85);
+
             backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+
             padding: 55px 20px 15px;
+
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            transition: padding 0.3s ease, background 0.3s;
+
         }
 
-        /* Korjaus 2: Headerin muutos skrollatessa */
-        header.scrolled {
-            padding: 45px 20px 10px;
-        }
+
 
         .header-content {
+
             max-width: 374px;
+
             margin: 0 auto;
+
             position: relative;
+
         }
 
-        .date, h1 {
-            transition: opacity 0.2s ease, transform 0.2s ease;
-        }
 
-        header.scrolled .date, 
-        header.scrolled h1 {
-            opacity: 0;
-            transform: translateY(-10px);
-            pointer-events: none;
-        }
 
         .date {
+
             font-size: 12px;
+
             font-weight: 700;
+
             color: var(--text-dim);
+
             text-transform: uppercase;
+
         }
+
+
 
         h1 {
+
             font-size: 32px;
+
             font-weight: 800;
+
             margin: 0;
+
             letter-spacing: -1px;
+
         }
+
+
 
         .sticky-stats {
+
             position: absolute;
-            bottom: 0;
-            left: 0;
+
             right: 0;
+
+            bottom: 0;
+
             display: flex;
+
             gap: 12px;
+
             opacity: 0;
+
             transform: translateY(5px);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            justify-content: flex-end; /* Aluksi oikealla */
+
+            transition: all 0.3s ease;
+
         }
 
-        /* Keskitys skrollatessa */
-        header.scrolled .sticky-stats {
+
+
+        .sticky-stats.visible {
+
             opacity: 1;
-            transform: translateY(-5px);
-            justify-content: center; 
+
+            transform: translateY(0);
+
         }
 
-        .sticky-stats .s-item {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
 
-        .s-val { font-size: 14px; font-weight: 800; }
-        .s-lbl { font-size: 10px; font-weight: 800; color: var(--text-dim); }
 
         .scroll-area {
+
             height: 100vh;
+
             overflow-y: scroll;
-            overflow-x: hidden; /* Korjaus 1 jatkuu */
+
             -webkit-overflow-scrolling: touch;
+
             padding-top: 140px;
+
         }
+
+
 
         .container {
+
             width: 100%;
+
             max-width: 414px;
+
             padding: 0 20px 250px;
+
             margin: 0 auto;
+
             box-sizing: border-box;
+
         }
+
+
 
         .img-preview {
+
             width: 100%;
+
             max-height: 250px;
+
             object-fit: cover;
+
             border-radius: 14px;
+
             margin-top: 15px;
+
             display: none;
+
         }
+
+
 
         .hero {
+
             background: linear-gradient(145deg, #1c1c1e, #131314);
+
             border-radius: 28px;
+
             padding: 35px 20px;
+
             margin-bottom: 25px;
+
             border: 1px solid rgba(255, 255, 255, 0.05);
+
             text-align: center;
+
         }
+
+
 
         .plate-circle {
+
             width: 140px;
+
             height: 140px;
+
             border-radius: 50%;
+
             border: 6px solid var(--card-sec);
+
             margin: 0 auto 25px;
+
             display: flex;
+
             align-items: center;
+
             justify-content: center;
+
         }
+
+
 
         .kcal-val {
+
             font-size: 48px;
+
             font-weight: 800;
+
         }
+
+
 
         .macro-row {
+
             display: flex;
+
             justify-content: space-around;
+
             margin-top: 25px;
+
             padding-top: 25px;
+
             border-top: 1px solid rgba(255, 255, 255, 0.1);
+
         }
+
+
 
         .m-val {
+
             font-size: 19px;
+
             font-weight: 700;
+
             display: block;
+
         }
+
+
 
         .m-lbl {
+
             font-size: 9px;
+
             font-weight: 800;
+
             color: var(--text-dim);
+
         }
+
+
 
         .ai-zone {
+
             background: var(--card);
+
             border-radius: 22px;
+
             padding: 20px;
+
             margin-bottom: 25px;
+
         }
+
+
 
         textarea {
+
             width: 100%;
+
             background: transparent;
+
             border: none;
+
             color: white;
+
             font-size: 17px;
+
             outline: none;
+
             resize: none;
+
             min-height: 80px;
-            font-family: inherit;
+
         }
+
+
 
         .btn-row {
+
             display: flex;
+
             gap: 12px;
+
             margin-top: 15px;
+
         }
+
+
 
         .btn-analyze {
+
             background: linear-gradient(180deg, #0A84FF 0%, #0062FE 100%);
+
             box-shadow: 0 4px 14px rgba(10, 132, 255, 0.35);
+
             color: white;
+
             flex: 1;
+
             padding: 16px;
+
             border-radius: 14px;
+
             border: none;
+
             font-weight: 700;
+
             font-size: 17px;
+
             transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.2s;
+
             cursor: pointer;
+
         }
+
+
 
         .btn-analyze:active {
+
             transform: scale(0.96);
+
             box-shadow: 0 2px 8px rgba(10, 132, 255, 0.25);
+
         }
+
+
 
         .btn-camera {
+
             background: var(--card-sec);
+
             color: var(--accent);
+
             flex: 0.25;
+
             display: flex;
+
             align-items: center;
+
             justify-content: center;
+
             border-radius: 14px;
+
             border: none;
+
             transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1), background 0.2s;
+
             cursor: pointer;
+
         }
+
+
 
         .btn-camera:active {
+
             transform: scale(0.92);
+
             background: #3A3A3C;
+
         }
+
+
 
         .btn-camera svg {
+
             width: 24px;
+
             height: 24px;
+
         }
+
+
 
         .food-card {
+
             background: var(--card);
+
             border-radius: 20px;
+
             padding: 20px;
+
             margin-bottom: 12px;
+
         }
 
-        .food-name { font-size: 18px; font-weight: 700; display: block; margin-bottom: 12px; }
+
 
         .input-wrapper {
+
             position: relative;
+
             display: flex;
+
             align-items: center;
+
             background: #000;
+
             border-radius: 14px;
+
         }
+
+
 
         input[type="number"] {
+
             flex: 1;
+
             background: transparent;
+
             border: none;
+
             color: white;
+
             font-weight: 700;
+
             font-size: 24px;
+
             padding: 14px 45px 14px 18px;
+
             outline: none;
+
+            -moz-appearance: textfield;
+
         }
+
+
+
+        input[type="number"]::-webkit-inner-spin-button,
+
+        input[type="number"]::-webkit-outer-spin-button {
+
+            -webkit-appearance: none;
+
+            margin: 0;
+
+        }
+
+
 
         #splash {
+
             position: fixed;
+
             inset: 0;
+
             background: rgba(0, 0, 0, 0.9);
+
             backdrop-filter: blur(10px);
+
             z-index: 3000;
+
             display: none;
+
             align-items: center;
+
+            align-items: center;
+
             justify-content: center;
+
             flex-direction: column;
+
             gap: 20px;
+
         }
+
+
 
         .loader {
+
             width: 48px;
+
             height: 48px;
+
             border: 3px solid #FFF;
+
             border-radius: 50%;
+
             display: inline-block;
+
             position: relative;
+
             box-sizing: border-box;
+
             animation: rotation 1s linear infinite;
+
         }
+
+
 
         .loader::after {
+
             content: '';
+
             box-sizing: border-box;
+
             position: absolute;
+
             left: 50%;
+
             top: 50%;
+
             transform: translate(-50%, -50%);
+
             width: 56px;
+
             height: 56px;
+
             border-radius: 50%;
+
             border: 3px solid transparent;
+
             border-bottom-color: var(--accent);
+
         }
+
+
 
         @keyframes rotation {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+
+            0% {
+
+                transform: rotate(0deg);
+
+            }
+
+
+
+            100% {
+
+                transform: rotate(360deg);
+
+            }
+
         }
+
     </style>
+
 </head>
 
+
+
 <body>
+
     <div id="splash">
+
         <span class="loader"></span>
+
         <div style="font-weight: 800; color: white; font-size: 20px;">ANALYSOIDAAN</div>
+
     </div>
+
     <header id="main-header">
+
         <div class="header-content">
+
             <div class="date" id="date-label">MUHOS SCHOOLS</div>
+
             <h1 id="main-title" style="display: flex; align-items: center; gap: 8px;">
+
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+
                     style="width: 25px; height: 25px; color: var(--accent);">
+
                     <path
+
                         d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+
                 </svg>
+
                 Muhos
+
             </h1>
+
             <div class="sticky-stats" id="mini-stats">
+
                 <div class="s-item"><span class="s-val" id="mini-kcal">0</span> <span class="s-lbl">kcal</span></div>
+
                 <div class="s-item"><span class="s-val" id="mini-p">0g</span>&nbsp;<span class="s-lbl"
+
                         style="color:var(--p)">P</span></div>
+
                 <div class="s-item"><span class="s-val" id="mini-r">0g</span>&nbsp;<span class="s-lbl"
+
                         style="color:var(--f)">R</span></div>
+
                 <div class="s-item"><span class="s-val" id="mini-h">0g</span>&nbsp;<span class="s-lbl"
+
                         style="color:var(--c)">H</span></div>
+
             </div>
+
         </div>
+
     </header>
+
     <div class="scroll-area" id="scroller">
+
         <div class="container">
+
             <div class="hero" id="hero-section">
+
                 <div class="plate-circle">
+
                     <div><span class="kcal-val" id="res-kcal">0</span>
+
                         <div style="color:var(--text-dim);font-size:14px;font-weight:700;">kcal</div>
+
                     </div>
+
                 </div>
+
                 <div class="macro-row">
+
                     <div class="m-box"><span class="m-lbl" style="color:var(--p)">PROTEIINI</span><span class="m-val"
+
                             id="res-p">0g</span></div>
+
                     <div class="m-box"><span class="m-lbl" style="color:var(--f)">RASVA</span><span class="m-val"
+
                             id="res-r">0g</span></div>
+
                     <div class="m-box"><span class="m-lbl" style="color:var(--c)">HIILIHYDRAATTI</span><span
+
                             class="m-val" id="res-h">0g</span></div>
+
                 </div>
+
             </div>
+
             <div class="ai-zone">
+
                 <textarea id="ai-input" placeholder="Kuvaile, mitä söit tänään."></textarea>
+
                 <img id="img-preview" class="img-preview" />
+
                 <div class="btn-row">
+
                     <input type="file" id="image-upload" accept="image/*" style="display:none;"
+
                         onchange="previewImage(event)">
+
                     <button class="btn-camera" onclick="document.getElementById('image-upload').click()">
+
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+
                             <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z">
+
                             </path>
+
                             <circle cx="12" cy="13" r="4"></circle>
+
                         </svg>
+
                     </button>
+
                     <button class="btn-analyze" onclick="runAI()">Analysoi</button>
+
                 </div>
+
             </div>
+
             <div id="food-list"></div>
+
         </div>
+
     </div>
+
     <script>
+
         const GEMINI_API_KEY = typeof CONFIG !== 'undefined' ? CONFIG.API_KEY : "";
+
         let mealData = [];
+
         let uploadedImageData = null;
 
+
+
         const uDate = new Date();
+
         const dNames = ["SUNNUNTAI", "MAANANTAI", "TIISTAI", "KESKIVIIKKO", "TORSTAI", "PERJANTAI", "LAUANTAI"];
+
         const mNames = ["TAMMIKUUTA", "HELMIKUUTA", "MAALISKUUTA", "HUHTIKUUTA", "TOUKOKUUTA", "KESÄKUUTA", "HEINÄKUUTA", "ELOKUUTA", "SYYSKUUTA", "LOKAKUUTA", "MARRASKUUTA", "JOULUKUUTA"];
+
         document.getElementById('date-label').innerText = `${dNames[uDate.getDay()]}, ${uDate.getDate()} ${mNames[uDate.getMonth()]}`;
 
-        // Headerin automaatio skrollatessa
+
+
         document.getElementById('scroller').addEventListener('scroll', (e) => {
-            const header = document.getElementById('main-header');
-            if (e.target.scrollTop > 80) {
-                header.classList.add('scrolled');
-                document.getElementById('mini-stats').classList.add('visible');
-            } else {
-                header.classList.remove('scrolled');
-                document.getElementById('mini-stats').classList.remove('visible');
-            }
+
+            document.getElementById('mini-stats').classList.toggle('visible', e.target.scrollTop > 100);
+
         });
 
+
+
         function previewImage(e) {
+
             const file = e.target.files[0];
+
             if (!file) return;
+
             const reader = new FileReader();
+
             reader.onload = (ev) => {
+
                 uploadedImageData = ev.target.result;
+
                 const img = document.getElementById('img-preview');
+
                 img.src = uploadedImageData;
+
                 img.style.display = 'block';
+
             };
+
             reader.readAsDataURL(file);
+
         }
+
+
 
         async function init() {
+
             try {
+
                 const r = await fetch('./menu.json');
+
                 const data = await r.json();
+
                 const rows = data[0].data.mealOptions[0].rows;
+
                 const container = document.getElementById('food-list');
+
                 rows.forEach((row, i) => {
+
                     const factors = row.nutritiveItem.factors;
+
                     const getVal = (lbl, isK) => {
+
                         const f = factors.find(fact => fact.nutritiveFactorNames[0].name === (isK ? "Energia" : lbl) && (!isK || fact.values[0].value100.includes("kcal")));
+
                         return f ? parseFloat(f.values[0].value100.replace(',', '.').replace(/[^\d.]/g, '')) : 0;
+
                     };
+
                     const item = { name: row.names[0].name, kcal: getVal("Energia", true), p: getVal("Proteiini"), h: getVal("Hiilihydraatit"), r: getVal("Rasva") };
+
                     mealData.push(item);
+
                     container.innerHTML += `<div class="food-card"><span class="food-name">${item.name}</span><div class="input-wrapper"><input type="number" id="q-${i}" value="0" oninput="calc()"><span style="position:absolute;right:18px;color:var(--text-dim);font-weight:700;">g</span></div></div>`;
+
                 });
+
             } catch (e) { }
+
         }
-        
+
         async function runAI() {
+
             if (!GEMINI_API_KEY) return alert("AI-avain puuttuu palvelimelta.");
+
             document.getElementById('splash').style.display = 'flex';
+
             try {
+
                 const promptString = `Olet ruoan painon arvioija.
+
 Käytössäsi on seuraava valikko ruokia: ${JSON.stringify(mealData.map(m => m.name))}.
+
 Käyttäjä kuvailee annostaan seuraavasti: "${document.getElementById('ai-input').value}"
 
+
+
 Tunnista mittayksikkö tai vertaus. Arvioi tilavuus (ml) ja muunna grammoiksi tiheyden perusteella (keitot ≈ 1g/ml, riisi ≈ 0.8g/ml, pasta ≈ 0.7g/ml).
+
 Jos käyttäjä antaa "keksikokoinen kauhallinen lihakeittoa", arvio on ≈ 100-150g.
+
 Palauta VAIN JSON-tiedosto muodossa:
+
 {"menuResults": {"Ruoka1 Nimi Valikosta": gramma_määrä_numerona, "Ruoka2": gramma_määrä}}`;
 
+
+
                 const parts = [{ text: promptString }];
+
                 if (uploadedImageData) {
+
                     parts.push({
+
                         inlineData: {
+
                             data: uploadedImageData.split(',')[1],
+
                             mimeType: uploadedImageData.match(/data:(.*?);/)[1]
+
                         }
+
                     });
+
                 }
+
                 const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
+
                     method: 'POST',
+
                     headers: { 'Content-Type': 'application/json' },
+
                     body: JSON.stringify({ contents: [{ parts: parts }] })
+
                 });
+
                 const d = await resp.json();
+
                 if (!resp.ok) {
+
                     throw new Error(d.error ? d.error.message : "Tuntematon API-virhe");
+
                 }
+
                 const results = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
+
                 mealData.forEach((item, i) => { document.getElementById(`q-${i}`).value = results.menuResults[item.name] || 0; });
+
                 calc();
+
             } catch (e) { alert("AI Virhe: " + e.message); }
+
             document.getElementById('splash').style.display = 'none';
+
         }
+
         function calc() {
+
             let tk = 0, tp = 0, th = 0, tr = 0;
+
             mealData.forEach((item, i) => {
+
                 const w = parseFloat(document.getElementById(`q-${i}`).value) || 0;
+
                 tk += (w * item.kcal) / 100; tp += (w * item.p) / 100; th += (w * item.h) / 100; tr += (w * item.r) / 100;
+
             });
+
             document.getElementById('res-kcal').innerText = Math.round(tk);
+
             document.getElementById('mini-kcal').innerText = Math.round(tk);
+
             document.getElementById('res-p').innerText = document.getElementById('mini-p').innerText = Math.round(tp) + "g";
+
             document.getElementById('res-r').innerText = document.getElementById('mini-r').innerText = Math.round(tr) + "g";
+
             document.getElementById('res-h').innerText = document.getElementById('mini-h').innerText = Math.round(th) + "g";
+
         }
+
         init();
+
     </script>
+
 </body>
+
+
 
 </html>
