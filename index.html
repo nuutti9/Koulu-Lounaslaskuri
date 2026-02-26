@@ -306,7 +306,21 @@
             if (!GEMINI_API_KEY) return alert("AI-avain puuttuu.");
             document.getElementById('splash').style.display = 'flex';
             try {
-                const promptString = `Olet ruoan painon arvioija. Valikko: ${JSON.stringify(mealData.map(m => m.name))}. Kuvaus: "${document.getElementById('ai-input').value}". Palauta VAIN JSON muodossa: {"menuResults": {"Ruoka": grammaa}}`;
+                const promptString = `Olet asiantunteva ravitsemusterapeutti ja ruoan painon arvioija. 
+Tehtäväsi on arvioida annettujen ruokalajien paino grammoina käyttäjän kuvauksen perusteella.
+
+**Käytettävissä oleva valikko:** ${JSON.stringify(mealData.map(m => m.name))}
+
+**Käyttäjän kuvaus:** "${document.getElementById('ai-input').value}"
+
+**Ohjeet arviointiin:**
+1. Analysoi kuvauksesta annoskokoa indikoivat sanat (esim. "iso kourallinen", "pieni loraus", "puoli lautasellista").
+2. Käytä standardiyleistyksiä: esimerkiksi keskiverto peruna on n. 60g, annos riisiä n. 150-200g, ja lihanpala n. 100-150g, ellei kuvaus viittaa muuhun.
+3. Jos käyttäjä ei määrittele kokoa, käytä "normaalia" ravintola-annoskokoa.
+4. Varmista, että vastaat vain valikossa olevilla nimillä.
+
+**Palauta VAIN JSON-muodossa:** {"menuResults": {"Ruokalajin nimi": grammamäärä numeroina}}`;
+
                 const parts = [{ text: promptString }];
                 if (uploadedImageData) {
                     parts.push({ inlineData: { data: uploadedImageData.split(',')[1], mimeType: uploadedImageData.match(/data:(.*?);/)[1] } });
