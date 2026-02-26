@@ -16,9 +16,7 @@ jobs:
 
       - name: Hae ruokalistan data
         run: |
-          DATE=$(date +%Y-%m-%d)
-          URL="https://api.fi.poweresta.com/publicmenu/dates/muhosutajarvivaala/muhoskoulut/?menu=ruokalista&dates=$DATE"
-          curl -o menu.json "$URL"
+          node scripts/fetch_menus.js
 
       - name: Luo väliaikainen konfiguraatio
         run: |
