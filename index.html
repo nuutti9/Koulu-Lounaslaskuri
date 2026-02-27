@@ -36,20 +36,20 @@
 
         body {
             width: 100%;
-            height: 100%;
+            height: 100vh;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
             padding: 0;
             font-family: 'Manrope', sans-serif;
             overflow: hidden;
-            position: fixed;
+            position: relative; /* Muutettu fixed -> relative näppäimistö-bugin takia */
             -webkit-font-smoothing: antialiased;
         }
 
         /* --- HEADER --- */
         header {
-            position: fixed;
+            position: absolute; /* Muutettu fixed -> absolute */
             top: 0;
             left: 0;
             right: 0;
@@ -371,16 +371,11 @@
         }
 
         @keyframes rotation {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
-        /* --- WELCOME SCREEN --- */
+        /* --- WELCOME SCREEN IMPROVED --- */
         #welcome-screen {
             position: fixed;
             inset: 0;
@@ -388,45 +383,52 @@
             z-index: 4000;
             display: none;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            padding: 40px 20px 20px;
         }
 
-        .select-wrapper {
-            position: relative;
+        .search-container {
             width: 100%;
-            max-width: 320px;
-            margin-bottom: 25px;
+            max-width: 400px;
+            margin: 0 auto 20px;
         }
 
-        .select-wrapper select {
+        #school-search {
             width: 100%;
-            padding: 16px 20px;
+            background: var(--secondary-bg);
+            border: var(--ios-border);
+            border-radius: 14px;
+            padding: 14px 18px;
+            color: white;
+            font-size: 17px;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .school-list-container {
+            flex: 1;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            overflow-y: auto;
             border-radius: 14px;
             background: var(--secondary-bg);
-            color: var(--text);
             border: var(--ios-border);
-            font-size: 17px;
-            font-weight: 600;
-            outline: none;
-            appearance: none;
-            -webkit-appearance: none;
-            font-family: var(--font-main);
         }
 
-        .select-wrapper::after {
-            content: '';
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 0;
-            height: 0;
-            border-left: 6px solid transparent;
-            border-right: 6px solid transparent;
-            border-top: 6px solid var(--text-dim);
-            pointer-events: none;
+        .school-option {
+            padding: 16px 20px;
+            border-bottom: 0.5px solid rgba(255,255,255,0.05);
+            font-size: 17px;
+            font-weight: 500;
+        }
+
+        .school-option:active {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .school-option.selected {
+            color: var(--accent);
+            font-weight: 700;
         }
 
         .school-header-selector {
@@ -448,23 +450,21 @@
 
 <body>
     <div id="welcome-screen">
-        <h1 style="margin-bottom: 15px; text-align: center;">Tervetuloa!</h1>
-        <p style="color:var(--text-dim); margin-bottom: 35px; text-align:center; font-size: 16px; max-width: 300px;">
-            Valitse koulu tai oppilaitos aloittaaksesi lounaslaskurin käytön.
+        <h1 style="margin-bottom: 10px; text-align: center;">Tervetuloa!</h1>
+        <p style="color:var(--text-dim); margin-bottom: 25px; text-align:center; font-size: 15px;">
+            Valitse koulu listalta aloittaaksesi.
         </p>
-        <div class="select-wrapper">
-            <select id="school-select">
-                <option value="" disabled selected>Valitse koulu...</option>
-            </select>
+        
+        <div class="search-container">
+            <input type="text" id="school-search" placeholder="Etsi koulua..." oninput="filterSchools()">
         </div>
-        <button onclick="selectSchool()" class="btn-primary"
-            style="max-width:320px; width:100%; box-sizing: border-box; padding: 16px; font-size: 17px;">Valitse ja
-            jatka</button>
-        <div style="margin-top: 30px; text-align: center; font-size: 14px; color: var(--text-dim);">
-            Eikö kouluasi ole listalla?<br>
-            <a href="mailto:esimerkki@email.com?subject=Koulun lisääminen&body=Hei, haluaisin ehdottaa koulua: [nimi]"
-                style="color: var(--accent); text-decoration: none; font-weight: 600; display: inline-block; margin-top: 8px;">Pyydä
-                sen lisäämistä</a>
+
+        <div class="school-list-container" id="school-list-box">
+            </div>
+
+        <div style="margin-top: 20px; text-align: center; font-size: 13px; color: var(--text-dim);">
+            Eikö kouluasi ole listalla? 
+            <a href="mailto:esimerkki@email.com" style="color: var(--accent); text-decoration: none;">Pyydä lisäystä</a>
         </div>
     </div>
 
@@ -550,7 +550,6 @@
     </div>
 
     <script>
-        // --- LOGIIKKA JA AI-INTEGRAATIO ---
         const GEMINI_API_KEY = typeof CONFIG !== 'undefined' ? CONFIG.API_KEY : "";
         let mealData = [];
         let uploadedImageData = null;
@@ -558,18 +557,33 @@
         let schoolsList = [];
         let currentSchoolId = localStorage.getItem('kr_school_id');
 
-        // Päivämäärän alustus
+        // Date init
         const uDate = new Date();
         const options = { weekday: 'long', day: 'numeric', month: 'long' };
         document.getElementById('date-label').innerText = uDate.toLocaleDateString('fi-FI', options).toUpperCase();
 
-        // Skrollaus-efekti
+        // Keyboard bug fix: Adjust header on focus
+        const inputs = document.querySelectorAll('textarea, input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                if(window.innerWidth < 768) {
+                    document.getElementById('main-header').style.position = 'absolute';
+                    window.scrollTo(0, 0);
+                }
+            });
+            input.addEventListener('blur', () => {
+                document.getElementById('main-header').style.position = 'absolute';
+            });
+        });
+
+        // Scroll effect
         document.getElementById('scroller').addEventListener('scroll', (e) => {
             const isScrolled = e.target.scrollTop > 40;
             document.getElementById('main-header').classList.toggle('scrolled', isScrolled);
+            // Ensure header follows during scroll
+            document.getElementById('main-header').style.top = e.target.scrollTop + 'px';
         });
 
-        // Kuvan esikatselu
         function previewImage(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -585,20 +599,12 @@
 
         async function init() {
             try {
-                // Fetch schools metadata
                 const sr = await fetch('./schools.json');
                 if (sr.ok) {
                     schoolsList = await sr.json();
-                    const select = document.getElementById('school-select');
-                    schoolsList.forEach(s => {
-                        const opt = document.createElement('option');
-                        opt.value = s.id;
-                        opt.innerText = s.name;
-                        select.appendChild(opt);
-                    });
+                    renderSchoolList(schoolsList);
                 }
 
-                // Fetch all menus
                 const mr = await fetch('./menus.json');
                 if (mr.ok) {
                     allMenus = await mr.json();
@@ -612,17 +618,30 @@
             } catch (e) { console.error("Error init:", e); }
         }
 
-        function showWelcomeScreen() {
-            document.getElementById('welcome-screen').style.display = 'flex';
-            if (currentSchoolId) {
-                document.getElementById('school-select').value = currentSchoolId;
-            }
+        function renderSchoolList(list) {
+            const container = document.getElementById('school-list-box');
+            container.innerHTML = '';
+            list.forEach(s => {
+                const div = document.createElement('div');
+                div.className = `school-option ${currentSchoolId === s.id ? 'selected' : ''}`;
+                div.innerText = s.name;
+                div.onclick = () => selectSchool(s.id);
+                container.appendChild(div);
+            });
         }
 
-        function selectSchool() {
-            const val = document.getElementById('school-select').value;
-            if (!val) return;
-            currentSchoolId = val;
+        function filterSchools() {
+            const term = document.getElementById('school-search').value.toLowerCase();
+            const filtered = schoolsList.filter(s => s.name.toLowerCase().includes(term));
+            renderSchoolList(filtered);
+        }
+
+        function showWelcomeScreen() {
+            document.getElementById('welcome-screen').style.display = 'flex';
+        }
+
+        function selectSchool(id) {
+            currentSchoolId = id;
             localStorage.setItem('kr_school_id', currentSchoolId);
             document.getElementById('welcome-screen').style.display = 'none';
             loadSchool(currentSchoolId);
@@ -631,14 +650,9 @@
         function loadSchool(schoolId) {
             mealData = [];
             document.getElementById('food-list').innerHTML = '';
-            document.getElementById('res-kcal').innerText = '0';
-            document.getElementById('res-p').innerText = '0g';
-            document.getElementById('res-r').innerText = '0g';
-            document.getElementById('res-h').innerText = '0g';
-            document.getElementById('mini-kcal').innerText = '0';
-            document.getElementById('mini-p').innerText = '0g';
-            document.getElementById('mini-r').innerText = '0g';
-            document.getElementById('mini-h').innerText = '0g';
+            // Reset stats
+            ['res-kcal','mini-kcal'].forEach(id => document.getElementById(id).innerText = '0');
+            ['res-p','res-r', 'res-h', 'mini-p', 'mini-r', 'mini-h'].forEach(id => document.getElementById(id).innerText = '0g');
 
             const schoolObj = schoolsList.find(s => s.id === schoolId);
             if (schoolObj) {
@@ -647,7 +661,7 @@
 
             const data = allMenus[schoolId];
             if (!data || !data[0] || !data[0].data || !data[0].data.mealOptions || !data[0].data.mealOptions[0]) {
-                document.getElementById('food-list').innerHTML = '<div style="text-align:center; padding:30px 20px; color:var(--text-dim); border-radius:20px; margin-top:10px;">Ei ruokalistaa saatavilla täksi päiväksi.</div>';
+                document.getElementById('food-list').innerHTML = '<div style="text-align:center; padding:30px 20px; color:var(--text-dim);">Ei ruokalistaa tälle päivälle.</div>';
                 return;
             }
 
@@ -663,7 +677,6 @@
                 const item = { name: row.names[0].name, kcal: getVal("Energia", true), p: getVal("Proteiini"), h: getVal("Hiilihydraatit"), r: getVal("Rasva") };
                 mealData.push(item);
 
-                // Uusi tiivis list-item-rakenne
                 container.innerHTML += `
                     <div class="list-item">
                         <div class="food-name">${item.name}</div>
@@ -675,15 +688,14 @@
             });
         }
 
-        // AI-analyysi asiantuntija-promptilla
         async function runAI() {
-            if (!GEMINI_API_KEY) return alert("AI-avain puuttuu config.js-tiedostosta.");
+            if (!GEMINI_API_KEY) return alert("AI-avain puuttuu.");
             document.getElementById('splash').style.display = 'flex';
             try {
-                const promptString = `Olet asiantunteva ravitsemusterapeutti ja ruoan painon arvioija. Tehtäväsi on arvioida annettujen ruokalajien paino grammoina käyttäjän kuvauksen perusteella.
+                const promptString = `Olet ravitsemusterapeutti. Arvioi ruokien paino (g). 
                 Valikko: ${JSON.stringify(mealData.map(m => m.name))}
-                Käyttäjän kuvaus: "${document.getElementById('ai-input').value}"
-                Palauta VAIN JSON-muodossa: {"menuResults": {"Ruokalajin nimi": grammamäärä numeroina}}`;
+                Käyttäjä: "${document.getElementById('ai-input').value}"
+                Paluu: {"menuResults": {"Nimi": grammat}}`;
 
                 const parts = [{ text: promptString }];
                 if (uploadedImageData) {
@@ -704,11 +716,10 @@
                     document.getElementById(`q-${i}`).value = val;
                 });
                 calc();
-            } catch (e) { alert("AI Virhe: " + e.message); }
+            } catch (e) { console.error(e); }
             document.getElementById('splash').style.display = 'none';
         }
 
-        // Ravintoarvojen laskenta
         function calc() {
             let tk = 0, tp = 0, th = 0, tr = 0;
             mealData.forEach((item, i) => {
@@ -716,14 +727,12 @@
                 tk += (w * item.kcal) / 100; tp += (w * item.p) / 100; th += (w * item.h) / 100; tr += (w * item.r) / 100;
             });
             const r = Math.round;
-            document.getElementById('res-kcal').innerText = r(tk);
-            document.getElementById('mini-kcal').innerText = r(tk);
+            document.getElementById('res-kcal').innerText = document.getElementById('mini-kcal').innerText = r(tk);
             document.getElementById('res-p').innerText = document.getElementById('mini-p').innerText = r(tp) + "g";
             document.getElementById('res-r').innerText = document.getElementById('mini-r').innerText = r(tr) + "g";
             document.getElementById('res-h').innerText = document.getElementById('mini-h').innerText = r(th) + "g";
         }
 
-        // Käynnistys
         init();
     </script>
 </body>
