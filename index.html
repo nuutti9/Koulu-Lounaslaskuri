@@ -52,46 +52,53 @@
             left: 0;
             right: 0;
             z-index: 2000;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85);
             backdrop-filter: var(--blur);
             -webkit-backdrop-filter: var(--blur);
-            padding: 55px 20px 16px;
+            /* Kiinteä padding estää pomppimisen */
+            padding: 55px 20px 15px; 
             border-bottom: var(--ios-border);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: padding 0.3s ease;
         }
 
-        /* Kompakti tila skrollatessa TAI kirjoittaessa */
+        /* Pidetään padding lähes samana, jotta tausta ei hypi */
         header.scrolled, header.is-typing {
             padding-top: 50px;
-            padding-bottom: 12px;
+            padding-bottom: 15px;
         }
 
         .header-content {
             max-width: 400px;
             margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
             position: relative;
+            /* LUKITTU KORKEUS: Tämä estää koko paskan hyppimisen */
+            height: 48px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .header-titles {
-            transition: all 0.4s ease;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
+            width: 100%;
         }
 
         .date {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             color: var(--text-dim);
             text-transform: uppercase;
-            letter-spacing: 0.6px;
+            letter-spacing: 0.8px;
             margin-bottom: 2px;
         }
 
         h1 {
-            font-size: 32px;
+            font-size: 30px;
             font-weight: 800;
             margin: 0;
             letter-spacing: -1.2px;
@@ -100,7 +107,6 @@
             gap: 8px;
         }
 
-        /* Piilotetaan otsikot kun halutaan nähdä statsit ylhäällä */
         header.scrolled .header-titles, header.is-typing .header-titles {
             opacity: 0;
             transform: translateY(-10px);
@@ -110,19 +116,17 @@
         /* --- STICKY STATS PILL --- */
         .sticky-stats {
             position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 12px;
+            inset: 0;
             display: flex;
             justify-content: center;
-            gap: 16px;
+            align-items: center;
+            gap: 18px; /* Hieman enemmän väliä */
             opacity: 0;
             transform: translateY(10px);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             pointer-events: none;
         }
 
-        /* Näytetään statsit skrollatessa TAI kirjoittaessa */
         header.scrolled .sticky-stats, header.is-typing .sticky-stats {
             opacity: 1;
             transform: translateY(0);
@@ -132,207 +136,47 @@
         .s-item {
             display: flex;
             align-items: baseline;
-            gap: 3px;
+            gap: 4px;
         }
 
         .s-val {
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 800;
         }
 
         .s-lbl {
-            font-size: 10px;
-            font-weight: 700;
-            color: var(--text-dim);
-        }
-
-        /* --- CONTENT AREA --- */
-        .scroll-area {
-            padding-top: 140px;
-            width: 100%;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 414px;
-            padding: 0 16px 150px;
-            margin: 0 auto;
-        }
-
-        /* --- DASHBOARD HERO --- */
-        .hero {
-            background: var(--secondary-bg);
-            border-radius: 24px;
-            padding: 24px;
-            margin-bottom: 20px;
-            border: var(--ios-border);
-            display: flex;
-            align-items: center;
-            gap: 24px;
-        }
-
-        .kcal-box {
-            padding-right: 24px;
-            border-right: var(--ios-border);
-            text-align: center;
-        }
-
-        .kcal-val {
-            font-size: 48px;
-            font-weight: 800;
-            letter-spacing: -2px;
-            line-height: 1;
-        }
-
-        .kcal-lbl {
             font-size: 11px;
-            font-weight: 800;
-            color: var(--text-dim);
-            margin-top: 6px;
-        }
-
-        .macro-list {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .m-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .m-lbl {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-dim);
-        }
-
-        .m-val {
-            font-size: 15px;
-            font-weight: 800;
-        }
-
-        /* --- AI COMPOSER --- */
-        .ai-zone {
-            background: var(--secondary-bg);
-            border-radius: 20px;
-            padding: 16px;
-            margin-bottom: 30px;
-            border: var(--ios-border);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        textarea {
-            width: 100%;
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 17px;
-            font-weight: 500;
-            outline: none;
-            resize: none;
-            min-height: 60px;
-            font-family: inherit;
-            line-height: 1.5;
-        }
-
-        .ai-toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 0.5px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .btn-icon {
-            background: transparent;
-            border: none;
-            color: var(--accent);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 15px;
-            font-weight: 600;
-            padding: 0;
-            cursor: pointer;
-        }
-
-        .btn-primary {
-            background: var(--accent);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 12px;
-            border: none;
             font-weight: 700;
-            font-size: 15px;
-            transition: opacity 0.2s;
-        }
-
-        /* --- LIST GROUP --- */
-        .section-label {
-            font-size: 13px;
-            font-weight: 600;
             color: var(--text-dim);
-            margin: 0 0 8px 12px;
             text-transform: uppercase;
         }
 
-        .list-group {
-            background: var(--secondary-bg);
-            border-radius: 20px;
-            border: var(--ios-border);
-            overflow: hidden;
-        }
-
-        .list-item {
-            display: flex;
-            align-items: center;
-            padding: 14px 16px;
-            border-bottom: var(--ios-border);
-        }
-
-        .list-item:last-child {
-            border-bottom: none;
-        }
-
-        .food-name {
-            font-size: 17px;
-            font-weight: 500;
-            flex: 1;
-            padding-right: 16px;
-        }
-
-        .qty-input {
-            background: #000;
-            border-radius: 10px;
-            padding: 6px 12px;
-            display: flex;
-            align-items: center;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            width: 90px;
-        }
-
-        input[type="number"] {
-            width: 100%;
-            background: transparent;
-            border: none;
-            color: white;
-            font-weight: 700;
-            font-size: 17px;
-            text-align: right;
-            outline: none;
-        }
-
-        /* --- SPLASH & LOADER --- */
+        /* --- MUUT (Samat kuin ennen) --- */
+        .scroll-area { padding-top: 145px; width: 100%; }
+        .container { width: 100%; max-width: 414px; padding: 0 16px 150px; margin: 0 auto; }
+        .hero { background: var(--secondary-bg); border-radius: 24px; padding: 24px; margin-bottom: 20px; border: var(--ios-border); display: flex; align-items: center; gap: 24px; }
+        .kcal-box { padding-right: 24px; border-right: var(--ios-border); text-align: center; }
+        .kcal-val { font-size: 48px; font-weight: 800; letter-spacing: -2px; line-height: 1; }
+        .kcal-lbl { font-size: 11px; font-weight: 800; color: var(--text-dim); margin-top: 6px; }
+        .macro-list { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+        .m-row { display: flex; justify-content: space-between; align-items: center; }
+        .m-lbl { font-size: 12px; font-weight: 600; color: var(--text-dim); }
+        .m-val { font-size: 15px; font-weight: 800; }
+        .ai-zone { background: var(--secondary-bg); border-radius: 20px; padding: 16px; margin-bottom: 30px; border: var(--ios-border); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); }
+        textarea { width: 100%; background: transparent; border: none; color: white; font-size: 17px; font-weight: 500; outline: none; resize: none; min-height: 60px; font-family: inherit; line-height: 1.5; }
+        .ai-toolbar { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 12px; border-top: 0.5px solid rgba(255, 255, 255, 0.08); }
+        .btn-icon { background: transparent; border: none; color: var(--accent); display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; padding: 0; cursor: pointer; }
+        .btn-primary { background: var(--accent); color: white; padding: 10px 20px; border-radius: 12px; border: none; font-weight: 700; font-size: 15px; }
+        .section-label { font-size: 13px; font-weight: 600; color: var(--text-dim); margin: 0 0 8px 12px; text-transform: uppercase; }
+        .list-group { background: var(--secondary-bg); border-radius: 20px; border: var(--ios-border); overflow: hidden; }
+        .list-item { display: flex; align-items: center; padding: 14px 16px; border-bottom: var(--ios-border); }
+        .list-item:last-child { border-bottom: none; }
+        .food-name { font-size: 17px; font-weight: 500; flex: 1; padding-right: 16px; }
+        .qty-input { background: #000; border-radius: 10px; padding: 6px 12px; display: flex; align-items: center; border: 1px solid rgba(255, 255, 255, 0.08); width: 90px; }
+        input[type="number"] { width: 100%; background: transparent; border: none; color: white; font-weight: 700; font-size: 17px; text-align: right; outline: none; }
         #splash { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); backdrop-filter: var(--blur); z-index: 3000; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 24px; }
         .loader { width: 50px; height: 50px; border: 4px solid rgba(255, 255, 255, 0.1); border-radius: 50%; border-bottom-color: var(--accent); animation: rotation 1s linear infinite; }
         @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        /* --- WELCOME SCREEN --- */
         #welcome-screen { position: fixed; inset: 0; background: var(--bg); z-index: 4000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
         .select-wrapper { position: relative; width: 100%; max-width: 320px; margin-bottom: 25px; }
         .select-wrapper select { width: 100%; padding: 16px 20px; border-radius: 14px; background: var(--secondary-bg); color: var(--text); border: var(--ios-border); font-size: 17px; font-weight: 600; outline: none; appearance: none; -webkit-appearance: none; }
@@ -345,17 +189,13 @@
 <body>
     <div id="welcome-screen">
         <h1 style="margin-bottom: 15px; text-align: center;">Tervetuloa!</h1>
-        <p style="color:var(--text-dim); margin-bottom: 35px; text-align:center; font-size: 16px; max-width: 300px;">
-            Valitse koulu tai oppilaitos aloittaaksesi lounaslaskurin käytön.
-        </p>
+        <p style="color:var(--text-dim); margin-bottom: 35px; text-align:center; font-size: 16px; max-width: 300px;">Valitse koulu tai oppilaitos aloittaaksesi lounaslaskurin käytön.</p>
         <div class="select-wrapper">
             <select id="school-select">
                 <option value="" disabled selected>Valitse koulu...</option>
             </select>
         </div>
-        <button onclick="selectSchool()" class="btn-primary"
-            style="max-width:320px; width:100%; box-sizing: border-box; padding: 16px; font-size: 17px;">Valitse ja
-            jatka</button>
+        <button onclick="selectSchool()" class="btn-primary" style="max-width:320px; width:100%; box-sizing: border-box; padding: 16px; font-size: 17px;">Valitse ja jatka</button>
     </div>
 
     <div id="splash">
@@ -369,24 +209,16 @@
                 <div class="date" id="date-label">Lataus...</div>
                 <h1>
                     <div class="school-header-selector" onclick="showWelcomeScreen()">
-                        <span id="header-school-name"
-                            style="font-size: 28px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px;">Lataus...</span>
-                        <svg style="width: 20px; height: 20px; color: var(--text-dim); flex-shrink: 0;" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
-                            </path>
-                        </svg>
+                        <span id="header-school-name" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;">Lataus...</span>
+                        <svg style="width: 18px; height: 18px; color: var(--text-dim);" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </div>
                 </h1>
             </div>
             <div class="sticky-stats" id="mini-stats">
                 <div class="s-item"><span class="s-val" id="mini-kcal">0</span><span class="s-lbl">kcal</span></div>
-                <div class="s-item"><span class="s-val" id="mini-p" style="color:var(--p)">0g</span><span
-                        class="s-lbl">P</span></div>
-                <div class="s-item"><span class="s-val" id="mini-r" style="color:var(--f)">0g</span><span
-                        class="s-lbl">R</span></div>
-                <div class="s-item"><span class="s-val" id="mini-h" style="color:var(--c)">0g</span><span
-                        class="s-lbl">H</span></div>
+                <div class="s-item"><span class="s-val" id="mini-p" style="color:var(--p)">0g</span><span class="s-lbl">P</span></div>
+                <div class="s-item"><span class="s-val" id="mini-r" style="color:var(--f)">0g</span><span class="s-lbl">R</span></div>
+                <div class="s-item"><span class="s-val" id="mini-h" style="color:var(--c)">0g</span><span class="s-lbl">H</span></div>
             </div>
         </div>
     </header>
@@ -399,42 +231,31 @@
                     <div class="kcal-lbl">KCAL</div>
                 </div>
                 <div class="macro-list">
-                    <div class="m-row"><span class="m-lbl">PROTEIINI</span><span class="m-val" id="res-p"
-                            style="color:var(--p)">0g</span></div>
-                    <div class="m-row"><span class="m-lbl">RASVA</span><span class="m-val" id="res-r"
-                            style="color:var(--f)">0g</span></div>
-                    <div class="m-row"><span class="m-lbl">HIILIHYDRAATTI</span><span class="m-val" id="res-h"
-                            style="color:var(--c)">0g</span></div>
+                    <div class="m-row"><span class="m-lbl">PROTEIINI</span><span class="m-val" id="res-p" style="color:var(--p)">0g</span></div>
+                    <div class="m-row"><span class="m-lbl">RASVA</span><span class="m-val" id="res-r" style="color:var(--f)">0g</span></div>
+                    <div class="m-row"><span class="m-lbl">HIILIHYDRAATTI</span><span class="m-val" id="res-h" style="color:var(--c)">0g</span></div>
                 </div>
             </div>
 
             <div class="ai-zone">
                 <textarea id="ai-input" placeholder="Kirjoita mitä söit..."></textarea>
-                <img id="img-preview"
-                    style="width:100%; max-height:200px; object-fit:cover; border-radius:20px; margin-top:15px; display:none; border: 0.5px solid rgba(255,255,255,0.1);" />
+                <img id="img-preview" style="width:100%; max-height:200px; object-fit:cover; border-radius:20px; margin-top:15px; display:none; border: 0.5px solid rgba(255,255,255,0.1);" />
                 <div class="ai-toolbar">
                     <button class="btn-icon" onclick="document.getElementById('image-upload').click()">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2.5">
-                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z">
-                            </path>
-                            <circle cx="12" cy="13" r="4"></circle>
-                        </svg>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
                         Lisää kuva
                     </button>
-                    <input type="file" id="image-upload" accept="image/*" style="display:none;"
-                        onchange="previewImage(event)">
+                    <input type="file" id="image-upload" accept="image/*" style="display:none;" onchange="previewImage(event)">
                     <button class="btn-primary" onclick="runAI()">Analysoi</button>
                 </div>
             </div>
-
             <div class="section-label">Päivän valikko</div>
-            <div class="list-group" id="food-list">
-            </div>
+            <div class="list-group" id="food-list"></div>
         </div>
     </div>
 
     <script>
+        // --- JS (Sama kuin ennen, lisätty vain focus kuuntelijat) ---
         const GEMINI_API_KEY = typeof CONFIG !== 'undefined' ? CONFIG.API_KEY : "";
         let mealData = [];
         let uploadedImageData = null;
@@ -446,23 +267,15 @@
         const options = { weekday: 'long', day: 'numeric', month: 'long' };
         document.getElementById('date-label').innerText = uDate.toLocaleDateString('fi-FI', options).toUpperCase();
 
-        // Skrollaus-efekti
         window.addEventListener('scroll', () => {
-            const isScrolled = window.scrollY > 40;
+            const isScrolled = window.scrollY > 30;
             document.getElementById('main-header').classList.toggle('scrolled', isScrolled);
         });
 
-        // --- UUSI: Kirjoitus-efekti (näytetään statsit kun textarea valitaan) ---
         const aiInput = document.getElementById('ai-input');
         const mainHeader = document.getElementById('main-header');
-
-        aiInput.addEventListener('focus', () => {
-            mainHeader.classList.add('is-typing');
-        });
-
-        aiInput.addEventListener('blur', () => {
-            mainHeader.classList.remove('is-typing');
-        });
+        aiInput.addEventListener('focus', () => mainHeader.classList.add('is-typing'));
+        aiInput.addEventListener('blur', () => mainHeader.classList.remove('is-typing'));
 
         function previewImage(e) {
             const file = e.target.files[0];
@@ -511,13 +324,11 @@
             document.getElementById('food-list').innerHTML = '';
             const schoolObj = schoolsList.find(s => s.id === schoolId);
             if (schoolObj) document.getElementById('header-school-name').innerText = schoolObj.name;
-
             const data = allMenus[schoolId];
             if (!data || !data[0]?.data?.mealOptions?.[0]) {
                 document.getElementById('food-list').innerHTML = '<div style="text-align:center; padding:30px; color:var(--text-dim);">Ei listaa saatavilla.</div>';
                 return;
             }
-
             const rows = data[0].data.mealOptions[0].rows;
             const container = document.getElementById('food-list');
             rows.forEach((row, i) => {
@@ -545,9 +356,7 @@
                 });
                 const d = await resp.json();
                 const results = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
-                mealData.forEach((item, i) => {
-                    document.getElementById(`q-${i}`).value = results.menuResults[item.name] || 0;
-                });
+                mealData.forEach((item, i) => { document.getElementById(`q-${i}`).value = results.menuResults[item.name] || 0; });
                 calc();
             } catch (e) { alert("AI Virhe"); }
             document.getElementById('splash').style.display = 'none';
@@ -565,7 +374,6 @@
             document.getElementById('res-r').innerText = document.getElementById('mini-r').innerText = r(tr) + "g";
             document.getElementById('res-h').innerText = document.getElementById('mini-h').innerText = r(th) + "g";
         }
-
         init();
     </script>
 </body>
