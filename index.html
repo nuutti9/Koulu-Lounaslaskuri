@@ -36,7 +36,7 @@
 
         body {
             width: 100%;
-            min-height: 100vh; /* KORJAUS: Sallitaan sivun luonnollinen pituus */
+            min-height: 100vh;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
@@ -60,7 +60,8 @@
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        header.scrolled {
+        /* Kompakti tila skrollatessa TAI kirjoittaessa */
+        header.scrolled, header.is-typing {
             padding-top: 50px;
             padding-bottom: 12px;
         }
@@ -71,6 +72,7 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
+            position: relative;
         }
 
         .header-titles {
@@ -98,9 +100,11 @@
             gap: 8px;
         }
 
-        header.scrolled .header-titles {
+        /* Piilotetaan otsikot kun halutaan nähdä statsit ylhäällä */
+        header.scrolled .header-titles, header.is-typing .header-titles {
             opacity: 0;
             transform: translateY(-10px);
+            pointer-events: none;
         }
 
         /* --- STICKY STATS PILL --- */
@@ -118,7 +122,8 @@
             pointer-events: none;
         }
 
-        header.scrolled .sticky-stats {
+        /* Näytetään statsit skrollatessa TAI kirjoittaessa */
+        header.scrolled .sticky-stats, header.is-typing .sticky-stats {
             opacity: 1;
             transform: translateY(0);
             pointer-events: auto;
@@ -143,7 +148,6 @@
 
         /* --- CONTENT AREA --- */
         .scroll-area {
-            /* KORJAUS: Poistettu kiinteä korkeus ja overflow, annetaan body-elementin hoitaa skrollaus */
             padding-top: 140px;
             width: 100%;
         }
@@ -268,10 +272,6 @@
             transition: opacity 0.2s;
         }
 
-        .btn-primary:active {
-            opacity: 0.7;
-        }
-
         /* --- LIST GROUP --- */
         .section-label {
             font-size: 13px;
@@ -325,120 +325,20 @@
             font-size: 17px;
             text-align: right;
             outline: none;
-            appearance: textfield;
-            -moz-appearance: textfield;
-        }
-
-        input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            appearance: none;
-            margin: 0;
-        }
-
-        .unit {
-            font-weight: 600;
-            color: var(--text-dim);
-            font-size: 13px;
-            margin-left: 4px;
         }
 
         /* --- SPLASH & LOADER --- */
-        #splash {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: var(--blur);
-            z-index: 3000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 24px;
-        }
-
-        .loader {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            border-bottom-color: var(--accent);
-            animation: rotation 1s linear infinite;
-        }
-
-        @keyframes rotation {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
+        #splash { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); backdrop-filter: var(--blur); z-index: 3000; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 24px; }
+        .loader { width: 50px; height: 50px; border: 4px solid rgba(255, 255, 255, 0.1); border-radius: 50%; border-bottom-color: var(--accent); animation: rotation 1s linear infinite; }
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
         /* --- WELCOME SCREEN --- */
-        #welcome-screen {
-            position: fixed;
-            inset: 0;
-            background: var(--bg);
-            z-index: 4000;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .select-wrapper {
-            position: relative;
-            width: 100%;
-            max-width: 320px;
-            margin-bottom: 25px;
-        }
-
-        .select-wrapper select {
-            width: 100%;
-            padding: 16px 20px;
-            border-radius: 14px;
-            background: var(--secondary-bg);
-            color: var(--text);
-            border: var(--ios-border);
-            font-size: 17px;
-            font-weight: 600;
-            outline: none;
-            appearance: none;
-            -webkit-appearance: none;
-            font-family: var(--font-main);
-        }
-
-        .select-wrapper::after {
-            content: '';
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 0;
-            height: 0;
-            border-left: 6px solid transparent;
-            border-right: 6px solid transparent;
-            border-top: 6px solid var(--text-dim);
-            pointer-events: none;
-        }
-
-        .school-header-selector {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            padding: 4px 8px;
-            margin-left: -8px;
-            border-radius: 10px;
-            transition: background 0.2s;
-        }
-
-        .school-header-selector:active {
-            background: rgba(255, 255, 255, 0.1);
-        }
+        #welcome-screen { position: fixed; inset: 0; background: var(--bg); z-index: 4000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .select-wrapper { position: relative; width: 100%; max-width: 320px; margin-bottom: 25px; }
+        .select-wrapper select { width: 100%; padding: 16px 20px; border-radius: 14px; background: var(--secondary-bg); color: var(--text); border: var(--ios-border); font-size: 17px; font-weight: 600; outline: none; appearance: none; -webkit-appearance: none; }
+        .select-wrapper::after { content: ''; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid var(--text-dim); pointer-events: none; }
+        .school-header-selector { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 4px 8px; margin-left: -8px; border-radius: 10px; transition: background 0.2s; }
+        .school-header-selector:active { background: rgba(255, 255, 255, 0.1); }
     </style>
 </head>
 
@@ -456,12 +356,6 @@
         <button onclick="selectSchool()" class="btn-primary"
             style="max-width:320px; width:100%; box-sizing: border-box; padding: 16px; font-size: 17px;">Valitse ja
             jatka</button>
-        <div style="margin-top: 30px; text-align: center; font-size: 14px; color: var(--text-dim);">
-            Eikö kouluasi ole listalla?<br>
-            <a href="mailto:esimerkki@email.com?subject=Koulun lisääminen&body=Hei, haluaisin ehdottaa koulua: [nimi]"
-                style="color: var(--accent); text-decoration: none; font-weight: 600; display: inline-block; margin-top: 8px;">Pyydä
-                sen lisäämistä</a>
-        </div>
     </div>
 
     <div id="splash">
@@ -475,11 +369,6 @@
                 <div class="date" id="date-label">Lataus...</div>
                 <h1>
                     <div class="school-header-selector" onclick="showWelcomeScreen()">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            style="width: 25px; height: 25px; color: var(--accent); flex-shrink: 0;">
-                            <path
-                                d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                        </svg>
                         <span id="header-school-name"
                             style="font-size: 28px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px;">Lataus...</span>
                         <svg style="width: 20px; height: 20px; color: var(--text-dim); flex-shrink: 0;" fill="none"
@@ -502,7 +391,7 @@
         </div>
     </header>
 
-    <div class="scroll-area" id="scroller">
+    <div class="scroll-area">
         <div class="container">
             <div class="hero">
                 <div class="kcal-box">
@@ -546,7 +435,6 @@
     </div>
 
     <script>
-        // --- LOGIIKKA JA AI-INTEGRAATIO ---
         const GEMINI_API_KEY = typeof CONFIG !== 'undefined' ? CONFIG.API_KEY : "";
         let mealData = [];
         let uploadedImageData = null;
@@ -554,18 +442,28 @@
         let schoolsList = [];
         let currentSchoolId = localStorage.getItem('kr_school_id');
 
-        // Päivämäärän alustus
         const uDate = new Date();
         const options = { weekday: 'long', day: 'numeric', month: 'long' };
         document.getElementById('date-label').innerText = uDate.toLocaleDateString('fi-FI', options).toUpperCase();
 
-        // KORJAUS: Skrollaus-efekti kuuntelemaan ikkunaa sisäisen divin sijaan
+        // Skrollaus-efekti
         window.addEventListener('scroll', () => {
             const isScrolled = window.scrollY > 40;
             document.getElementById('main-header').classList.toggle('scrolled', isScrolled);
         });
 
-        // Kuvan esikatselu
+        // --- UUSI: Kirjoitus-efekti (näytetään statsit kun textarea valitaan) ---
+        const aiInput = document.getElementById('ai-input');
+        const mainHeader = document.getElementById('main-header');
+
+        aiInput.addEventListener('focus', () => {
+            mainHeader.classList.add('is-typing');
+        });
+
+        aiInput.addEventListener('blur', () => {
+            mainHeader.classList.remove('is-typing');
+        });
+
         function previewImage(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -573,48 +471,32 @@
             reader.onload = (ev) => {
                 uploadedImageData = ev.target.result;
                 const img = document.getElementById('img-preview');
-                img.src = uploadedImageData;
-                img.style.display = 'block';
+                img.src = uploadedImageData; img.style.display = 'block';
             };
             reader.readAsDataURL(file);
         }
 
         async function init() {
             try {
-                // Fetch schools metadata
                 const sr = await fetch('./schools.json');
                 if (sr.ok) {
                     schoolsList = await sr.json();
                     const select = document.getElementById('school-select');
                     schoolsList.forEach(s => {
                         const opt = document.createElement('option');
-                        opt.value = s.id;
-                        opt.innerText = s.name;
+                        opt.value = s.id; opt.innerText = s.name;
                         select.appendChild(opt);
                     });
                 }
-
-                // Fetch all menus
                 const mr = await fetch('./menus.json');
-                if (mr.ok) {
-                    allMenus = await mr.json();
-                }
-
+                if (mr.ok) { allMenus = await mr.json(); }
                 if (!currentSchoolId || !schoolsList.find(s => s.id === currentSchoolId)) {
                     showWelcomeScreen();
-                } else {
-                    loadSchool(currentSchoolId);
-                }
-            } catch (e) { console.error("Error init:", e); }
+                } else { loadSchool(currentSchoolId); }
+            } catch (e) { console.error(e); }
         }
 
-        function showWelcomeScreen() {
-            document.getElementById('welcome-screen').style.display = 'flex';
-            if (currentSchoolId) {
-                document.getElementById('school-select').value = currentSchoolId;
-            }
-        }
-
+        function showWelcomeScreen() { document.getElementById('welcome-screen').style.display = 'flex'; }
         function selectSchool() {
             const val = document.getElementById('school-select').value;
             if (!val) return;
@@ -627,29 +509,17 @@
         function loadSchool(schoolId) {
             mealData = [];
             document.getElementById('food-list').innerHTML = '';
-            document.getElementById('res-kcal').innerText = '0';
-            document.getElementById('res-p').innerText = '0g';
-            document.getElementById('res-r').innerText = '0g';
-            document.getElementById('res-h').innerText = '0g';
-            document.getElementById('mini-kcal').innerText = '0';
-            document.getElementById('mini-p').innerText = '0g';
-            document.getElementById('mini-r').innerText = '0g';
-            document.getElementById('mini-h').innerText = '0g';
-
             const schoolObj = schoolsList.find(s => s.id === schoolId);
-            if (schoolObj) {
-                document.getElementById('header-school-name').innerText = schoolObj.name;
-            }
+            if (schoolObj) document.getElementById('header-school-name').innerText = schoolObj.name;
 
             const data = allMenus[schoolId];
-            if (!data || !data[0] || !data[0].data || !data[0].data.mealOptions || !data[0].data.mealOptions[0]) {
-                document.getElementById('food-list').innerHTML = '<div style="text-align:center; padding:30px 20px; color:var(--text-dim); border-radius:20px; margin-top:10px;">Ei ruokalistaa saatavilla täksi päiväksi.</div>';
+            if (!data || !data[0]?.data?.mealOptions?.[0]) {
+                document.getElementById('food-list').innerHTML = '<div style="text-align:center; padding:30px; color:var(--text-dim);">Ei listaa saatavilla.</div>';
                 return;
             }
 
             const rows = data[0].data.mealOptions[0].rows;
             const container = document.getElementById('food-list');
-
             rows.forEach((row, i) => {
                 const factors = row.nutritiveItem.factors;
                 const getVal = (lbl, isK) => {
@@ -658,53 +528,31 @@
                 };
                 const item = { name: row.names[0].name, kcal: getVal("Energia", true), p: getVal("Proteiini"), h: getVal("Hiilihydraatit"), r: getVal("Rasva") };
                 mealData.push(item);
-
-                // Uusi tiivis list-item-rakenne
-                container.innerHTML += `
-                    <div class="list-item">
-                        <div class="food-name">${item.name}</div>
-                        <div class="qty-input">
-                            <input type="number" id="q-${i}" value="0" oninput="calc()" inputmode="decimal">
-                            <span class="unit">g</span>
-                        </div>
-                    </div>`;
+                container.innerHTML += `<div class="list-item"><div class="food-name">${item.name}</div><div class="qty-input"><input type="number" id="q-${i}" value="0" oninput="calc()" inputmode="decimal"><span class="unit">g</span></div></div>`;
             });
         }
 
-        // AI-analyysi asiantuntija-promptilla
         async function runAI() {
-            if (!GEMINI_API_KEY) return alert("AI-avain puuttuu config.js-tiedostosta.");
+            if (!GEMINI_API_KEY) return alert("API-avain puuttuu.");
             document.getElementById('splash').style.display = 'flex';
             try {
-                const promptString = `Olet asiantunteva ravitsemusterapeutti ja ruoan painon arvioija. Tehtäväsi on arvioida annettujen ruokalajien paino grammoina käyttäjän kuvauksen perusteella.
-                Valikko: ${JSON.stringify(mealData.map(m => m.name))}
-                Käyttäjän kuvaus: "${document.getElementById('ai-input').value}"
-                Palauta VAIN JSON-muodossa: {"menuResults": {"Ruokalajin nimi": grammamäärä numeroina}}`;
-
+                const promptString = `Olet ravitsemusterapeutti. Arvioi painot: Valikko: ${JSON.stringify(mealData.map(m => m.name))}. Kuvaus: "${aiInput.value}". Palauta VAIN JSON: {"menuResults": {"Nimi": grammat}}`;
                 const parts = [{ text: promptString }];
-                if (uploadedImageData) {
-                    parts.push({ inlineData: { data: uploadedImageData.split(',')[1], mimeType: uploadedImageData.match(/data:(.*?);/)[1] } });
-                }
-
+                if (uploadedImageData) parts.push({ inlineData: { data: uploadedImageData.split(',')[1], mimeType: uploadedImageData.match(/data:(.*?);/)[1] } });
                 const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: parts }] })
                 });
-
                 const d = await resp.json();
                 const results = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
-
                 mealData.forEach((item, i) => {
-                    const val = results.menuResults[item.name] || 0;
-                    document.getElementById(`q-${i}`).value = val;
+                    document.getElementById(`q-${i}`).value = results.menuResults[item.name] || 0;
                 });
                 calc();
-            } catch (e) { alert("AI Virhe: " + e.message); }
+            } catch (e) { alert("AI Virhe"); }
             document.getElementById('splash').style.display = 'none';
         }
 
-        // Ravintoarvojen laskenta
         function calc() {
             let tk = 0, tp = 0, th = 0, tr = 0;
             mealData.forEach((item, i) => {
@@ -712,14 +560,12 @@
                 tk += (w * item.kcal) / 100; tp += (w * item.p) / 100; th += (w * item.h) / 100; tr += (w * item.r) / 100;
             });
             const r = Math.round;
-            document.getElementById('res-kcal').innerText = r(tk);
-            document.getElementById('mini-kcal').innerText = r(tk);
+            document.getElementById('res-kcal').innerText = document.getElementById('mini-kcal').innerText = r(tk);
             document.getElementById('res-p').innerText = document.getElementById('mini-p').innerText = r(tp) + "g";
             document.getElementById('res-r').innerText = document.getElementById('mini-r').innerText = r(tr) + "g";
             document.getElementById('res-h').innerText = document.getElementById('mini-h').innerText = r(th) + "g";
         }
 
-        // Käynnistys
         init();
     </script>
 </body>
