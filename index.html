@@ -2,739 +2,730 @@
 <html lang="fi">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>KR TRACKER</title>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="KR TRACKER">
-    <link rel="apple-touch-icon" href="./kr-logo.png">
-    <link rel="icon" href="./kr-logo.png">
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
-    <script src="./config.js"></script>
-    <style>
-        :root {
-            --bg: #000000;
-            --secondary-bg: #1C1C1E;
-            --tertiary-bg: #2C2C2E;
-            --accent: #0A84FF;
-            --p: #FF453A;
-            --f: #FFD60A;
-            --c: #30D158;
-            --text: #FFFFFF;
-            --text-dim: #8E8E93;
-            --ios-border: 0.5px solid rgba(255, 255, 255, 0.15);
-            --blur: saturate(180%) blur(20px);
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>KR TRACKER</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="KR TRACKER">
+    <link rel="apple-touch-icon" href="./kr-logo.png">
+    <link rel="icon" href="./kr-logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script src="./config.js"></script>
+    <style>
+        :root {
+            --bg: #000000;
+            --secondary-bg: #1C1C1E;
+            --tertiary-bg: #2C2C2E;
+            --accent: #0A84FF;
+            --p: #FF453A;
+            --f: #FFD60A;
+            --c: #30D158;
+            --text: #FFFFFF;
+            --text-dim: #8E8E93;
+            --ios-border: 0.5px solid rgba(255, 255, 255, 0.15);
+            --blur: saturate(180%) blur(20px);
+        }
 
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-        body {
-            width: 100%;
-            height: 100vh;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 0;
-            font-family: 'Manrope', sans-serif;
-            overflow: hidden;
-            position: relative; /* Muutettu fixed -> relative näppäimistö-bugin takia */
-            -webkit-font-smoothing: antialiased;
-        }
+        body {
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            font-family: 'Manrope', sans-serif;
+            overflow: hidden;
+            position: fixed;
+            -webkit-font-smoothing: antialiased;
+        }
 
-        /* --- HEADER --- */
-        header {
-            position: absolute; /* Muutettu fixed -> absolute */
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 2000;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: var(--blur);
-            -webkit-backdrop-filter: var(--blur);
-            padding: 55px 20px 16px;
-            border-bottom: var(--ios-border);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        /* --- HEADER --- */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 2000;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            padding: 55px 20px 16px;
+            border-bottom: var(--ios-border);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-        header.scrolled {
-            padding-top: 50px;
-            padding-bottom: 12px;
-        }
+        header.scrolled {
+            padding-top: 50px;
+            padding-bottom: 12px;
+        }
 
-        .header-content {
-            max-width: 400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-        }
+        .header-content {
+            max-width: 400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
 
-        .header-titles {
-            transition: all 0.4s ease;
-            display: flex;
-            flex-direction: column;
-        }
+        .header-titles {
+            transition: all 0.4s ease;
+            display: flex;
+            flex-direction: column;
+        }
 
-        .date {
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            letter-spacing: 0.6px;
-            margin-bottom: 2px;
-        }
+        .date {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 2px;
+        }
 
-        h1 {
-            font-size: 32px;
-            font-weight: 800;
-            margin: 0;
-            letter-spacing: -1.2px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        h1 {
+            font-size: 32px;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -1.2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-        header.scrolled .header-titles {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
+        header.scrolled .header-titles {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
 
-        /* --- STICKY STATS PILL --- */
-        .sticky-stats {
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 12px;
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            pointer-events: none;
-        }
+        /* --- STICKY STATS PILL --- */
+        .sticky-stats {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 12px;
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
 
-        header.scrolled .sticky-stats {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
-        }
+        header.scrolled .sticky-stats {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
 
-        .s-item {
-            display: flex;
-            align-items: baseline;
-            gap: 3px;
-        }
+        .s-item {
+            display: flex;
+            align-items: baseline;
+            gap: 3px;
+        }
 
-        .s-val {
-            font-size: 15px;
-            font-weight: 800;
-        }
+        .s-val {
+            font-size: 15px;
+            font-weight: 800;
+        }
 
-        .s-lbl {
-            font-size: 10px;
-            font-weight: 700;
-            color: var(--text-dim);
-        }
+        .s-lbl {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-dim);
+        }
 
-        /* --- CONTENT AREA --- */
-        .scroll-area {
-            height: 100vh;
-            overflow-y: scroll;
-            overflow-x: hidden;
-            -webkit-overflow-scrolling: touch;
-            padding-top: 140px;
-        }
+        /* --- CONTENT AREA --- */
+        .scroll-area {
+            height: 100vh;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            padding-top: 140px;
+        }
 
-        .container {
-            width: 100%;
-            max-width: 414px;
-            padding: 0 16px 150px;
-            margin: 0 auto;
-        }
+        .container {
+            width: 100%;
+            max-width: 414px;
+            padding: 0 16px 150px;
+            margin: 0 auto;
+        }
 
-        /* --- DASHBOARD HERO --- */
-        .hero {
-            background: var(--secondary-bg);
-            border-radius: 24px;
-            padding: 24px;
-            margin-bottom: 20px;
-            border: var(--ios-border);
-            display: flex;
-            align-items: center;
-            gap: 24px;
-        }
+        /* --- DASHBOARD HERO --- */
+        .hero {
+            background: var(--secondary-bg);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: var(--ios-border);
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
 
-        .kcal-box {
-            padding-right: 24px;
-            border-right: var(--ios-border);
-            text-align: center;
-        }
+        .kcal-box {
+            padding-right: 24px;
+            border-right: var(--ios-border);
+            text-align: center;
+        }
 
-        .kcal-val {
-            font-size: 48px;
-            font-weight: 800;
-            letter-spacing: -2px;
-            line-height: 1;
-        }
+        .kcal-val {
+            font-size: 48px;
+            font-weight: 800;
+            letter-spacing: -2px;
+            line-height: 1;
+        }
 
-        .kcal-lbl {
-            font-size: 11px;
-            font-weight: 800;
-            color: var(--text-dim);
-            margin-top: 6px;
-        }
+        .kcal-lbl {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-dim);
+            margin-top: 6px;
+        }
 
-        .macro-list {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+        .macro-list {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
-        .m-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .m-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-        .m-lbl {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-dim);
-        }
+        .m-lbl {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-dim);
+        }
 
-        .m-val {
-            font-size: 15px;
-            font-weight: 800;
-        }
+        .m-val {
+            font-size: 15px;
+            font-weight: 800;
+        }
 
-        /* --- AI COMPOSER --- */
-        .ai-zone {
-            background: var(--secondary-bg);
-            border-radius: 20px;
-            padding: 16px;
-            margin-bottom: 30px;
-            border: var(--ios-border);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-        }
+        /* --- AI COMPOSER --- */
+        .ai-zone {
+            background: var(--secondary-bg);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 30px;
+            border: var(--ios-border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
 
-        textarea {
-            width: 100%;
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 17px;
-            font-weight: 500;
-            outline: none;
-            resize: none;
-            min-height: 60px;
-            font-family: inherit;
-            line-height: 1.5;
-        }
+        textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 17px;
+            font-weight: 500;
+            outline: none;
+            resize: none;
+            min-height: 60px;
+            font-family: inherit;
+            line-height: 1.5;
+        }
 
-        .ai-toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 0.5px solid rgba(255, 255, 255, 0.08);
-        }
+        .ai-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 0.5px solid rgba(255, 255, 255, 0.08);
+        }
 
-        .btn-icon {
-            background: transparent;
-            border: none;
-            color: var(--accent);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 15px;
-            font-weight: 600;
-            padding: 0;
-            cursor: pointer;
-        }
+        .btn-icon {
+            background: transparent;
+            border: none;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 0;
+            cursor: pointer;
+        }
 
-        .btn-primary {
-            background: var(--accent);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 12px;
-            border: none;
-            font-weight: 700;
-            font-size: 15px;
-            transition: opacity 0.2s;
-        }
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 700;
+            font-size: 15px;
+            transition: opacity 0.2s;
+        }
 
-        .btn-primary:active {
-            opacity: 0.7;
-        }
+        .btn-primary:active {
+            opacity: 0.7;
+        }
 
-        /* --- LIST GROUP --- */
-        .section-label {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-dim);
-            margin: 0 0 8px 12px;
-            text-transform: uppercase;
-        }
+        /* --- LIST GROUP --- */
+        .section-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dim);
+            margin: 0 0 8px 12px;
+            text-transform: uppercase;
+        }
 
-        .list-group {
-            background: var(--secondary-bg);
-            border-radius: 20px;
-            border: var(--ios-border);
-            overflow: hidden;
-        }
+        .list-group {
+            background: var(--secondary-bg);
+            border-radius: 20px;
+            border: var(--ios-border);
+            overflow: hidden;
+        }
 
-        .list-item {
-            display: flex;
-            align-items: center;
-            padding: 14px 16px;
-            border-bottom: var(--ios-border);
-        }
+        .list-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            border-bottom: var(--ios-border);
+        }
 
-        .list-item:last-child {
-            border-bottom: none;
-        }
+        .list-item:last-child {
+            border-bottom: none;
+        }
 
-        .food-name {
-            font-size: 17px;
-            font-weight: 500;
-            flex: 1;
-            padding-right: 16px;
-        }
+        .food-name {
+            font-size: 17px;
+            font-weight: 500;
+            flex: 1;
+            padding-right: 16px;
+        }
 
-        .qty-input {
-            background: #000;
-            border-radius: 10px;
-            padding: 6px 12px;
-            display: flex;
-            align-items: center;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            width: 90px;
-        }
+        .qty-input {
+            background: #000;
+            border-radius: 10px;
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            width: 90px;
+        }
 
-        input[type="number"] {
-            width: 100%;
-            background: transparent;
-            border: none;
-            color: white;
-            font-weight: 700;
-            font-size: 17px;
-            text-align: right;
-            outline: none;
-            appearance: textfield;
-            -moz-appearance: textfield;
-        }
+        input[type="number"] {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: white;
+            font-weight: 700;
+            font-size: 17px;
+            text-align: right;
+            outline: none;
+            appearance: textfield;
+            -moz-appearance: textfield;
+        }
 
-        input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            appearance: none;
-            margin: 0;
-        }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            appearance: none;
+            margin: 0;
+        }
 
-        .unit {
-            font-weight: 600;
-            color: var(--text-dim);
-            font-size: 13px;
-            margin-left: 4px;
-        }
+        .unit {
+            font-weight: 600;
+            color: var(--text-dim);
+            font-size: 13px;
+            margin-left: 4px;
+        }
 
-        /* --- SPLASH & LOADER --- */
-        #splash {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: var(--blur);
-            z-index: 3000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 24px;
-        }
+        /* --- SPLASH & LOADER --- */
+        #splash {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: var(--blur);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 24px;
+        }
 
-        .loader {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            border-bottom-color: var(--accent);
-            animation: rotation 1s linear infinite;
-        }
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-bottom-color: var(--accent);
+            animation: rotation 1s linear infinite;
+        }
 
-        @keyframes rotation {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        @keyframes rotation {
+            0% {
+                transform: rotate(0deg);
+            }
 
-        /* --- WELCOME SCREEN IMPROVED --- */
-        #welcome-screen {
-            position: fixed;
-            inset: 0;
-            background: var(--bg);
-            z-index: 4000;
-            display: none;
-            flex-direction: column;
-            padding: 40px 20px 20px;
-        }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
 
-        .search-container {
-            width: 100%;
-            max-width: 400px;
-            margin: 0 auto 20px;
-        }
+        /* --- WELCOME SCREEN --- */
+        #welcome-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            z-index: 4000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
 
-        #school-search {
-            width: 100%;
-            background: var(--secondary-bg);
-            border: var(--ios-border);
-            border-radius: 14px;
-            padding: 14px 18px;
-            color: white;
-            font-size: 17px;
-            font-family: inherit;
-            outline: none;
-        }
+        .select-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 320px;
+            margin-bottom: 25px;
+        }
 
-        .school-list-container {
-            flex: 1;
-            width: 100%;
-            max-width: 400px;
-            margin: 0 auto;
-            overflow-y: auto;
-            border-radius: 14px;
-            background: var(--secondary-bg);
-            border: var(--ios-border);
-        }
+        .select-wrapper select {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 14px;
+            background: var(--secondary-bg);
+            color: var(--text);
+            border: var(--ios-border);
+            font-size: 17px;
+            font-weight: 600;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+            font-family: var(--font-main);
+        }
 
-        .school-option {
-            padding: 16px 20px;
-            border-bottom: 0.5px solid rgba(255,255,255,0.05);
-            font-size: 17px;
-            font-weight: 500;
-        }
+        .select-wrapper::after {
+            content: '';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid var(--text-dim);
+            pointer-events: none;
+        }
 
-        .school-option:active {
-            background: rgba(255,255,255,0.05);
-        }
+        .school-header-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 4px 8px;
+            margin-left: -8px;
+            border-radius: 10px;
+            transition: background 0.2s;
+        }
 
-        .school-option.selected {
-            color: var(--accent);
-            font-weight: 700;
-        }
-
-        .school-header-selector {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            padding: 4px 8px;
-            margin-left: -8px;
-            border-radius: 10px;
-            transition: background 0.2s;
-        }
-
-        .school-header-selector:active {
-            background: rgba(255, 255, 255, 0.1);
-        }
-    </style>
+        .school-header-selector:active {
+            background: rgba(255, 255, 255, 0.1);
+        }
+    </style>
 </head>
 
 <body>
-    <div id="welcome-screen">
-        <h1 style="margin-bottom: 10px; text-align: center;">Tervetuloa!</h1>
-        <p style="color:var(--text-dim); margin-bottom: 25px; text-align:center; font-size: 15px;">
-            Valitse koulu listalta aloittaaksesi.
-        </p>
-        
-        <div class="search-container">
-            <input type="text" id="school-search" placeholder="Etsi koulua..." oninput="filterSchools()">
-        </div>
+    <div id="welcome-screen">
+        <h1 style="margin-bottom: 15px; text-align: center;">Tervetuloa!</h1>
+        <p style="color:var(--text-dim); margin-bottom: 35px; text-align:center; font-size: 16px; max-width: 300px;">
+            Valitse koulu tai oppilaitos aloittaaksesi lounaslaskurin käytön.
+        </p>
+        <div class="select-wrapper">
+            <select id="school-select">
+                <option value="" disabled selected>Valitse koulu...</option>
+            </select>
+        </div>
+        <button onclick="selectSchool()" class="btn-primary"
+            style="max-width:320px; width:100%; box-sizing: border-box; padding: 16px; font-size: 17px;">Valitse ja
+            jatka</button>
+        <div style="margin-top: 30px; text-align: center; font-size: 14px; color: var(--text-dim);">
+            Eikö kouluasi ole listalla?<br>
+            <a href="mailto:esimerkki@email.com?subject=Koulun lisääminen&body=Hei, haluaisin ehdottaa koulua: [nimi]"
+                style="color: var(--accent); text-decoration: none; font-weight: 600; display: inline-block; margin-top: 8px;">Pyydä
+                sen lisäämistä</a>
+        </div>
+    </div>
 
-        <div class="school-list-container" id="school-list-box">
-            </div>
+    <div id="splash">
+        <span class="loader"></span>
+        <div style="font-weight: 700; color: white; font-size: 20px; letter-spacing: -0.5px;">Analysoidaan...</div>
+    </div>
 
-        <div style="margin-top: 20px; text-align: center; font-size: 13px; color: var(--text-dim);">
-            Eikö kouluasi ole listalla? 
-            <a href="mailto:esimerkki@email.com" style="color: var(--accent); text-decoration: none;">Pyydä lisäystä</a>
-        </div>
-    </div>
+    <header id="main-header">
+        <div class="header-content">
+            <div class="header-titles">
+                <div class="date" id="date-label">Lataus...</div>
+                <h1>
+                    <div class="school-header-selector" onclick="showWelcomeScreen()">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            style="width: 25px; height: 25px; color: var(--accent); flex-shrink: 0;">
+                            <path
+                                d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                        </svg>
+                        <span id="header-school-name"
+                            style="font-size: 28px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px;">Lataus...</span>
+                        <svg style="width: 20px; height: 20px; color: var(--text-dim); flex-shrink: 0;" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                            </path>
+                        </svg>
+                    </div>
+                </h1>
+            </div>
+            <div class="sticky-stats" id="mini-stats">
+                <div class="s-item"><span class="s-val" id="mini-kcal">0</span><span class="s-lbl">kcal</span></div>
+                <div class="s-item"><span class="s-val" id="mini-p" style="color:var(--p)">0g</span><span
+                        class="s-lbl">P</span></div>
+                <div class="s-item"><span class="s-val" id="mini-r" style="color:var(--f)">0g</span><span
+                        class="s-lbl">R</span></div>
+                <div class="s-item"><span class="s-val" id="mini-h" style="color:var(--c)">0g</span><span
+                        class="s-lbl">H</span></div>
+            </div>
+        </div>
+    </header>
 
-    <div id="splash">
-        <span class="loader"></span>
-        <div style="font-weight: 700; color: white; font-size: 20px; letter-spacing: -0.5px;">Analysoidaan...</div>
-    </div>
+    <div class="scroll-area" id="scroller">
+        <div class="container">
+            <div class="hero">
+                <div class="kcal-box">
+                    <div class="kcal-val" id="res-kcal">0</div>
+                    <div class="kcal-lbl">KCAL</div>
+                </div>
+                <div class="macro-list">
+                    <div class="m-row"><span class="m-lbl">PROTEIINI</span><span class="m-val" id="res-p"
+                            style="color:var(--p)">0g</span></div>
+                    <div class="m-row"><span class="m-lbl">RASVA</span><span class="m-val" id="res-r"
+                            style="color:var(--f)">0g</span></div>
+                    <div class="m-row"><span class="m-lbl">HIILIHYDRAATTI</span><span class="m-val" id="res-h"
+                            style="color:var(--c)">0g</span></div>
+                </div>
+            </div>
 
-    <header id="main-header">
-        <div class="header-content">
-            <div class="header-titles">
-                <div class="date" id="date-label">Lataus...</div>
-                <h1>
-                    <div class="school-header-selector" onclick="showWelcomeScreen()">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            style="width: 25px; height: 25px; color: var(--accent); flex-shrink: 0;">
-                            <path
-                                d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                        </svg>
-                        <span id="header-school-name"
-                            style="font-size: 28px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px;">Lataus...</span>
-                        <svg style="width: 20px; height: 20px; color: var(--text-dim); flex-shrink: 0;" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
-                            </path>
-                        </svg>
-                    </div>
-                </h1>
-            </div>
-            <div class="sticky-stats" id="mini-stats">
-                <div class="s-item"><span class="s-val" id="mini-kcal">0</span><span class="s-lbl">kcal</span></div>
-                <div class="s-item"><span class="s-val" id="mini-p" style="color:var(--p)">0g</span><span
-                        class="s-lbl">P</span></div>
-                <div class="s-item"><span class="s-val" id="mini-r" style="color:var(--f)">0g</span><span
-                        class="s-lbl">R</span></div>
-                <div class="s-item"><span class="s-val" id="mini-h" style="color:var(--c)">0g</span><span
-                        class="s-lbl">H</span></div>
-            </div>
-        </div>
-    </header>
+            <div class="ai-zone">
+                <textarea id="ai-input" placeholder="Kirjoita mitä söit..."></textarea>
+                <img id="img-preview"
+                    style="width:100%; max-height:200px; object-fit:cover; border-radius:20px; margin-top:15px; display:none; border: 0.5px solid rgba(255,255,255,0.1);" />
+                <div class="ai-toolbar">
+                    <button class="btn-icon" onclick="document.getElementById('image-upload').click()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z">
+                            </path>
+                            <circle cx="12" cy="13" r="4"></circle>
+                        </svg>
+                        Lisää kuva
+                    </button>
+                    <input type="file" id="image-upload" accept="image/*" style="display:none;"
+                        onchange="previewImage(event)">
+                    <button class="btn-primary" onclick="runAI()">Analysoi</button>
+                </div>
+            </div>
 
-    <div class="scroll-area" id="scroller">
-        <div class="container">
-            <div class="hero">
-                <div class="kcal-box">
-                    <div class="kcal-val" id="res-kcal">0</div>
-                    <div class="kcal-lbl">KCAL</div>
-                </div>
-                <div class="macro-list">
-                    <div class="m-row"><span class="m-lbl">PROTEIINI</span><span class="m-val" id="res-p"
-                            style="color:var(--p)">0g</span></div>
-                    <div class="m-row"><span class="m-lbl">RASVA</span><span class="m-val" id="res-r"
-                            style="color:var(--f)">0g</span></div>
-                    <div class="m-row"><span class="m-lbl">HIILIHYDRAATTI</span><span class="m-val" id="res-h"
-                            style="color:var(--c)">0g</span></div>
-                </div>
-            </div>
+            <div class="section-label">Päivän valikko</div>
+            <div class="list-group" id="food-list">
+            </div>
+        </div>
+    </div>
 
-            <div class="ai-zone">
-                <textarea id="ai-input" placeholder="Kirjoita mitä söit..."></textarea>
-                <img id="img-preview"
-                    style="width:100%; max-height:200px; object-fit:cover; border-radius:20px; margin-top:15px; display:none; border: 0.5px solid rgba(255,255,255,0.1);" />
-                <div class="ai-toolbar">
-                    <button class="btn-icon" onclick="document.getElementById('image-upload').click()">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2.5">
-                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z">
-                            </path>
-                            <circle cx="12" cy="13" r="4"></circle>
-                        </svg>
-                        Lisää kuva
-                    </button>
-                    <input type="file" id="image-upload" accept="image/*" style="display:none;"
-                        onchange="previewImage(event)">
-                    <button class="btn-primary" onclick="runAI()">Analysoi</button>
-                </div>
-            </div>
+    <script>
+        // --- LOGIIKKA JA AI-INTEGRAATIO ---
+        const GEMINI_API_KEY = typeof CONFIG !== 'undefined' ? CONFIG.API_KEY : "";
+        let mealData = [];
+        let uploadedImageData = null;
+        let allMenus = {};
+        let schoolsList = [];
+        let currentSchoolId = localStorage.getItem('kr_school_id');
 
-            <div class="section-label">Päivän valikko</div>
-            <div class="list-group" id="food-list">
-            </div>
-        </div>
-    </div>
+        // Päivämäärän alustus
+        const uDate = new Date();
+        const options = { weekday: 'long', day: 'numeric', month: 'long' };
+        document.getElementById('date-label').innerText = uDate.toLocaleDateString('fi-FI', options).toUpperCase();
 
-    <script>
-        const GEMINI_API_KEY = typeof CONFIG !== 'undefined' ? CONFIG.API_KEY : "";
-        let mealData = [];
-        let uploadedImageData = null;
-        let allMenus = {};
-        let schoolsList = [];
-        let currentSchoolId = localStorage.getItem('kr_school_id');
+        // Skrollaus-efekti
+        document.getElementById('scroller').addEventListener('scroll', (e) => {
+            const isScrolled = e.target.scrollTop > 40;
+            document.getElementById('main-header').classList.toggle('scrolled', isScrolled);
+        });
 
-        // Date init
-        const uDate = new Date();
-        const options = { weekday: 'long', day: 'numeric', month: 'long' };
-        document.getElementById('date-label').innerText = uDate.toLocaleDateString('fi-FI', options).toUpperCase();
+        // Kuvan esikatselu
+        function previewImage(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                uploadedImageData = ev.target.result;
+                const img = document.getElementById('img-preview');
+                img.src = uploadedImageData;
+                img.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
 
-        // Keyboard bug fix: Adjust header on focus
-        const inputs = document.querySelectorAll('textarea, input');
-        inputs.forEach(input => {
-            input.addEventListener('focus', () => {
-                if(window.innerWidth < 768) {
-                    document.getElementById('main-header').style.position = 'absolute';
-                    window.scrollTo(0, 0);
-                }
-            });
-            input.addEventListener('blur', () => {
-                document.getElementById('main-header').style.position = 'absolute';
-            });
-        });
+        async function init() {
+            try {
+                // Fetch schools metadata
+                const sr = await fetch('./schools.json');
+                if (sr.ok) {
+                    schoolsList = await sr.json();
+                    const select = document.getElementById('school-select');
+                    schoolsList.forEach(s => {
+                        const opt = document.createElement('option');
+                        opt.value = s.id;
+                        opt.innerText = s.name;
+                        select.appendChild(opt);
+                    });
+                }
 
-        // Scroll effect
-        document.getElementById('scroller').addEventListener('scroll', (e) => {
-            const isScrolled = e.target.scrollTop > 40;
-            document.getElementById('main-header').classList.toggle('scrolled', isScrolled);
-            // Ensure header follows during scroll
-            document.getElementById('main-header').style.top = e.target.scrollTop + 'px';
-        });
+                // Fetch all menus
+                const mr = await fetch('./menus.json');
+                if (mr.ok) {
+                    allMenus = await mr.json();
+                }
 
-        function previewImage(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                uploadedImageData = ev.target.result;
-                const img = document.getElementById('img-preview');
-                img.src = uploadedImageData;
-                img.style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-        }
+                if (!currentSchoolId || !schoolsList.find(s => s.id === currentSchoolId)) {
+                    showWelcomeScreen();
+                } else {
+                    loadSchool(currentSchoolId);
+                }
+            } catch (e) { console.error("Error init:", e); }
+        }
 
-        async function init() {
-            try {
-                const sr = await fetch('./schools.json');
-                if (sr.ok) {
-                    schoolsList = await sr.json();
-                    renderSchoolList(schoolsList);
-                }
+        function showWelcomeScreen() {
+            document.getElementById('welcome-screen').style.display = 'flex';
+            if (currentSchoolId) {
+                document.getElementById('school-select').value = currentSchoolId;
+            }
+        }
 
-                const mr = await fetch('./menus.json');
-                if (mr.ok) {
-                    allMenus = await mr.json();
-                }
+        function selectSchool() {
+            const val = document.getElementById('school-select').value;
+            if (!val) return;
+            currentSchoolId = val;
+            localStorage.setItem('kr_school_id', currentSchoolId);
+            document.getElementById('welcome-screen').style.display = 'none';
+            loadSchool(currentSchoolId);
+        }
 
-                if (!currentSchoolId || !schoolsList.find(s => s.id === currentSchoolId)) {
-                    showWelcomeScreen();
-                } else {
-                    loadSchool(currentSchoolId);
-                }
-            } catch (e) { console.error("Error init:", e); }
-        }
+        function loadSchool(schoolId) {
+            mealData = [];
+            document.getElementById('food-list').innerHTML = '';
+            document.getElementById('res-kcal').innerText = '0';
+            document.getElementById('res-p').innerText = '0g';
+            document.getElementById('res-r').innerText = '0g';
+            document.getElementById('res-h').innerText = '0g';
+            document.getElementById('mini-kcal').innerText = '0';
+            document.getElementById('mini-p').innerText = '0g';
+            document.getElementById('mini-r').innerText = '0g';
+            document.getElementById('mini-h').innerText = '0g';
 
-        function renderSchoolList(list) {
-            const container = document.getElementById('school-list-box');
-            container.innerHTML = '';
-            list.forEach(s => {
-                const div = document.createElement('div');
-                div.className = `school-option ${currentSchoolId === s.id ? 'selected' : ''}`;
-                div.innerText = s.name;
-                div.onclick = () => selectSchool(s.id);
-                container.appendChild(div);
-            });
-        }
+            const schoolObj = schoolsList.find(s => s.id === schoolId);
+            if (schoolObj) {
+                document.getElementById('header-school-name').innerText = schoolObj.name;
+            }
 
-        function filterSchools() {
-            const term = document.getElementById('school-search').value.toLowerCase();
-            const filtered = schoolsList.filter(s => s.name.toLowerCase().includes(term));
-            renderSchoolList(filtered);
-        }
+            const data = allMenus[schoolId];
+            if (!data || !data[0] || !data[0].data || !data[0].data.mealOptions || !data[0].data.mealOptions[0]) {
+                document.getElementById('food-list').innerHTML = '<div style="text-align:center; padding:30px 20px; color:var(--text-dim); border-radius:20px; margin-top:10px;">Ei ruokalistaa saatavilla täksi päiväksi.</div>';
+                return;
+            }
 
-        function showWelcomeScreen() {
-            document.getElementById('welcome-screen').style.display = 'flex';
-        }
+            const rows = data[0].data.mealOptions[0].rows;
+            const container = document.getElementById('food-list');
 
-        function selectSchool(id) {
-            currentSchoolId = id;
-            localStorage.setItem('kr_school_id', currentSchoolId);
-            document.getElementById('welcome-screen').style.display = 'none';
-            loadSchool(currentSchoolId);
-        }
+            rows.forEach((row, i) => {
+                const factors = row.nutritiveItem.factors;
+                const getVal = (lbl, isK) => {
+                    const f = factors.find(fact => fact.nutritiveFactorNames[0].name === (isK ? "Energia" : lbl) && (!isK || fact.values[0].value100.includes("kcal")));
+                    return f ? parseFloat(f.values[0].value100.replace(',', '.').replace(/[^\d.]/g, '')) : 0;
+                };
+                const item = { name: row.names[0].name, kcal: getVal("Energia", true), p: getVal("Proteiini"), h: getVal("Hiilihydraatit"), r: getVal("Rasva") };
+                mealData.push(item);
 
-        function loadSchool(schoolId) {
-            mealData = [];
-            document.getElementById('food-list').innerHTML = '';
-            // Reset stats
-            ['res-kcal','mini-kcal'].forEach(id => document.getElementById(id).innerText = '0');
-            ['res-p','res-r', 'res-h', 'mini-p', 'mini-r', 'mini-h'].forEach(id => document.getElementById(id).innerText = '0g');
+                // Uusi tiivis list-item-rakenne
+                container.innerHTML += `
+                    <div class="list-item">
+                        <div class="food-name">${item.name}</div>
+                        <div class="qty-input">
+                            <input type="number" id="q-${i}" value="0" oninput="calc()" inputmode="decimal">
+                            <span class="unit">g</span>
+                        </div>
+                    </div>`;
+            });
+        }
 
-            const schoolObj = schoolsList.find(s => s.id === schoolId);
-            if (schoolObj) {
-                document.getElementById('header-school-name').innerText = schoolObj.name;
-            }
+        // AI-analyysi asiantuntija-promptilla
+        async function runAI() {
+            if (!GEMINI_API_KEY) return alert("AI-avain puuttuu config.js-tiedostosta.");
+            document.getElementById('splash').style.display = 'flex';
+            try {
+                const promptString = `Olet asiantunteva ravitsemusterapeutti ja ruoan painon arvioija. Tehtäväsi on arvioida annettujen ruokalajien paino grammoina käyttäjän kuvauksen perusteella.
+                Valikko: ${JSON.stringify(mealData.map(m => m.name))}
+                Käyttäjän kuvaus: "${document.getElementById('ai-input').value}"
+                Palauta VAIN JSON-muodossa: {"menuResults": {"Ruokalajin nimi": grammamäärä numeroina}}`;
 
-            const data = allMenus[schoolId];
-            if (!data || !data[0] || !data[0].data || !data[0].data.mealOptions || !data[0].data.mealOptions[0]) {
-                document.getElementById('food-list').innerHTML = '<div style="text-align:center; padding:30px 20px; color:var(--text-dim);">Ei ruokalistaa tälle päivälle.</div>';
-                return;
-            }
+                const parts = [{ text: promptString }];
+                if (uploadedImageData) {
+                    parts.push({ inlineData: { data: uploadedImageData.split(',')[1], mimeType: uploadedImageData.match(/data:(.*?);/)[1] } });
+                }
 
-            const rows = data[0].data.mealOptions[0].rows;
-            const container = document.getElementById('food-list');
+                const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: parts }] })
+                });
 
-            rows.forEach((row, i) => {
-                const factors = row.nutritiveItem.factors;
-                const getVal = (lbl, isK) => {
-                    const f = factors.find(fact => fact.nutritiveFactorNames[0].name === (isK ? "Energia" : lbl) && (!isK || fact.values[0].value100.includes("kcal")));
-                    return f ? parseFloat(f.values[0].value100.replace(',', '.').replace(/[^\d.]/g, '')) : 0;
-                };
-                const item = { name: row.names[0].name, kcal: getVal("Energia", true), p: getVal("Proteiini"), h: getVal("Hiilihydraatit"), r: getVal("Rasva") };
-                mealData.push(item);
+                const d = await resp.json();
+                const results = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
 
-                container.innerHTML += `
-                    <div class="list-item">
-                        <div class="food-name">${item.name}</div>
-                        <div class="qty-input">
-                            <input type="number" id="q-${i}" value="0" oninput="calc()" inputmode="decimal">
-                            <span class="unit">g</span>
-                        </div>
-                    </div>`;
-            });
-        }
+                mealData.forEach((item, i) => {
+                    const val = results.menuResults[item.name] || 0;
+                    document.getElementById(`q-${i}`).value = val;
+                });
+                calc();
+            } catch (e) { alert("AI Virhe: " + e.message); }
+            document.getElementById('splash').style.display = 'none';
+        }
 
-        async function runAI() {
-            if (!GEMINI_API_KEY) return alert("AI-avain puuttuu.");
-            document.getElementById('splash').style.display = 'flex';
-            try {
-                const promptString = `Olet ravitsemusterapeutti. Arvioi ruokien paino (g). 
-                Valikko: ${JSON.stringify(mealData.map(m => m.name))}
-                Käyttäjä: "${document.getElementById('ai-input').value}"
-                Paluu: {"menuResults": {"Nimi": grammat}}`;
+        // Ravintoarvojen laskenta
+        function calc() {
+            let tk = 0, tp = 0, th = 0, tr = 0;
+            mealData.forEach((item, i) => {
+                const w = parseFloat(document.getElementById(`q-${i}`).value) || 0;
+                tk += (w * item.kcal) / 100; tp += (w * item.p) / 100; th += (w * item.h) / 100; tr += (w * item.r) / 100;
+            });
+            const r = Math.round;
+            document.getElementById('res-kcal').innerText = r(tk);
+            document.getElementById('mini-kcal').innerText = r(tk);
+            document.getElementById('res-p').innerText = document.getElementById('mini-p').innerText = r(tp) + "g";
+            document.getElementById('res-r').innerText = document.getElementById('mini-r').innerText = r(tr) + "g";
+            document.getElementById('res-h').innerText = document.getElementById('mini-h').innerText = r(th) + "g";
+        }
 
-                const parts = [{ text: promptString }];
-                if (uploadedImageData) {
-                    parts.push({ inlineData: { data: uploadedImageData.split(',')[1], mimeType: uploadedImageData.match(/data:(.*?);/)[1] } });
-                }
-
-                const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: parts }] })
-                });
-
-                const d = await resp.json();
-                const results = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
-
-                mealData.forEach((item, i) => {
-                    const val = results.menuResults[item.name] || 0;
-                    document.getElementById(`q-${i}`).value = val;
-                });
-                calc();
-            } catch (e) { console.error(e); }
-            document.getElementById('splash').style.display = 'none';
-        }
-
-        function calc() {
-            let tk = 0, tp = 0, th = 0, tr = 0;
-            mealData.forEach((item, i) => {
-                const w = parseFloat(document.getElementById(`q-${i}`).value) || 0;
-                tk += (w * item.kcal) / 100; tp += (w * item.p) / 100; th += (w * item.h) / 100; tr += (w * item.r) / 100;
-            });
-            const r = Math.round;
-            document.getElementById('res-kcal').innerText = document.getElementById('mini-kcal').innerText = r(tk);
-            document.getElementById('res-p').innerText = document.getElementById('mini-p').innerText = r(tp) + "g";
-            document.getElementById('res-r').innerText = document.getElementById('mini-r').innerText = r(tr) + "g";
-            document.getElementById('res-h').innerText = document.getElementById('mini-h').innerText = r(th) + "g";
-        }
-
-        init();
-    </script>
+        // Käynnistys
+        init();
+    </script>
 </body>
 
 </html>
