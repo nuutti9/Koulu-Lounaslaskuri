@@ -2,15 +2,15 @@
   "alavus": [
     {
       "allSuccessful": true,
-      "date": "2026-02-28",
+      "date": "2026-03-01",
       "tenantFound": true,
       "siteFound": true,
       "isMenuForDate": true,
       "data": {
-        "date": "2026-02-28",
+        "date": "2026-03-01",
         "menuId": "bead0836-b104-4d8e-835a-eddd0cf8fede",
         "siteId": "35788f90-938b-4a82-a8cc-85118712998d",
-        "version": 1772246189,
+        "version": 1772332667,
         "mealOptions": []
       }
     }
@@ -19,15 +19,15 @@
   "ikaalinen": [
     {
       "allSuccessful": true,
-      "date": "2026-02-28",
+      "date": "2026-03-01",
       "tenantFound": true,
       "siteFound": true,
       "isMenuForDate": true,
       "data": {
-        "date": "2026-02-28",
+        "date": "2026-03-01",
         "menuId": "1987bc7d-5f09-4982-8d33-338478b88845",
         "siteId": "f33caca9-8ae6-4873-9c5e-f8489cd7d98f",
-        "version": 1772246202,
+        "version": 1772332666,
         "mealOptions": []
       }
     }
@@ -35,15 +35,15 @@
   "kalajoki": [
     {
       "allSuccessful": true,
-      "date": "2026-02-28",
+      "date": "2026-03-01",
       "tenantFound": true,
       "siteFound": true,
       "isMenuForDate": true,
       "data": {
-        "date": "2026-02-28",
+        "date": "2026-03-01",
         "menuId": "2b03b41e-e1ff-4170-b2a4-508c7f0444e5",
         "siteId": "a7a16f10-1bb6-4c4e-8163-8baa66dd6b4b",
-        "version": 1772245900,
+        "version": 1772332314,
         "mealOptions": []
       }
     }
@@ -51,15 +51,15 @@
   "kannus": [
     {
       "allSuccessful": true,
-      "date": "2026-02-28",
+      "date": "2026-03-01",
       "tenantFound": true,
       "siteFound": true,
       "isMenuForDate": true,
       "data": {
-        "date": "2026-02-28",
+        "date": "2026-03-01",
         "menuId": "57f513cc-39c9-4da1-833d-c42d5f4f22da",
         "siteId": "6bdce91b-2d1e-4e7f-90b0-47428f7a1c84",
-        "version": 1772246217,
+        "version": 1772332793,
         "mealOptions": []
       }
     }
@@ -67,15 +67,15 @@
   "kauhava": [
     {
       "allSuccessful": true,
-      "date": "2026-02-28",
+      "date": "2026-03-01",
       "tenantFound": true,
       "siteFound": true,
       "isMenuForDate": true,
       "data": {
-        "date": "2026-02-28",
+        "date": "2026-03-01",
         "menuId": "ba65a80d-3785-4b77-b1bb-8f390b394a33",
         "siteId": "af192510-9aa4-4599-a78a-6cd41cb70dca",
-        "version": 1772246116,
+        "version": 1772332479,
         "mealOptions": []
       }
     }
@@ -83,15 +83,15 @@
   "kauniainen": [
     {
       "allSuccessful": true,
-      "date": "2026-02-28",
+      "date": "2026-03-01",
       "tenantFound": true,
       "siteFound": true,
       "isMenuForDate": true,
       "data": {
-        "date": "2026-02-28",
+        "date": "2026-03-01",
         "menuId": "6f0d59dc-1141-4fe7-86f6-eccb451c530e",
         "siteId": "ef0c6f06-f6f1-44ce-b80b-5a1feae9b1e3",
-        "version": 1772246472,
+        "version": 1772333030,
         "mealOptions": []
       }
     }
@@ -99,15 +99,15 @@
   "kirkkonummi": [
     {
       "allSuccessful": true,
-      "date": "2026-02-28",
+      "date": "2026-03-01",
       "tenantFound": true,
       "siteFound": true,
       "isMenuForDate": true,
       "data": {
-        "date": "2026-02-28",
+        "date": "2026-03-01",
         "menuId": "ae727965-78da-4bc0-a77e-e1ce0eea247e",
         "siteId": "da815982-19e4-464a-986a-c461c5f08219",
-        "version": 1772246286,
+        "version": 1772332701,
         "mealOptions": []
       }
     }
@@ -115,15 +115,15 @@
   "laukaa": [
     {
       "allSuccessful": true,
-      "date": "2026-02-28",
+      "date": "2026-03-01",
       "tenantFound": true,
       "siteFound": true,
       "isMenuForDate": true,
       "data": {
-        "date": "2026-02-28",
+        "date": "2026-03-01",
         "menuId": "4a178f52-9fc4-4ca1-8ac2-589e5d9ef5eb",
         "siteId": "53e2c5a2-0069-4683-af21-0be0343d4e88",
-        "version": 1772246247,
+        "version": 1772332636,
         "mealOptions": []
       }
     }
@@ -131,15 +131,15 @@
   "lieto": [
     {
       "allSuccessful": true,
-      "date": "2026-02-28",
+      "date": "2026-03-01",
       "tenantFound": true,
       "siteFound": true,
       "isMenuForDate": true,
       "data": {
-        "date": "2026-02-28",
+        "date": "2026-03-01",
         "menuId": "fc977f78-90f2-4780-b193-7d5669c19802",
         "siteId": "270f3344-ffe0-438e-a9a9-9352c6a43836",
-        "version": 1772246163,
+        "version": 1772332514,
         "mealOptions": []
       }
     }
@@ -147,15 +147,15 @@
   "muhos": [
     {
       "allSuccessful": true,
-      "date": "2026-02-28",
+      "date": "2026-03-01",
       "tenantFound": true,
       "siteFound": true,
       "isMenuForDate": true,
       "data": {
-        "date": "2026-02-28",
+        "date": "2026-03-01",
         "menuId": "9f094d8b-562b-442f-bbf7-20b65b01d6bc",
         "siteId": "a40ecdaf-87b7-4e0d-90f3-a6e6736f71eb",
-        "version": 1772246483,
+        "version": 1772332839,
         "mealOptions": []
       }
     }
@@ -163,15 +163,15 @@
   "utajarvi": [
     {
       "allSuccessful": true,
-      "date": "2026-02-28",
+      "date": "2026-03-01",
       "tenantFound": true,
       "siteFound": true,
       "isMenuForDate": true,
       "data": {
-        "date": "2026-02-28",
+        "date": "2026-03-01",
         "menuId": "9f094d8b-562b-442f-bbf7-20b65b01d6bc",
         "siteId": "a40ecdaf-87b7-4e0d-90f3-a6e6736f71eb",
-        "version": 1772246483,
+        "version": 1772332839,
         "mealOptions": []
       }
     }
@@ -179,15 +179,15 @@
   "vaala": [
     {
       "allSuccessful": true,
-      "date": "2026-02-28",
+      "date": "2026-03-01",
       "tenantFound": true,
       "siteFound": true,
       "isMenuForDate": true,
       "data": {
-        "date": "2026-02-28",
+        "date": "2026-03-01",
         "menuId": "9f094d8b-562b-442f-bbf7-20b65b01d6bc",
         "siteId": "a40ecdaf-87b7-4e0d-90f3-a6e6736f71eb",
-        "version": 1772246483,
+        "version": 1772332839,
         "mealOptions": []
       }
     }
@@ -195,15 +195,15 @@
   "nousiainen": [
     {
       "allSuccessful": true,
-      "date": "2026-02-28",
+      "date": "2026-03-01",
       "tenantFound": true,
       "siteFound": true,
       "isMenuForDate": true,
       "data": {
-        "date": "2026-02-28",
+        "date": "2026-03-01",
         "menuId": "54cf66fb-9653-406b-a7a4-2fbf55334b59",
         "siteId": "f941b007-36c3-4ab8-9999-95133db046cc",
-        "version": 1772245954,
+        "version": 1772332445,
         "mealOptions": []
       }
     }
@@ -211,15 +211,15 @@
   "orimattila": [
     {
       "allSuccessful": true,
-      "date": "2026-02-28",
+      "date": "2026-03-01",
       "tenantFound": true,
       "siteFound": true,
       "isMenuForDate": true,
       "data": {
-        "date": "2026-02-28",
+        "date": "2026-03-01",
         "menuId": "2d8fd1cc-e45c-404c-8d9f-14a335965846",
         "siteId": "46eded2c-c4bd-48d3-be4b-f484ccf2d405",
-        "version": 1772246051,
+        "version": 1772332526,
         "mealOptions": []
       }
     }
@@ -227,15 +227,15 @@
   "rusko": [
     {
       "allSuccessful": true,
-      "date": "2026-02-28",
+      "date": "2026-03-01",
       "tenantFound": true,
       "siteFound": true,
       "isMenuForDate": true,
       "data": {
-        "date": "2026-02-28",
+        "date": "2026-03-01",
         "menuId": "5fb86911-216b-45ed-aa71-b95bcf9040ab",
         "siteId": "b08c7f95-abe1-4086-ab84-dfced4db8cbd",
-        "version": 1772246322,
+        "version": 1772332971,
         "mealOptions": []
       }
     }
@@ -243,15 +243,15 @@
   "sipoo": [
     {
       "allSuccessful": true,
-      "date": "2026-02-28",
+      "date": "2026-03-01",
       "tenantFound": true,
       "siteFound": true,
       "isMenuForDate": true,
       "data": {
-        "date": "2026-02-28",
+        "date": "2026-03-01",
         "menuId": "679460a2-c6a1-4ddd-80f9-67c9f6b52a92",
         "siteId": "8265e704-0ffc-4cc8-93a8-1b588b6cb1ff",
-        "version": 1772246399,
+        "version": 1772332895,
         "mealOptions": []
       }
     }
@@ -259,15 +259,15 @@
   "somero": [
     {
       "allSuccessful": true,
-      "date": "2026-02-28",
+      "date": "2026-03-01",
       "tenantFound": true,
       "siteFound": true,
       "isMenuForDate": true,
       "data": {
-        "date": "2026-02-28",
+        "date": "2026-03-01",
         "menuId": "3b92cca8-db5d-48c8-811f-77924a1535e9",
         "siteId": "243c0c20-b853-4ad4-898c-6e8ec7e37a29",
-        "version": 1772246054,
+        "version": 1772332553,
         "mealOptions": []
       }
     }
@@ -275,15 +275,15 @@
   "ulvila": [
     {
       "allSuccessful": true,
-      "date": "2026-02-28",
+      "date": "2026-03-01",
       "tenantFound": true,
       "siteFound": true,
       "isMenuForDate": true,
       "data": {
-        "date": "2026-02-28",
+        "date": "2026-03-01",
         "menuId": "048513ba-d797-4147-b5a2-9cdd0c93ed76",
         "siteId": "fa6aa117-79f6-459a-9194-3b7bb73ff172",
-        "version": 1772246253,
+        "version": 1772332670,
         "mealOptions": []
       }
     }
@@ -291,15 +291,15 @@
   "hyria": [
     {
       "allSuccessful": true,
-      "date": "2026-02-28",
+      "date": "2026-03-01",
       "tenantFound": true,
       "siteFound": true,
       "isMenuForDate": true,
       "data": {
-        "date": "2026-02-28",
+        "date": "2026-03-01",
         "menuId": "6c36a51e-e653-4430-9ef6-c8165a1d7e72",
         "siteId": "9b062df5-df4e-4bf0-aaff-e5e8fe1bd9f1",
-        "version": 1772246673,
+        "version": 1772333016,
         "mealOptions": []
       }
     }
@@ -307,15 +307,15 @@
   "lappia": [
     {
       "allSuccessful": true,
-      "date": "2026-02-28",
+      "date": "2026-03-01",
       "tenantFound": true,
       "siteFound": true,
       "isMenuForDate": true,
       "data": {
-        "date": "2026-02-28",
+        "date": "2026-03-01",
         "menuId": "b1076c9f-2ada-4f1f-9b46-1050fb5f86bb",
         "siteId": "fad35a08-a78c-49e7-9ce4-df78d6a82ffb",
-        "version": 1772246393,
+        "version": 1772332403,
         "mealOptions": []
       }
     }
@@ -323,15 +323,15 @@
   "luovi": [
     {
       "allSuccessful": true,
-      "date": "2026-02-28",
+      "date": "2026-03-01",
       "tenantFound": true,
       "siteFound": true,
       "isMenuForDate": true,
       "data": {
-        "date": "2026-02-28",
+        "date": "2026-03-01",
         "menuId": "e0994655-e3e1-4d33-b51d-033ae851451f",
         "siteId": "d9774cc5-1673-4004-8fb0-f2984011fc3e",
-        "version": 1772246067,
+        "version": 1772332622,
         "mealOptions": []
       }
     }
@@ -339,15 +339,15 @@
   "sskky": [
     {
       "allSuccessful": true,
-      "date": "2026-02-28",
+      "date": "2026-03-01",
       "tenantFound": true,
       "siteFound": true,
       "isMenuForDate": true,
       "data": {
-        "date": "2026-02-28",
+        "date": "2026-03-01",
         "menuId": "932f6763-cf45-4081-bcf7-f429695f3644",
         "siteId": "ec1bece6-52ce-4ba8-ae6f-bf3929c79ec1",
-        "version": 1772246451,
+        "version": 1772332897,
         "mealOptions": []
       }
     }
@@ -355,15 +355,15 @@
   "winnova_pori": [
     {
       "allSuccessful": true,
-      "date": "2026-02-28",
+      "date": "2026-03-01",
       "tenantFound": true,
       "siteFound": true,
       "isMenuForDate": true,
       "data": {
-        "date": "2026-02-28",
+        "date": "2026-03-01",
         "menuId": "2340b6c3-f215-48f6-814e-58686f4a8c89",
         "siteId": "efe5746d-5759-42e5-b109-acc301714ed3",
-        "version": 1772246072,
+        "version": 1772332556,
         "mealOptions": []
       }
     }
@@ -371,15 +371,15 @@
   "winnova_rauma": [
     {
       "allSuccessful": true,
-      "date": "2026-02-28",
+      "date": "2026-03-01",
       "tenantFound": true,
       "siteFound": true,
       "isMenuForDate": true,
       "data": {
-        "date": "2026-02-28",
+        "date": "2026-03-01",
         "menuId": "33ec0bd4-d5f1-4ced-84ac-3d42f6c6c5e8",
         "siteId": "d687cacb-a04b-4ce5-a51a-19ca44858b36",
-        "version": 1772246185,
+        "version": 1772332562,
         "mealOptions": []
       }
     }
