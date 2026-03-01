@@ -82,25 +82,65 @@
         }
 
         .date-dropdown {
-            background: transparent;
-            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
             color: var(--text-dim);
             font-size: 13px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.6px;
             margin-bottom: 2px;
-            outline: none;
-            font-family: inherit;
-            padding: 0;
-            padding-right: 15px;
-            appearance: none;
-            -webkit-appearance: none;
             cursor: pointer;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238E8E93' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right center;
-            background-size: 12px;
+            position: relative;
+            padding: 4px 8px;
+            margin-left: -8px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .date-dropdown:active {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .custom-date-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: rgba(28, 28, 30, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: var(--ios-border);
+            border-radius: 12px;
+            margin-top: 8px;
+            min-width: 200px;
+            z-index: 3000;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .custom-date-item {
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .custom-date-item:last-child {
+            border-bottom: none;
+        }
+
+        .custom-date-item:active {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .custom-date-item.selected {
+            color: var(--accent);
         }
 
         h1 {
@@ -462,6 +502,70 @@
             font-weight: 700;
         }
 
+        /* --- CUSTOM ALERT --- */
+        #custom-alert-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 5000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .custom-alert-box {
+            background: rgba(28, 28, 30, 0.9);
+            border: var(--ios-border);
+            border-radius: 14px;
+            width: 100%;
+            max-width: 280px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            animation: alertPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes alertPop {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .custom-alert-msg {
+            padding: 20px;
+            font-size: 16px;
+            font-weight: 500;
+            color: white;
+            line-height: 1.4;
+        }
+
+        .custom-alert-btn {
+            background: transparent;
+            border: none;
+            border-top: var(--ios-border);
+            color: var(--accent);
+            padding: 14px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .custom-alert-btn:active {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
         .school-header-selector {
             display: flex;
             align-items: center;
@@ -480,6 +584,14 @@
 </head>
 
 <body>
+    <div id="custom-alert-overlay">
+        <div class="custom-alert-box">
+            <div class="custom-alert-msg" id="custom-alert-msg"></div>
+            <button class="custom-alert-btn"
+                onclick="document.getElementById('custom-alert-overlay').style.display='none'">Selvä</button>
+        </div>
+    </div>
+
     <div id="welcome-screen">
         <h1 style="margin-bottom: 15px; text-align: center;">Tervetuloa!</h1>
         <p style="color:var(--text-dim); margin-bottom: 35px; text-align:center; font-size: 16px; max-width: 300px;">
@@ -509,7 +621,16 @@
     <header id="main-header">
         <div class="header-content">
             <div class="header-titles">
-                <select id="date-select" class="date-dropdown" onchange="changeDate()"></select>
+                <div style="position: relative;">
+                    <div class="date-dropdown" onclick="toggleDateMenu()">
+                        <span id="date-label">Lataus...</span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </div>
+                    <div id="date-menu" class="custom-date-menu"></div>
+                </div>
                 <h1>
                     <div class="school-header-selector" onclick="showWelcomeScreen()">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
@@ -592,8 +713,29 @@
         let currentSchoolId = localStorage.getItem('kr_school_id');
         let currentDateIndex = 0;
 
-        function changeDate() {
-            currentDateIndex = parseInt(document.getElementById('date-select').value) || 0;
+        function showAlert(msg) {
+            document.getElementById('custom-alert-msg').innerText = msg;
+            document.getElementById('custom-alert-overlay').style.display = 'flex';
+        }
+
+        function toggleDateMenu() {
+            const menu = document.getElementById('date-menu');
+            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        // Sulje valikot klikatessa ulkopuolelle
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('date-menu');
+            const toggle = document.querySelector('.date-dropdown');
+            if (menu.style.display === 'flex' && !menu.contains(e.target) && !toggle.contains(e.target)) {
+                menu.style.display = 'none';
+            }
+        });
+
+        function changeDate(index, formattedDate) {
+            currentDateIndex = index;
+            document.getElementById('date-label').innerText = formattedDate;
+            document.getElementById('date-menu').style.display = 'none';
             if (currentSchoolId) {
                 loadSchool(currentSchoolId);
             }
@@ -678,7 +820,7 @@
 
         function selectSchool() {
             if (!tempSelectedSchool) {
-                alert("Valitse ensin koulu listasta.");
+                showAlert("Valitse ensin koulu listasta.");
                 return;
             }
             currentSchoolId = tempSelectedSchool;
@@ -706,23 +848,35 @@
 
             const data = allMenus[schoolId];
 
-            // Päivämäärä-dropdownin täyttö (vain jos kieli/koulun vaihto on ajankohtaista)
-            const dateSelect = document.getElementById('date-select');
-            if (dateSelect.options.length === 0 && data && data.length > 0) {
+            // Päivämäärä valikon täyttö (vain jos kieli/koulun vaihto on ajankohtaista)
+            const dateMenu = document.getElementById('date-menu');
+            if (dateMenu.children.length === 0 && data && data.length > 0) {
                 const days = ['SUNNUNTAI', 'MAANANTAI', 'TIISTAI', 'KESKIVIIKKO', 'TORSTAI', 'PERJANTAI', 'LAUANTAI'];
                 const months = ['TAMMIKUUTA', 'HELMIKUUTA', 'MAALISKUUTA', 'HUHTIKUUTA', 'TOUKOKUUTA', 'KESÄKUUTA', 'HEINÄKUUTA', 'ELOKUUTA', 'SYYSKUUTA', 'LOKAKUUTA', 'MARRASKUUTA', 'JOULUKUUTA'];
                 data.forEach((dayData, idx) => {
-                    const opt = document.createElement('option');
-                    opt.value = idx;
+                    const item = document.createElement('div');
+                    item.className = 'custom-date-item' + (idx === currentDateIndex ? ' selected' : '');
                     const d = new Date(dayData.date);
-                    opt.innerText = `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}`;
-                    dateSelect.appendChild(opt);
+                    const formatted = `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}`;
+                    item.innerText = formatted;
+                    item.onclick = () => {
+                        // Päivitä valinnan tyyli
+                        Array.from(dateMenu.children).forEach(c => c.classList.remove('selected'));
+                        item.classList.add('selected');
+                        changeDate(idx, formatted);
+                    };
+                    dateMenu.appendChild(item);
+
+                    if (idx === currentDateIndex) {
+                        document.getElementById('date-label').innerText = formatted;
+                    }
                 });
-                dateSelect.value = currentDateIndex;
-            } else if (dateSelect.options.length === 0) {
-                const opt = document.createElement('option');
-                opt.innerText = "Ei tietoja";
-                dateSelect.appendChild(opt);
+            } else if (dateMenu.children.length === 0) {
+                const item = document.createElement('div');
+                item.className = 'custom-date-item';
+                item.innerText = "Ei tietoja";
+                dateMenu.appendChild(item);
+                document.getElementById('date-label').innerText = "EI TIETOJA";
             }
 
             if (!data || !data[currentDateIndex] || !data[currentDateIndex].data || !data[currentDateIndex].data.mealOptions || !data[currentDateIndex].data.mealOptions[0]) {
@@ -773,7 +927,7 @@
 
         // AI-analyysi asiantuntija-promptilla
         async function runAI() {
-            if (!GEMINI_API_KEY) return alert("AI-avain puuttuu config.js-tiedostosta.");
+            if (!GEMINI_API_KEY) return showAlert("AI-avain puuttuu config.js-tiedostosta.");
             document.getElementById('splash').style.display = 'flex';
             try {
                 const promptString = `Olet asiantunteva ravitsemusterapeutti ja ruoan painon arvioija. Tehtäväsi on arvioida annettujen ruokalajien paino grammoina käyttäjän kuvauksen perusteella. Jos käyttäjä mainitsee ruokia, joita ei ole valikossa, listaa ne 'notFound' taulukkoon.
@@ -804,9 +958,9 @@
                 calc();
 
                 if (results.notFound && results.notFound.length > 0) {
-                    alert('Seuraavia ruokia ei löytynyt valikosta ja ne jätettiin pois: ' + results.notFound.join(', '));
+                    showAlert('Seuraavia ruokia ei löytynyt valikosta ja ne jätettiin pois:\n\n' + results.notFound.join(', '));
                 }
-            } catch (e) { alert("AI Virhe: " + e.message); }
+            } catch (e) { showAlert("AI Virhe: " + e.message); }
             document.getElementById('splash').style.display = 'none';
         }
 
