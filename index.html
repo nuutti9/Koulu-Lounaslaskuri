@@ -407,14 +407,7 @@
             padding: 20px;
         }
 
-        .select-wrapper {
-            position: relative;
-            width: 100%;
-            max-width: 320px;
-            margin-bottom: 25px;
-        }
-
-        .select-wrapper select {
+        .school-search-input {
             width: 100%;
             padding: 16px 20px;
             border-radius: 14px;
@@ -424,23 +417,49 @@
             font-size: 17px;
             font-weight: 600;
             outline: none;
-            appearance: none;
-            -webkit-appearance: none;
-            font-family: var(--font-main);
+            font-family: inherit;
+            margin-bottom: 12px;
         }
 
-        .select-wrapper::after {
-            content: '';
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 0;
-            height: 0;
-            border-left: 6px solid transparent;
-            border-right: 6px solid transparent;
-            border-top: 6px solid var(--text-dim);
-            pointer-events: none;
+        .custom-school-list {
+            width: 100%;
+            max-height: 250px;
+            overflow-y: auto;
+            background: var(--secondary-bg);
+            border: var(--ios-border);
+            border-radius: 14px;
+            margin-bottom: 25px;
+            display: flex;
+            flex-direction: column;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .custom-school-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-school-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        .custom-school-item {
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: 500;
+            border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .custom-school-item:last-child {
+            border-bottom: none;
+        }
+
+        .custom-school-item.selected {
+            background: var(--accent);
+            color: white;
+            font-weight: 700;
         }
 
         .school-header-selector {
@@ -466,10 +485,10 @@
         <p style="color:var(--text-dim); margin-bottom: 35px; text-align:center; font-size: 16px; max-width: 300px;">
             Valitse koulu tai oppilaitos aloittaaksesi lounaslaskurin käytön.
         </p>
-        <div class="select-wrapper">
-            <select id="school-select">
-                <option value="" disabled selected>Valitse koulu...</option>
-            </select>
+        <div style="width: 100%; max-width: 320px;">
+            <input type="text" id="school-search" class="school-search-input" placeholder="Hae koulua..."
+                oninput="handleSchoolSearch()">
+            <div class="custom-school-list" id="custom-school-list"></div>
         </div>
         <button onclick="selectSchool()" class="btn-primary"
             style="max-width:320px; width:100%; box-sizing: border-box; padding: 16px; font-size: 17px;">Valitse ja
@@ -606,13 +625,6 @@
                 const sr = await fetch('./schools.json');
                 if (sr.ok) {
                     schoolsList = await sr.json();
-                    const select = document.getElementById('school-select');
-                    schoolsList.forEach(s => {
-                        const opt = document.createElement('option');
-                        opt.value = s.id;
-                        opt.innerText = s.name;
-                        select.appendChild(opt);
-                    });
                 }
 
                 // Fetch all menus
@@ -629,17 +641,47 @@
             } catch (e) { console.error("Error init:", e); }
         }
 
-        function showWelcomeScreen() {
-            document.getElementById('welcome-screen').style.display = 'flex';
-            if (currentSchoolId) {
-                document.getElementById('school-select').value = currentSchoolId;
+        let tempSelectedSchool = null;
+
+        function renderSchools(list) {
+            const container = document.getElementById('custom-school-list');
+            container.innerHTML = '';
+            list.forEach(s => {
+                const item = document.createElement('div');
+                item.className = 'custom-school-item' + (tempSelectedSchool === s.id ? ' selected' : '');
+                item.innerText = s.name;
+                item.onclick = () => {
+                    tempSelectedSchool = s.id;
+                    renderSchools(list); // Re-render to update selection style
+                };
+                container.appendChild(item);
+            });
+        }
+
+        function handleSchoolSearch() {
+            const q = document.getElementById('school-search').value.toLowerCase();
+            // Ala hakemaan vasta kun käyttäjä on kirjoittanut 2 kirjainta
+            if (q.length >= 2) {
+                const filtered = schoolsList.filter(s => s.name.toLowerCase().includes(q));
+                renderSchools(filtered);
+            } else {
+                renderSchools(schoolsList);
             }
         }
 
+        function showWelcomeScreen() {
+            document.getElementById('welcome-screen').style.display = 'flex';
+            tempSelectedSchool = currentSchoolId || null;
+            document.getElementById('school-search').value = '';
+            handleSchoolSearch();
+        }
+
         function selectSchool() {
-            const val = document.getElementById('school-select').value;
-            if (!val) return;
-            currentSchoolId = val;
+            if (!tempSelectedSchool) {
+                alert("Valitse ensin koulu listasta.");
+                return;
+            }
+            currentSchoolId = tempSelectedSchool;
             localStorage.setItem('kr_school_id', currentSchoolId);
             document.getElementById('welcome-screen').style.display = 'none';
             loadSchool(currentSchoolId);
