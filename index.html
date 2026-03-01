@@ -149,22 +149,22 @@
             overflow-y: scroll;
             overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
-            padding-top: 140px;
+            padding-top: 110px;
         }
 
         .container {
             width: 100%;
             max-width: 414px;
-            padding: 0 16px 150px;
+            padding: 0 16px 40px;
             margin: 0 auto;
         }
 
         /* --- DASHBOARD HERO --- */
         .hero {
             background: var(--secondary-bg);
-            border-radius: 24px;
-            padding: 24px;
-            margin-bottom: 20px;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 16px;
             border: var(--ios-border);
             display: flex;
             align-items: center;
@@ -220,7 +220,7 @@
             background: var(--secondary-bg);
             border-radius: 20px;
             padding: 16px;
-            margin-bottom: 30px;
+            margin-bottom: 16px;
             border: var(--ios-border);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
@@ -290,6 +290,7 @@
             border-radius: 20px;
             border: var(--ios-border);
             overflow: hidden;
+            margin-bottom: 16px;
         }
 
         .list-item {
@@ -523,6 +524,10 @@
                 </div>
             </div>
 
+            <div class="section-label">Päivän valikko</div>
+            <div class="list-group" id="food-list">
+            </div>
+
             <div class="ai-zone">
                 <textarea id="ai-input" placeholder="Kirjoita mitä söit..."></textarea>
                 <img id="img-preview"
@@ -541,10 +546,6 @@
                         onchange="previewImage(event)">
                     <button class="btn-primary" onclick="runAI()">Analysoi</button>
                 </div>
-            </div>
-
-            <div class="section-label">Päivän valikko</div>
-            <div class="list-group" id="food-list">
             </div>
         </div>
     </div>
@@ -662,7 +663,24 @@
                 };
                 const item = { name: row.names[0].name, kcal: getVal("Energia", true), p: getVal("Proteiini"), h: getVal("Hiilihydraatit"), r: getVal("Rasva") };
                 mealData.push(item);
+            });
 
+            const extraItems = [
+                { name: "Kasvirasva", kcal: 540, p: 0.1, h: 0.5, r: 60 },
+                { name: "Rasvaton maito", kcal: 33, p: 3.3, h: 4.8, r: 0 },
+                { name: "Piimä", kcal: 33, p: 3.3, h: 4.8, r: 0 },
+                { name: "Ketsuppi", kcal: 110, p: 1.5, h: 25, r: 0 },
+                { name: "Sinappi", kcal: 150, p: 5.5, h: 15, r: 5 },
+                { name: "Thousand island salaatinkastike", kcal: 370, p: 1, h: 10, r: 35 },
+                { name: "Koulunäkki", kcal: 360, p: 10, h: 60, r: 2.5 },
+                { name: "Koulu kuntonäkki", kcal: 360, p: 10, h: 60, r: 2.5 }
+            ];
+
+            extraItems.forEach(item => {
+                mealData.push(item);
+            });
+
+            mealData.forEach((item, i) => {
                 // Uusi tiivis list-item-rakenne
                 container.innerHTML += `
                     <div class="list-item">
@@ -680,10 +698,10 @@
             if (!GEMINI_API_KEY) return alert("AI-avain puuttuu config.js-tiedostosta.");
             document.getElementById('splash').style.display = 'flex';
             try {
-                const promptString = `Olet asiantunteva ravitsemusterapeutti ja ruoan painon arvioija. Tehtäväsi on arvioida annettujen ruokalajien paino grammoina käyttäjän kuvauksen perusteella.
+                const promptString = `Olet asiantunteva ravitsemusterapeutti ja ruoan painon arvioija. Tehtäväsi on arvioida annettujen ruokalajien paino grammoina käyttäjän kuvauksen perusteella. Jos käyttäjä mainitsee ruokia, joita ei ole valikossa, listaa ne 'notFound' taulukkoon.
                 Valikko: ${JSON.stringify(mealData.map(m => m.name))}
                 Käyttäjän kuvaus: "${document.getElementById('ai-input').value}"
-                Palauta VAIN JSON-muodossa: {"menuResults": {"Ruokalajin nimi": grammamäärä numeroina}}`;
+                Palauta VAIN JSON-muodossa: {"menuResults": {"Ruokalajin nimi": grammamäärä numeroina}, "notFound": ["lista", "löytymättömistä", "ruoista"]}`;
 
                 const parts = [{ text: promptString }];
                 if (uploadedImageData) {
@@ -699,11 +717,17 @@
                 const d = await resp.json();
                 const results = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
 
+                let anyFound = false;
                 mealData.forEach((item, i) => {
                     const val = results.menuResults[item.name] || 0;
                     document.getElementById(`q-${i}`).value = val;
+                    if (val > 0) anyFound = true;
                 });
                 calc();
+
+                if (results.notFound && results.notFound.length > 0) {
+                    alert('Seuraavia ruokia ei löytynyt valikosta ja ne jätettiin pois: ' + results.notFound.join(', '));
+                }
             } catch (e) { alert("AI Virhe: " + e.message); }
             document.getElementById('splash').style.display = 'none';
         }
