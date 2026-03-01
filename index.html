@@ -81,13 +81,26 @@
             flex-direction: column;
         }
 
-        .date {
-            font-size: 12px;
-            font-weight: 700;
+        .date-dropdown {
+            background: transparent;
+            border: none;
             color: var(--text-dim);
+            font-size: 13px;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.6px;
             margin-bottom: 2px;
+            outline: none;
+            font-family: inherit;
+            padding: 0;
+            padding-right: 15px;
+            appearance: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238E8E93' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right center;
+            background-size: 12px;
         }
 
         h1 {
@@ -477,7 +490,7 @@
     <header id="main-header">
         <div class="header-content">
             <div class="header-titles">
-                <div class="date" id="date-label">Lataus...</div>
+                <select id="date-select" class="date-dropdown" onchange="changeDate()"></select>
                 <h1>
                     <div class="school-header-selector" onclick="showWelcomeScreen()">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
@@ -558,11 +571,14 @@
         let allMenus = {};
         let schoolsList = [];
         let currentSchoolId = localStorage.getItem('kr_school_id');
+        let currentDateIndex = 0;
 
-        // Päivämäärän alustus
-        const uDate = new Date();
-        const options = { weekday: 'long', day: 'numeric', month: 'long' };
-        document.getElementById('date-label').innerText = uDate.toLocaleDateString('fi-FI', options).toUpperCase();
+        function changeDate() {
+            currentDateIndex = parseInt(document.getElementById('date-select').value) || 0;
+            if (currentSchoolId) {
+                loadSchool(currentSchoolId);
+            }
+        }
 
         // Skrollaus-efekti
         document.getElementById('scroller').addEventListener('scroll', (e) => {
@@ -647,12 +663,31 @@
             }
 
             const data = allMenus[schoolId];
-            if (!data || !data[0] || !data[0].data || !data[0].data.mealOptions || !data[0].data.mealOptions[0]) {
+
+            // Päivämäärä-dropdownin täyttö (vain jos kieli/koulun vaihto on ajankohtaista)
+            const dateSelect = document.getElementById('date-select');
+            if (dateSelect.options.length === 0 && data && data.length > 0) {
+                const optionsFmt = { weekday: 'short', day: 'numeric', month: 'numeric' };
+                data.forEach((dayData, idx) => {
+                    const opt = document.createElement('option');
+                    opt.value = idx;
+                    const d = new Date(dayData.date);
+                    opt.innerText = d.toLocaleDateString('fi-FI', optionsFmt).toUpperCase();
+                    dateSelect.appendChild(opt);
+                });
+                dateSelect.value = currentDateIndex;
+            } else if (dateSelect.options.length === 0) {
+                const opt = document.createElement('option');
+                opt.innerText = "Ei tietoja";
+                dateSelect.appendChild(opt);
+            }
+
+            if (!data || !data[currentDateIndex] || !data[currentDateIndex].data || !data[currentDateIndex].data.mealOptions || !data[currentDateIndex].data.mealOptions[0]) {
                 document.getElementById('food-list').innerHTML = '<div style="text-align:center; padding:30px 20px; color:var(--text-dim); border-radius:20px; margin-top:10px;">Ei ruokalistaa saatavilla täksi päiväksi.</div>';
                 return;
             }
 
-            const rows = data[0].data.mealOptions[0].rows;
+            const rows = data[currentDateIndex].data.mealOptions[0].rows;
             const container = document.getElementById('food-list');
 
             rows.forEach((row, i) => {
