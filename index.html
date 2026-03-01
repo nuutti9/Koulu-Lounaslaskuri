@@ -667,12 +667,13 @@
             // Päivämäärä-dropdownin täyttö (vain jos kieli/koulun vaihto on ajankohtaista)
             const dateSelect = document.getElementById('date-select');
             if (dateSelect.options.length === 0 && data && data.length > 0) {
-                const optionsFmt = { weekday: 'short', day: 'numeric', month: 'numeric' };
+                const days = ['SUNNUNTAI', 'MAANANTAI', 'TIISTAI', 'KESKIVIIKKO', 'TORSTAI', 'PERJANTAI', 'LAUANTAI'];
+                const months = ['TAMMIKUUTA', 'HELMIKUUTA', 'MAALISKUUTA', 'HUHTIKUUTA', 'TOUKOKUUTA', 'KESÄKUUTA', 'HEINÄKUUTA', 'ELOKUUTA', 'SYYSKUUTA', 'LOKAKUUTA', 'MARRASKUUTA', 'JOULUKUUTA'];
                 data.forEach((dayData, idx) => {
                     const opt = document.createElement('option');
                     opt.value = idx;
                     const d = new Date(dayData.date);
-                    opt.innerText = d.toLocaleDateString('fi-FI', optionsFmt).toUpperCase();
+                    opt.innerText = `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}`;
                     dateSelect.appendChild(opt);
                 });
                 dateSelect.value = currentDateIndex;
