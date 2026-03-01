@@ -30,14 +30,21 @@ const schools = [
 
 async function fetchMenus() {
     const today = new Date();
-    // Format YYYY-MM-DD in Europe/Helsinki timezone
     const formatter = new Intl.DateTimeFormat('fr-CA', {
         timeZone: 'Europe/Helsinki',
         year: 'numeric',
         month: '2-digit',
         day: '2-digit'
     });
-    const dateStr = formatter.format(today);
+
+    const datesToFetch = [];
+    // Haetaan 7 päivää eteenpäin alkaen tästä päivästä
+    for (let i = 0; i < 7; i++) {
+        const d = new Date(today);
+        d.setDate(d.getDate() + i);
+        datesToFetch.push(formatter.format(d));
+    }
+    const dateStr = datesToFetch.join(',');
     const results = {};
 
     for (const school of schools) {
