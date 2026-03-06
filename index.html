@@ -1098,7 +1098,7 @@
                     <div class="list-item">
                         <div class="food-name">${item.name}</div>
                         <div class="qty-input">
-                            <input type="number" id="q-${i}" value="0" oninput="vibrateHaptic(10); calc()" inputmode="decimal">
+                            <input type="number" id="q-${i}" value="0" style="color: var(--text-dim);" oninput="vibrateHaptic(10); calc()" inputmode="decimal">
                             <span class="unit">g</span>
                         </div>
                     </div>`;
@@ -1149,7 +1149,15 @@
         function calc() {
             let tk = 0, tp = 0, th = 0, tr = 0;
             mealData.forEach((item, i) => {
-                const w = parseFloat(document.getElementById(`q-${i}`).value) || 0;
+                const inputEl = document.getElementById(`q-${i}`);
+                if (inputEl) {
+                    if (inputEl.value === '0' || inputEl.value === '') {
+                        inputEl.style.color = 'var(--text-dim)';
+                    } else {
+                        inputEl.style.color = 'var(--text)';
+                    }
+                }
+                const w = parseFloat(inputEl.value) || 0;
                 tk += (w * item.kcal) / 100; tp += (w * item.p) / 100; th += (w * item.h) / 100; tr += (w * item.r) / 100;
             });
             const r = Math.round;
