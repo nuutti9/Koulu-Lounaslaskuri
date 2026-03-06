@@ -96,14 +96,14 @@
         }
 
         .header-titles {
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
             display: flex;
             flex-direction: column;
-            height: 56px;
+            max-height: 80px;
             opacity: 1;
             transform: translateY(0) scale(1);
             transform-origin: top left;
-            will-change: height, opacity, transform;
+            will-change: max-height, opacity, transform;
             overflow: hidden;
         }
 
@@ -182,7 +182,7 @@
         header.scrolled .header-titles {
             opacity: 0;
             transform: translateY(-8px) scale(0.95);
-            height: 0;
+            max-height: 0;
             pointer-events: none;
         }
 
