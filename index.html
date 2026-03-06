@@ -1154,21 +1154,47 @@ TÄRKEÄÄ: Palauta vastauksesi PELKÄSTÄÄN validina JSON-objektina ilman mit�
                 });
 
                 const d = await resp.json();
-                const results = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
+                if (!d.candidates || d.candidates.length === 0) {
+                    throw new Error("Tekoäly ei osannut analysoida kuvaa tai tekstiä kunnolla. Yritä uudelleen selkeämmällä kuvalla.");
+                }
+
+                let results;
+                try {
+                    results = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
+                } catch (pe) {
+                    throw new Error("Tekoälyn vastaus ei ollut luettavassa muodossa. Yritä uudelleen.");
+                }
 
                 let anyFound = false;
-                mealData.forEach((item, i) => {
-                    const val = results.menuResults[item.name] || 0;
-                    document.getElementById(`q-${i}`).value = val > 0 ? val : "";
-                    if (val > 0) anyFound = true;
-                });
-                calc();
-                vibrateHaptic([100, 50, 100]); // Success vibration
-
-                if (results.notFound && results.notFound.length > 0) {
-                    showAlert('Seuraavia ruokia ei löytynyt valikosta ja ne jätettiin pois:\n\n' + results.notFound.join(', '));
+                if (results.menuResults) {
+                    mealData.forEach((item, i) => {
+                        const val = results.menuResults[item.name] || 0;
+                        document.getElementById(`q-${i}`).value = val > 0 ? val : "";
+                        if (val > 0) anyFound = true;
+                    });
                 }
-            } catch (e) { showAlert("AI Virhe: " + e.message); }
+                calc();
+
+                if (anyFound) {
+                    vibrateHaptic([100, 50, 100]); // Success vibration
+                    if (results.notFound && results.notFound.length > 0) {
+                        showAlert('Analyysi valmis!\n\nSeuraavia ruokia ei löytynyt valikosta ja ne jätettiin pois:\n' + results.notFound.join(', '));
+                    }
+                } else {
+                    vibrateHaptic([200, 100, 200]); // Error vibration
+                    let msg = "Kuvasta tai tekstistä ei tunnistettu yhtään ruokaa joka kuuluisi koulun valikkoon.";
+                    if (results.notFound && results.notFound.length > 0) {
+                        msg += "\n\nTekoäly kuitenkin löysi seuraavia asioita:\n" + results.notFound.join(', ');
+                    }
+                    showAlert(msg);
+                }
+            } catch (e) {
+                let msg = e.message;
+                if (msg.includes("is not an object") || msg.includes("undefined")) {
+                    msg = "Analysointi epäonnistui yhteysvirheen tai selvyyden takia. Kokeile uudelleen selkeämmällä otoksella!";
+                }
+                showAlert(msg);
+            }
             document.getElementById('splash').style.display = 'none';
         }
 
