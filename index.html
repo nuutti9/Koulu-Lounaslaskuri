@@ -431,6 +431,11 @@
             -moz-appearance: textfield;
         }
 
+        input[type="number"]::placeholder {
+            color: var(--text-dim);
+            opacity: 1;
+        }
+
         input[type="number"]::-webkit-inner-spin-button,
         input[type="number"]::-webkit-outer-spin-button {
             -webkit-appearance: none;
@@ -1098,7 +1103,7 @@
                     <div class="list-item">
                         <div class="food-name">${item.name}</div>
                         <div class="qty-input">
-                            <input type="number" id="q-${i}" value="0" style="color: var(--text-dim);" oninput="vibrateHaptic(10); calc()" inputmode="decimal">
+                            <input type="number" id="q-${i}" placeholder="0" value="" oninput="vibrateHaptic(10); calc()" inputmode="decimal">
                             <span class="unit">g</span>
                         </div>
                     </div>`;
@@ -1132,7 +1137,7 @@
                 let anyFound = false;
                 mealData.forEach((item, i) => {
                     const val = results.menuResults[item.name] || 0;
-                    document.getElementById(`q-${i}`).value = val;
+                    document.getElementById(`q-${i}`).value = val > 0 ? val : "";
                     if (val > 0) anyFound = true;
                 });
                 calc();
@@ -1150,14 +1155,7 @@
             let tk = 0, tp = 0, th = 0, tr = 0;
             mealData.forEach((item, i) => {
                 const inputEl = document.getElementById(`q-${i}`);
-                if (inputEl) {
-                    if (inputEl.value === '0' || inputEl.value === '') {
-                        inputEl.style.color = 'var(--text-dim)';
-                    } else {
-                        inputEl.style.color = 'var(--text)';
-                    }
-                }
-                const w = parseFloat(inputEl.value) || 0;
+                const w = parseFloat(inputEl ? inputEl.value : 0) || 0;
                 tk += (w * item.kcal) / 100; tp += (w * item.p) / 100; th += (w * item.h) / 100; tr += (w * item.r) / 100;
             });
             const r = Math.round;
