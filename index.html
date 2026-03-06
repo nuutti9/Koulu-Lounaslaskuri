@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>KR TRACKER</title>
+    <title>Koululounaslaskuri</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="KR TRACKER">
-    <link rel="apple-touch-icon" href="./kr-logo.png">
-    <link rel="icon" href="./kr-logo.png">
+    <meta name="apple-mobile-web-app-title" content="Koululounaslaskuri">
+    <link rel="apple-touch-icon" href="./Koululounaslaskurilogo.png">
+    <link rel="icon" href="./Koululounaslaskurilogo.png">
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
     <script src="./config.js"></script>
@@ -91,9 +91,12 @@
         }
 
         .header-titles {
-            transition: all 0.4s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
+            max-height: 120px;
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .date-dropdown {
@@ -170,10 +173,26 @@
 
         header.scrolled .header-titles {
             opacity: 0;
-            transform: translateY(-20px);
+            transform: translateY(-20px) scale(0.95);
             max-height: 0;
             overflow: hidden;
             pointer-events: none;
+        }
+
+        #theme-toggle-btn {
+            position: absolute;
+            right: 15px;
+            top: 55px;
+            padding: 8px;
+            cursor: pointer;
+            color: var(--text-dim);
+            z-index: 2500;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        header.scrolled #theme-toggle-btn {
+            top: 40px;
+            transform: scale(0.85);
         }
 
         /* --- STICKY STATS PILL --- */
@@ -638,22 +657,21 @@
     </div>
 
     <header id="main-header">
+        <div id="theme-toggle-btn" onclick="toggleTheme()">
+            <svg id="theme-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+        </div>
         <div class="header-content" style="position: relative;">
-            <div onclick="toggleTheme()"
-                style="position: absolute; right: 0; top: 0; padding: 10px; cursor: pointer; color: var(--text-dim); z-index: 100;">
-                <svg id="theme-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="5"></circle>
-                    <line x1="12" y1="1" x2="12" y2="3"></line>
-                    <line x1="12" y1="21" x2="12" y2="23"></line>
-                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                    <line x1="1" y1="12" x2="3" y2="12"></line>
-                    <line x1="21" y1="12" x2="23" y2="12"></line>
-                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                </svg>
-            </div>
             <div class="header-titles">
                 <div style="position: relative;">
                     <div class="date-dropdown" onclick="toggleDateMenu()">
@@ -842,7 +860,9 @@
         const scroller = document.getElementById('scroller');
 
         scroller.addEventListener('scroll', (e) => {
-            const isScrolled = e.target.scrollTop > 40;
+            // Updated threshold so that the topbar minimizes only when the main
+            // macro stats card (.hero) is scrolled out of view.
+            const isScrolled = e.target.scrollTop > 180;
             document.getElementById('main-header').classList.toggle('scrolled', isScrolled);
         });
 
