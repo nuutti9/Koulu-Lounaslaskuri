@@ -1115,10 +1115,32 @@
             if (!GEMINI_API_KEY) return showAlert("AI-avain puuttuu config.js-tiedostosta.");
             document.getElementById('splash').style.display = 'flex';
             try {
-                const promptString = `Olet asiantunteva ravitsemusterapeutti ja ruoan painon arvioija. Tehtäväsi on arvioida annettujen ruokalajien paino grammoina käyttäjän kuvauksen perusteella. Jos käyttäjä mainitsee ruokia, joita ei ole valikossa, listaa ne 'notFound' taulukkoon.
-                Valikko: ${JSON.stringify(mealData.map(m => m.name))}
-                Käyttäjän kuvaus: "${document.getElementById('ai-input').value}"
-                Palauta VAIN JSON-muodossa: {"menuResults": {"Ruokalajin nimi": grammamäärä numeroina}, "notFound": ["lista", "löytymättömistä", "ruoista"]}`;
+                const promptString = `Olet maailmanluokan ravitsemusterapeutti ja ruoan painon arvioija. Tehtäväsi on tunnistaa ruoat käyttäjän syötteestä, yhdistää ne annettuun valikkoon ja arvioida niiden paino grammoina mahdollisimman suurella tieteellisellä tarkkuudella.
+
+Käytä arvioinnissa seuraavaa logiikkaa:
+1. Tilavuus: Arvioi käyttäjän kuvauksen (tai mahdollisen kuvan) perusteella ruoan viemä tila (esim. kourallinen, täysi lautanen, desi).
+2. Tiheys: Ota huomioon ainesosan rakenne (esim. salaatti on ilmavaa ja kevyttä, kun taas perunamuusi tai liha on tiivistä ja painavaa).
+3. Päättely: Laske paino (tilavuus x tiheys) näiden pohjalta.
+
+Jos käyttäjä mainitsee ruokia, joita ei ole valikossa, listaa ne 'notFound'-taulukkoon.
+
+Valikko (suhteuta tunnistetut ruoat VAIN näihin nimiin): 
+${JSON.stringify(mealData.map(m => m.name))}
+
+Käyttäjän syöte: "${document.getElementById('ai-input').value}"
+
+TÄRKEÄÄ: Palauta vastauksesi PELKÄSTÄÄN validina JSON-objektina ilman mitään markdown-koodiblokkeja tai ylimääräistä tekstiä.
+{
+  "reasoning": "Kirjoita tähän lyhyt, 1-2 lauseen analyysi, jossa perustelet arvioimasi tilavuudet ja tiheydet ennen lopputulosta.",
+  "menuResults": {
+    "Ruokalajin nimi valikosta": 150
+  },
+  "notFound": [
+    "lista",
+    "löytymättömistä",
+    "ruoista"
+  ]
+}`;
 
                 const parts = [{ text: promptString }];
                 if (uploadedImageData) {
