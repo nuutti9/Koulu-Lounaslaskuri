@@ -29,6 +29,19 @@
             --blur: saturate(180%) blur(20px);
         }
 
+        :root[data-theme="light"] {
+            --bg: #F2F2F7;
+            --secondary-bg: #FFFFFF;
+            --tertiary-bg: #E5E5EA;
+            --accent: #007AFF;
+            --p: #FF3B30;
+            --f: #FFCC00;
+            --c: #34C759;
+            --text: #000000;
+            --text-dim: #8E8E93;
+            --ios-border: 0.5px solid rgba(0, 0, 0, 0.15);
+        }
+
         * {
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
@@ -125,8 +138,8 @@
             padding: 12px 16px;
             font-size: 14px;
             font-weight: 600;
-            color: white;
-            border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
+            color: var(--text);
+            border-bottom: var(--ios-border);
             cursor: pointer;
             transition: background 0.2s;
         }
@@ -136,7 +149,7 @@
         }
 
         .custom-date-item:active {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(128, 128, 128, 0.2);
         }
 
         .custom-date-item.selected {
@@ -282,7 +295,7 @@
             width: 100%;
             background: transparent;
             border: none;
-            color: white;
+            color: var(--text);
             font-size: 17px;
             font-weight: 500;
             outline: none;
@@ -365,12 +378,12 @@
         }
 
         .qty-input {
-            background: #000;
+            background: var(--bg);
             border-radius: 10px;
             padding: 6px 12px;
             display: flex;
             align-items: center;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: var(--ios-border);
             width: 90px;
         }
 
@@ -378,7 +391,7 @@
             width: 100%;
             background: transparent;
             border: none;
-            color: white;
+            color: var(--text);
             font-weight: 700;
             font-size: 17px;
             text-align: right;
@@ -487,7 +500,7 @@
             padding: 14px 20px;
             font-size: 16px;
             font-weight: 500;
-            border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
+            border-bottom: var(--ios-border);
             cursor: pointer;
             transition: background 0.2s;
         }
@@ -498,7 +511,7 @@
 
         .custom-school-item.selected {
             background: var(--accent);
-            color: white;
+            color: #fff;
             font-weight: 700;
         }
 
@@ -517,7 +530,7 @@
         }
 
         .custom-alert-box {
-            background: rgba(28, 28, 30, 0.9);
+            background: var(--secondary-bg);
             border: var(--ios-border);
             border-radius: 14px;
             width: 100%;
@@ -546,7 +559,7 @@
             padding: 20px;
             font-size: 16px;
             font-weight: 500;
-            color: white;
+            color: var(--text);
             line-height: 1.4;
         }
 
@@ -615,11 +628,27 @@
 
     <div id="splash">
         <span class="loader"></span>
-        <div style="font-weight: 700; color: white; font-size: 20px; letter-spacing: -0.5px;">Analysoidaan...</div>
+        <div style="font-weight: 700; color: var(--text); font-size: 20px; letter-spacing: -0.5px;">Analysoidaan...
+        </div>
     </div>
 
     <header id="main-header">
-        <div class="header-content">
+        <div class="header-content" style="position: relative;">
+            <div onclick="toggleTheme()"
+                style="position: absolute; right: 0; top: 0; padding: 10px; cursor: pointer; color: var(--text-dim); z-index: 100;">
+                <svg id="theme-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+            </div>
             <div class="header-titles">
                 <div style="position: relative;">
                     <div class="date-dropdown" onclick="toggleDateMenu()">
@@ -705,6 +734,11 @@
 
     <script>
         // --- LOGIIKKA JA AI-INTEGRAATIO ---
+        // Theme initialization
+        const savedTheme = localStorage.getItem('kr_theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        window.addEventListener('DOMContentLoaded', () => { updateThemeIcon(savedTheme === 'light'); });
+
         const GEMINI_API_KEY = typeof CONFIG !== 'undefined' ? CONFIG.API_KEY : "";
         let mealData = [];
         let uploadedImageData = null;
@@ -712,6 +746,64 @@
         let schoolsList = [];
         let currentSchoolId = localStorage.getItem('kr_school_id');
         let currentDateIndex = 0;
+
+        function vibrateHaptic(pattern = 50) {
+            if (navigator.vibrate) {
+                try {
+                    navigator.vibrate(pattern);
+                } catch (e) { }
+            }
+        }
+
+        function toggleTheme() {
+            const root = document.documentElement;
+            const isLight = root.getAttribute('data-theme') === 'light';
+            root.setAttribute('data-theme', isLight ? 'dark' : 'light');
+            localStorage.setItem('kr_theme', isLight ? 'dark' : 'light');
+            vibrateHaptic(50);
+            updateThemeIcon(!isLight);
+        }
+
+        function updateThemeIcon(isLight) {
+            const icon = document.getElementById('theme-icon');
+            if (!icon) return;
+            if (isLight) {
+                icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+            } else {
+                icon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+            }
+        }
+
+        // Animated numbers utility
+        const activeAnimations = {};
+        function animateValue(objId, end, duration, formatStr = "") {
+            const obj = document.getElementById(objId);
+            if (!obj) return;
+
+            if (activeAnimations[objId]) cancelAnimationFrame(activeAnimations[objId].req);
+
+            const startStr = obj.innerText.replace(/[^\d.-]/g, '');
+            const start = parseInt(startStr) || 0;
+
+            if (start === end) {
+                obj.innerText = end + formatStr;
+                return;
+            }
+
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const current = Math.floor(progress * (end - start) + start);
+                obj.innerText = current + formatStr;
+                if (progress < 1) {
+                    activeAnimations[objId].req = window.requestAnimationFrame(step);
+                } else {
+                    obj.innerText = end + formatStr;
+                }
+            };
+            activeAnimations[objId] = { req: window.requestAnimationFrame(step) };
+        }
 
         function showAlert(msg) {
             document.getElementById('custom-alert-msg').innerText = msg;
@@ -741,11 +833,52 @@
             }
         }
 
-        // Skrollaus-efekti
-        document.getElementById('scroller').addEventListener('scroll', (e) => {
+        // Skrollaus-efekti ja pyyhkäisyllä päivän vaihto
+        const scroller = document.getElementById('scroller');
+
+        scroller.addEventListener('scroll', (e) => {
             const isScrolled = e.target.scrollTop > 40;
             document.getElementById('main-header').classList.toggle('scrolled', isScrolled);
         });
+
+        let touchstartX = 0;
+        let touchendX = 0;
+
+        scroller.addEventListener('touchstart', e => {
+            touchstartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        scroller.addEventListener('touchend', e => {
+            touchendX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (!allMenus || !currentSchoolId || !allMenus[currentSchoolId]) return;
+            const dataLength = allMenus[currentSchoolId].length;
+            if (dataLength <= 1) return;
+
+            if (touchendX < touchstartX - 70) {
+                // swiped left -> next day
+                if (currentDateIndex < dataLength - 1) {
+                    const nextDateItem = document.getElementById('date-menu').children[currentDateIndex + 1];
+                    if (nextDateItem) {
+                        vibrateHaptic(40);
+                        nextDateItem.click();
+                    }
+                }
+            }
+            if (touchendX > touchstartX + 70) {
+                // swiped right -> prev day
+                if (currentDateIndex > 0) {
+                    const prevDateItem = document.getElementById('date-menu').children[currentDateIndex - 1];
+                    if (prevDateItem) {
+                        vibrateHaptic(40);
+                        prevDateItem.click();
+                    }
+                }
+            }
+        }
 
         // Kuvan esikatselu
         function previewImage(e) {
@@ -880,7 +1013,14 @@
             }
 
             if (!data || !data[currentDateIndex] || !data[currentDateIndex].data || !data[currentDateIndex].data.mealOptions || !data[currentDateIndex].data.mealOptions[0]) {
-                document.getElementById('food-list').innerHTML = '<div style="text-align:center; padding:30px 20px; color:var(--text-dim); border-radius:20px; margin-top:10px;">Ei ruokalistaa saatavilla täksi päiväksi.</div>';
+                document.getElementById('food-list').innerHTML = `
+                <div style="text-align:center; padding:40px 20px; color:var(--text-dim);">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:16px; opacity:0.5;">
+                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                    </svg><br>
+                    <div style="font-size:18px; font-weight:700; color:var(--text); margin-bottom:8px;">Ei kouluruokaa tänään!</div>
+                    <div style="font-size:14px;">Hyvää viikonloppua tai lomaa. Muista syödä hyvin myös kotona!</div>
+                </div>`;
                 return;
             }
 
@@ -918,7 +1058,7 @@
                     <div class="list-item">
                         <div class="food-name">${item.name}</div>
                         <div class="qty-input">
-                            <input type="number" id="q-${i}" value="0" oninput="calc()" inputmode="decimal">
+                            <input type="number" id="q-${i}" value="0" oninput="vibrateHaptic(10); calc()" inputmode="decimal">
                             <span class="unit">g</span>
                         </div>
                     </div>`;
@@ -956,6 +1096,7 @@
                     if (val > 0) anyFound = true;
                 });
                 calc();
+                vibrateHaptic([100, 50, 100]); // Success vibration
 
                 if (results.notFound && results.notFound.length > 0) {
                     showAlert('Seuraavia ruokia ei löytynyt valikosta ja ne jätettiin pois:\n\n' + results.notFound.join(', '));
@@ -972,11 +1113,16 @@
                 tk += (w * item.kcal) / 100; tp += (w * item.p) / 100; th += (w * item.h) / 100; tr += (w * item.r) / 100;
             });
             const r = Math.round;
-            document.getElementById('res-kcal').innerText = r(tk);
-            document.getElementById('mini-kcal').innerText = r(tk);
-            document.getElementById('res-p').innerText = document.getElementById('mini-p').innerText = r(tp) + "g";
-            document.getElementById('res-r').innerText = document.getElementById('mini-r').innerText = r(tr) + "g";
-            document.getElementById('res-h').innerText = document.getElementById('mini-h').innerText = r(th) + "g";
+            const rtK = r(tk), rtP = r(tp), rtH = r(th), rtR = r(tr);
+
+            animateValue('res-kcal', rtK, 300, "");
+            animateValue('mini-kcal', rtK, 300, "");
+            animateValue('res-p', rtP, 300, "g");
+            animateValue('mini-p', rtP, 300, "g");
+            animateValue('res-r', rtR, 300, "g");
+            animateValue('mini-r', rtR, 300, "g");
+            animateValue('res-h', rtH, 300, "g");
+            animateValue('mini-h', rtH, 300, "g");
         }
 
         // Käynnistys
