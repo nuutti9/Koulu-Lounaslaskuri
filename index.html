@@ -78,7 +78,7 @@
             -webkit-backdrop-filter: var(--blur);
             padding: 55px 20px 16px;
             border-bottom: var(--ios-border);
-            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: all 0.5s cubic-bezier(0.32, 0.72, 0, 1);
         }
 
         header.scrolled {
@@ -95,12 +95,13 @@
         }
 
         .header-titles {
-            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: all 0.5s cubic-bezier(0.32, 0.72, 0, 1);
             display: flex;
             flex-direction: column;
             height: 60px;
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
+            transform-origin: top left;
         }
 
         .date-dropdown {
@@ -177,7 +178,7 @@
 
         header.scrolled .header-titles {
             opacity: 0;
-            transform: translateY(-15px) scale(0.9);
+            transform: translateY(-10px) scale(0.95);
             height: 0;
             overflow: hidden;
             pointer-events: none;
@@ -191,7 +192,7 @@
             cursor: pointer;
             color: var(--text-dim);
             z-index: 2500;
-            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: all 0.5s cubic-bezier(0.32, 0.72, 0, 1);
         }
 
         header.scrolled #theme-toggle-btn {
@@ -211,7 +212,7 @@
             gap: 12px;
             opacity: 0;
             transform: translateY(10px);
-            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: all 0.5s cubic-bezier(0.32, 0.72, 0, 1);
             pointer-events: none;
         }
 
