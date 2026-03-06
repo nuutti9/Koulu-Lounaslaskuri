@@ -9,6 +9,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Koululounaslaskuri">
+    <meta name="description"
+        content="Laske kouluruoan kalorit ja makrot (proteiini, hiilihydraatit, rasvat) helposti ja nopeasti.">
+    <meta name="keywords"
+        content="kouluruoka macrot, koulu kalorit, muhos kouluyruoka macrot, pudasjärvi kouluruoka macrot, kouluruoka kalorit, lounaslaskuri, koululounas">
     <link rel="apple-touch-icon" href="./Koululounaslaskurilogo.png">
     <link rel="icon" href="./Koululounaslaskurilogo.png">
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
@@ -74,12 +78,12 @@
             -webkit-backdrop-filter: var(--blur);
             padding: 55px 20px 16px;
             border-bottom: var(--ios-border);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         header.scrolled {
-            padding-top: 45px;
-            padding-bottom: 25px;
+            padding-top: 50px;
+            padding-bottom: 20px;
         }
 
         .header-content {
@@ -91,10 +95,10 @@
         }
 
         .header-titles {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
             display: flex;
             flex-direction: column;
-            max-height: 120px;
+            height: 60px;
             opacity: 1;
             transform: translateY(0);
         }
@@ -173,8 +177,8 @@
 
         header.scrolled .header-titles {
             opacity: 0;
-            transform: translateY(-20px) scale(0.95);
-            max-height: 0;
+            transform: translateY(-15px) scale(0.9);
+            height: 0;
             overflow: hidden;
             pointer-events: none;
         }
@@ -187,11 +191,12 @@
             cursor: pointer;
             color: var(--text-dim);
             z-index: 2500;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         header.scrolled #theme-toggle-btn {
-            top: 40px;
+            top: 48px;
+            right: 18px;
             transform: scale(0.85);
         }
 
@@ -206,7 +211,7 @@
             gap: 12px;
             opacity: 0;
             transform: translateY(10px);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
             pointer-events: none;
         }
 
@@ -751,6 +756,13 @@
                         onchange="previewImage(event)">
                     <button class="btn-primary" onclick="runAI()">Analysoi</button>
                 </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px; margin-bottom: 20px;">
+                <h3 style="font-size: 15px; color: var(--text); margin-bottom: 8px;">Mihin tiedot perustuvat?</h3>
+                <p style="font-size: 13px; color: var(--text-dim); line-height: 1.5; max-width: 320px; margin: 0 auto;">
+                    Otamme tiedot suoraan koulujen virallisilta ruokalistoilta.
+                </p>
             </div>
         </div>
     </div>
