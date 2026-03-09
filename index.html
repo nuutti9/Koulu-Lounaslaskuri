@@ -641,6 +641,19 @@
         </div>
     </div>
 
+    <div id="custom-confirm-overlay"
+        style="display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 5000; align-items: center; justify-content: center; padding: 20px;">
+        <div class="custom-alert-box">
+            <div class="custom-alert-msg" id="custom-confirm-msg"></div>
+            <div style="display: flex; width: 100%;">
+                <button class="custom-alert-btn" style="flex: 1; border-right: var(--ios-border);"
+                    onclick="cancelConfirm()">Ei</button>
+                <button class="custom-alert-btn" style="flex: 1; font-weight: 700;"
+                    onclick="acceptConfirm()">Kyllä</button>
+            </div>
+        </div>
+    </div>
+
     <div id="welcome-screen">
         <h1 style="margin-bottom: 15px; text-align: center;">Tervetuloa!</h1>
         <p style="color:var(--text-dim); margin-bottom: 35px; text-align:center; font-size: 16px; max-width: 300px;">
@@ -809,11 +822,29 @@
         let aiAbortController = null;
 
         function confirmCancelAnalysis() {
-            if (confirm("Haluatko varmasti perua analyysin? Kyllä / Ei")) {
+            showConfirm("Haluatko varmasti perua analyysin?", () => {
                 if (aiAbortController) {
                     aiAbortController.abort();
                 }
-            }
+            });
+        }
+
+        let confirmAction = null;
+        function showConfirm(msg, onConfirm) {
+            document.getElementById('custom-confirm-msg').innerText = msg;
+            document.getElementById('custom-confirm-overlay').style.display = 'flex';
+            confirmAction = onConfirm;
+        }
+
+        function cancelConfirm() {
+            document.getElementById('custom-confirm-overlay').style.display = 'none';
+            confirmAction = null;
+        }
+
+        function acceptConfirm() {
+            document.getElementById('custom-confirm-overlay').style.display = 'none';
+            if (confirmAction) confirmAction();
+            confirmAction = null;
         }
 
         function vibrateHaptic(pattern = 50) {
