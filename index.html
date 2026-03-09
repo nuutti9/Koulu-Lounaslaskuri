@@ -655,10 +655,10 @@
             style="max-width:320px; width:100%; box-sizing: border-box; padding: 16px; font-size: 17px;">Valitse ja
             jatka</button>
         <div style="margin-top: 30px; text-align: center; font-size: 14px; color: var(--text-dim);">
-            Eikö kouluasi ole listalla?<br>
-            <a href="mailto:esimerkki@email.com?subject=Koulun lisääminen&body=Hei, haluaisin ehdottaa koulua: [nimi]"
-                style="color: var(--accent); text-decoration: none; font-weight: 600; display: inline-block; margin-top: 8px;">Pyydä
-                sen lisäämistä</a>
+            Eikö kouluasi ole listalla tai onko sinulla jotain muuta kysyttävää?<br>
+            <a href="mailto:Koululounaslaskuri@gmail.com"
+                style="color: var(--accent); text-decoration: none; font-weight: 600; display: inline-block; margin-top: 8px;">Ota
+                yhteyttä</a>
         </div>
     </div>
 
@@ -666,6 +666,14 @@
         <span class="loader"></span>
         <div style="font-weight: 700; color: var(--text); font-size: 20px; letter-spacing: -0.5px;">Analysoidaan...
         </div>
+        <button onclick="confirmCancelAnalysis()"
+            style="position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); color: white; border: var(--ios-border); border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
     </div>
 
     <header id="main-header">
@@ -798,6 +806,15 @@
         let schoolsList = [];
         let currentSchoolId = localStorage.getItem('kr_school_id');
         let currentDateIndex = 0;
+        let aiAbortController = null;
+
+        function confirmCancelAnalysis() {
+            if (confirm("Haluatko varmasti perua analyysin? Kyllä / Ei")) {
+                if (aiAbortController) {
+                    aiAbortController.abort();
+                }
+            }
+        }
 
         function vibrateHaptic(pattern = 50) {
             if (navigator.vibrate) {
@@ -1132,6 +1149,7 @@
         async function runAI() {
             if (!GEMINI_API_KEY) return showAlert("AI-avain puuttuu config.js-tiedostosta.");
             document.getElementById('splash').style.display = 'flex';
+            aiAbortController = new AbortController();
             try {
                 const promptString = `Olet maailmanluokan ravitsemusterapeutti ja ruoan painon arvioija. Tehtäväsi on tunnistaa ruoat käyttäjän syötteestä, yhdistää ne annettuun valikkoon ja arvioida niiden paino grammoina mahdollisimman suurella tieteellisellä tarkkuudella.
 
@@ -1168,7 +1186,8 @@ TÄRKEÄÄ: Palauta vastauksesi PELKÄSTÄÄN validina JSON-objektina ilman mit�
                 const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: parts }] })
+                    body: JSON.stringify({ contents: [{ parts: parts }] }),
+                    signal: aiAbortController.signal
                 });
 
                 const d = await resp.json();
@@ -1207,6 +1226,10 @@ TÄRKEÄÄ: Palauta vastauksesi PELKÄSTÄÄN validina JSON-objektina ilman mit�
                     showAlert(msg);
                 }
             } catch (e) {
+                if (e.name === 'AbortError') {
+                    document.getElementById('splash').style.display = 'none';
+                    return; // Analyysi peruttiin
+                }
                 let msg = e.message;
                 if (msg.includes("is not an object") || msg.includes("undefined")) {
                     msg = "Analysointi epäonnistui yhteysvirheen tai tekstin kuvailun puutteen takia. Kokeile uudelleen!";
