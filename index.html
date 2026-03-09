@@ -1140,14 +1140,14 @@ Käytä arvioinnissa seuraavaa logiikkaa:
 2. Tiheys: Ota huomioon ainesosan rakenne (esim. salaatti on ilmavaa ja kevyttä, kun taas perunamuusi tai liha on tiivistä ja painavaa).
 3. Päättely: Laske paino (tilavuus x tiheys) näiden pohjalta.
 
-Jos käyttäjä mainitsee ruokia, joita ei ole valikossa, listaa ne 'notFound'-taulukkoon.
+Jos kuvasta tai tekstistä tunnistettu ruoka vastaa tai edes muistuttaa jotain valikon ruokaa, yhdistä se siihen parhaan kykysi mukaan (esim. 'perunamuusi' -> valikon 'perunasose', tai 'jauhelihakastike' -> valikon 'jauhelihakastike (m, g)'). Laita 'notFound'-listalle vain asiat, joilla ei kerta kaikkiaan ole mitään loogista vastinetta valikossa.
 
-Valikko (suhteuta tunnistetut ruoat VAIN näihin nimiin): 
+Valikko (yhdistä havaitut ruoat näihin nimiin): 
 ${JSON.stringify(mealData.map(m => m.name))}
 
-Käyttäjän syöte: "${document.getElementById('ai-input').value}"
+Käyttäjän antama lisäkuvaus (voi olla tyhjä, jos mukana on vain kuva): "${document.getElementById('ai-input').value}"
 
-TÄRKEÄÄ: Palauta vastauksesi PELKÄSTÄÄN validina JSON-objektina ilman mitään markdown-koodiblokkeja tai ylimääräistä tekstiä.
+TÄRKEÄÄ: Palauta vastauksesi PELKÄSTÄÄN validina JSON-objektina ilman mitään markdown-koodiblokkeja tai ylimääräistä tekstiä. Seuraava rakenne on pakollinen:
 {
   "reasoning": "Kirjoita tähän lyhyt, 1-2 lauseen analyysi, jossa perustelet arvioimasi tilavuudet ja tiheydet ennen lopputulosta.",
   "menuResults": {
