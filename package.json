@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "scrape:jamix": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' scripts/scrape_jamix.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",
@@ -17,11 +18,13 @@
     "stripe": "^22.5.0"
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@types/node": "^20.19.43",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.0",
+    "playwright": "^1.62.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }

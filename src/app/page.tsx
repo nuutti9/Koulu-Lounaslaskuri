@@ -57,7 +57,8 @@ function useCountUp(end: number, duration: number = 800) {
 export default function Home() {
   const [theme, setTheme] = useState<"light" | "dark">("dark");
   const [schoolsList, setSchoolsList] = useState<any[]>([]);
-  const [allMenus, setAllMenus] = useState<any>({});
+  const [activeMenuData, setActiveMenuData] = useState<any[] | null>(null);
+  const [isLoadingMenu, setIsLoadingMenu] = useState(false);
   
   const [currentSchoolId, setCurrentSchoolId] = useState<string | null>(null);
   const [currentDateIndex, setCurrentDateIndex] = useState<number>(0);
@@ -166,12 +167,6 @@ export default function Home() {
           setSchoolsList(loadedSchools);
         }
 
-        const mr = await fetch("/menus.json");
-        if (mr.ok) {
-          const menus = await mr.json();
-          setAllMenus(menus);
-        }
-
         const urlParams = new URLSearchParams(window.location.search);
         const urlSchoolId = urlParams.get("school");
         
@@ -193,6 +188,33 @@ export default function Home() {
     }
     init();
   }, []);
+
+  // Fetch menu data live when school changes
+  useEffect(() => {
+    if (!currentSchoolId) return;
+    let cancelled = false;
+    setIsLoadingMenu(true);
+    setActiveMenuData(null);
+    setCurrentDateIndex(0);
+    
+    fetch(`/api/menu?school=${encodeURIComponent(currentSchoolId)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!cancelled) {
+          setActiveMenuData(Array.isArray(data) ? data : []);
+          setIsLoadingMenu(false);
+        }
+      })
+      .catch(err => {
+        console.error("Menu fetch error:", err);
+        if (!cancelled) {
+          setActiveMenuData([]);
+          setIsLoadingMenu(false);
+        }
+      });
+    
+    return () => { cancelled = true; };
+  }, [currentSchoolId]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -226,50 +248,78 @@ export default function Home() {
   };
 
   const activeSchool = schoolsList.find((s) => s.id === currentSchoolId);
-  const activeMenuData = currentSchoolId ? allMenus[currentSchoolId] : null;
 
   const mealData: MealData[] = useMemo(() => {
-    if (
-      !activeMenuData ||
-      !activeMenuData[currentDateIndex] ||
-      !activeMenuData[currentDateIndex].data ||
-      !activeMenuData[currentDateIndex].data.mealOptions ||
-      !activeMenuData[currentDateIndex].data.mealOptions[0]
-    ) {
-      return [];
-    }
+    if (!activeMenuData || !activeMenuData[currentDateIndex]) return [];
     
-    const rows = activeMenuData[currentDateIndex].data.mealOptions[0].rows;
+    const dayData = activeMenuData[currentDateIndex];
     const items: MealData[] = [];
-    
-    rows.forEach((row: any) => {
-      const factors = row.nutritiveItem.factors;
-      const getVal = (lbl: string, isK: boolean = false) => {
-        const f = factors.find(
-          (fact: any) =>
-            fact.nutritiveFactorNames[0].name === (isK ? "Energia" : lbl) &&
-            (!isK || fact.values[0].value100.includes("kcal"))
-        );
-        return f ? parseFloat(f.values[0].value100.replace(",", ".").replace(/[^\d.]/g, "")) : 0;
-      };
-      items.push({
-        name: row.names[0].name,
-        kcal: getVal("Energia", true),
-        p: getVal("Proteiini"),
-        h: getVal("Hiilihydraatit"),
-        r: getVal("Rasva"),
+
+    // Aromi parsing (Helsinki schools)
+    if (dayData?.meals) {
+      dayData.meals.forEach((meal: any) => {
+        if (meal.dishes) {
+          meal.dishes.forEach((dish: any) => {
+            items.push({
+              name: dish.name || 'Tuntematon',
+              kcal: meal.macros?.kcal || 0,
+              p: meal.macros?.p || 0,
+              h: meal.macros?.h || 0,
+              r: meal.macros?.r || 0,
+            });
+          });
+        }
       });
-    });
+    }
+    // Poweresta parsing
+    else if (dayData?.data?.mealOptions) {
+      dayData.data.mealOptions.forEach((option: any) => {
+        if (option.rows) {
+          option.rows.forEach((row: any) => {
+            const factors = row.nutritiveItem?.factors || [];
+            const getVal = (lbl: string, isK: boolean = false) => {
+              const f = factors.find(
+                (fact: any) =>
+                  fact.nutritiveFactorNames?.[0]?.name === (isK ? "Energia" : lbl) &&
+                  (!isK || fact.values?.[0]?.value100?.includes("kcal"))
+              );
+              if (!f) return 0;
+              const valStr = f.values?.[0]?.value100;
+              if (!valStr) return 0;
+              if (isK) {
+                const match = valStr.match(/([\d,.]+)\s*kcal/i);
+                if (match) return parseFloat(match[1].replace(',', '.'));
+              }
+              const match = valStr.match(/([\d,.]+)/);
+              return match ? parseFloat(match[1].replace(',', '.')) : 0;
+            };
+            items.push({
+              name: (row.names?.[0]?.name || 'Tuntematon').replace(/:$/, ''),
+              kcal: getVal("Energia", true),
+              p: getVal("Proteiini"),
+              h: getVal("Hiilihydraatit"),
+              r: getVal("Rasva"),
+            });
+          });
+        }
+      });
+    }
+
+    if (items.length === 0) return [];
 
     const extraItems = [
       { name: "Kasvirasva", kcal: 540, p: 0.1, h: 0.5, r: 60 },
       { name: "Rasvaton maito", kcal: 33, p: 3.3, h: 4.8, r: 0 },
+      { name: "Maito", kcal: 46, p: 3.3, h: 4.8, r: 1.5 },
       { name: "Piimä", kcal: 33, p: 3.3, h: 4.8, r: 0 },
       { name: "Ketsuppi", kcal: 110, p: 1.5, h: 25, r: 0 },
       { name: "Sinappi", kcal: 150, p: 5.5, h: 15, r: 5 },
       { name: "Thousand island salaatinkastike", kcal: 370, p: 1, h: 10, r: 35 },
       { name: "Koulunäkki", kcal: 360, p: 10, h: 60, r: 2.5 },
       { name: "Koulu kuntonäkki", kcal: 360, p: 10, h: 60, r: 2.5 },
+      { name: "Leipä", kcal: 250, p: 8, h: 50, r: 3 },
+      { name: "Levite", kcal: 450, p: 0.5, h: 0.5, r: 50 },
+      { name: "Juomat", kcal: 20, p: 1.5, h: 3, r: 0 },
     ];
     
     return [...items, ...extraItems];
@@ -437,7 +487,7 @@ export default function Home() {
     });
   };
 
-  let formattedDateLabel = "EI TIETOJA";
+  let formattedDateLabel = isLoadingMenu ? "LADATAAN..." : "EI TIETOJA";
   const days = ['SUNNUNTAI', 'MAANANTAI', 'TIISTAI', 'KESKIVIIKKO', 'TORSTAI', 'PERJANTAI', 'LAUANTAI'];
   const months = ['TAMMIKUUTA', 'HELMIKUUTA', 'MAALISKUUTA', 'HUHTIKUUTA', 'TOUKOKUUTA', 'KESÄKUUTA', 'HEINÄKUUTA', 'ELOKUUTA', 'SYYSKUUTA', 'LOKAKUUTA', 'MARRASKUUTA', 'JOULUKUUTA'];
 
@@ -671,7 +721,7 @@ export default function Home() {
         onTouchEnd={handleTouchEnd}
       >
         <div className="container">
-          <div className={`hero ${schoolsList.length === 0 ? 'skeleton' : ''}`}>
+          <div className={`hero ${(schoolsList.length === 0 || isLoadingMenu) ? 'skeleton' : ''}`}>
             <div className="kcal-box">
               <div className="kcal-val">{animK}</div>
               <div className="kcal-lbl">KCAL</div>
@@ -683,9 +733,9 @@ export default function Home() {
             </div>
           </div>
 
-          <div className={`section-label ${schoolsList.length === 0 ? 'skeleton' : ''}`}>Päivän valikko</div>
-          <div className={`list-group ${schoolsList.length === 0 ? 'skeleton' : ''}`}>
-            {schoolsList.length === 0 ? (
+          <div className={`section-label ${(schoolsList.length === 0 || isLoadingMenu) ? 'skeleton' : ''}`}>Päivän valikko</div>
+          <div className={`list-group ${(schoolsList.length === 0 || isLoadingMenu) ? 'skeleton' : ''}`}>
+            {(schoolsList.length === 0 || isLoadingMenu) ? (
               <>
                 <div className="list-item"><div className="skeleton-text"></div></div>
                 <div className="list-item"><div className="skeleton-text"></div></div>
@@ -722,7 +772,7 @@ export default function Home() {
             )}
           </div>
 
-          <div className={`section-label ${schoolsList.length === 0 ? 'skeleton' : ''}`} style={{ marginTop: 24 }}>AI-analyysi</div>
+          <div className={`section-label ${(schoolsList.length === 0 || isLoadingMenu) ? 'skeleton' : ''}`} style={{ marginTop: 24 }}>AI-analyysi</div>
 
           <div className="ai-zone" style={{ position: "relative", overflow: "hidden", minHeight: (!user || (hasSubscription === false && freeAnalysesUsed >= 3)) ? 320 : "auto" }}>
             {(!user || (hasSubscription === false && freeAnalysesUsed >= 3)) && (

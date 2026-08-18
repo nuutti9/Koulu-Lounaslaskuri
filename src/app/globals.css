@@ -424,6 +424,7 @@
             border: none;
             font-weight: 700;
             font-size: 15px;
+            cursor: pointer;
             transition: opacity 0.2s;
         }
 

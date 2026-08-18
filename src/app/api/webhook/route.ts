@@ -44,7 +44,7 @@ export async function POST(req: Request) {
       }
       case 'customer.subscription.updated':
       case 'customer.subscription.deleted': {
-        const subscription = event.data.object as Stripe.Subscription;
+        const subscription = event.data.object as any;
         await supabaseAdmin.from('subscriptions').update({
           status: subscription.status,
           current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),

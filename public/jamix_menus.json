@@ -1,0 +1,585 @@
+{
+  "osao-kaukovainio": [
+    {
+      "date": "2026-08-13",
+      "meals": [
+        {
+          "dishes": [
+            {
+              "name": "Kuohkeaa kukkakaalikeittoa"
+            }
+          ],
+          "macros": {
+            "kcal": 33,
+            "p": 0.95,
+            "h": 3.92,
+            "r": 1.4
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Päivän proteiini"
+            }
+          ],
+          "macros": {
+            "kcal": 0,
+            "p": 0,
+            "h": 0,
+            "r": 0
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Marjakiisseliä"
+            }
+          ],
+          "macros": {
+            "kcal": 78,
+            "p": 0.71,
+            "h": 16.24,
+            "r": 0.26
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Kebabkiusausta"
+            }
+          ],
+          "macros": {
+            "kcal": 100,
+            "p": 3.3,
+            "h": 13.82,
+            "r": 4.1
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Luomu spelttipuuroa"
+            }
+          ],
+          "macros": {
+            "kcal": 65,
+            "p": 1.68,
+            "h": 6.39,
+            "r": 3.75
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Päivän proteiini"
+            }
+          ],
+          "macros": {
+            "kcal": 0,
+            "p": 0,
+            "h": 0,
+            "r": 0
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Marjakiisseliä"
+            }
+          ],
+          "macros": {
+            "kcal": 78,
+            "p": 0.71,
+            "h": 16.24,
+            "r": 0.26
+          }
+        }
+      ]
+    },
+    {
+      "date": "2026-08-14",
+      "meals": [
+        {
+          "dishes": [
+            {
+              "name": "Porkkana-pestolasagnea"
+            }
+          ],
+          "macros": {
+            "kcal": 108,
+            "p": 5.51,
+            "h": 14.29,
+            "r": 2.63
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Jauhelihamureketta"
+            }
+          ],
+          "macros": {
+            "kcal": 161,
+            "p": 11.9,
+            "h": 6.7,
+            "r": 9.6
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Tomaattista kermakastiketta"
+            }
+          ],
+          "macros": {
+            "kcal": 43,
+            "p": 0.41,
+            "h": 5.27,
+            "r": 2.19
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Meillä tehtyä perunamuusia"
+            }
+          ],
+          "macros": {
+            "kcal": 90,
+            "p": 1.63,
+            "h": 12.31,
+            "r": 3.45
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Kala-pastapaistosta"
+            }
+          ],
+          "macros": {
+            "kcal": 90,
+            "p": 3.84,
+            "h": 13.97,
+            "r": 1.92
+          }
+        }
+      ]
+    },
+    {
+      "date": "2026-08-17",
+      "meals": [
+        {
+          "dishes": [
+            {
+              "name": "Härkäpapu-pastapaistosta"
+            }
+          ],
+          "macros": {
+            "kcal": 97,
+            "p": 2.22,
+            "h": 10.57,
+            "r": 5.04
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Jauhelihakastiketta"
+            }
+          ],
+          "macros": {
+            "kcal": 66,
+            "p": 4.51,
+            "h": 5.17,
+            "r": 2.63
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Keitettyjä perunoita"
+            }
+          ],
+          "macros": {
+            "kcal": 58,
+            "p": 1.68,
+            "h": 13.66,
+            "r": 0.21
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Kananpoikaa currykastikkeessa"
+            }
+          ],
+          "macros": {
+            "kcal": 63,
+            "p": 4.6,
+            "h": 4.52,
+            "r": 2.85
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Täysjyväriisiä"
+            }
+          ],
+          "macros": {
+            "kcal": 127,
+            "p": 2.65,
+            "h": 25.75,
+            "r": 1.07
+          }
+        }
+      ]
+    },
+    {
+      "date": "2026-08-18",
+      "meals": [
+        {
+          "dishes": [
+            {
+              "name": "Kasvispataa luomutofulla"
+            }
+          ],
+          "macros": {
+            "kcal": 81,
+            "p": 3.9,
+            "h": 11.24,
+            "r": 1.81
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Keitettyjä perunoita"
+            }
+          ],
+          "macros": {
+            "kcal": 58,
+            "p": 1.68,
+            "h": 13.66,
+            "r": 0.21
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Kalkkuna-nuudelipaistosta"
+            }
+          ],
+          "macros": {
+            "kcal": 74,
+            "p": 3.96,
+            "h": 4.4,
+            "r": 4.2
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Punaista possucurrya"
+            }
+          ],
+          "macros": {
+            "kcal": 95,
+            "p": 6.62,
+            "h": 5.37,
+            "r": 4.87
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Riisiä"
+            }
+          ],
+          "macros": {
+            "kcal": 356,
+            "p": 7.4,
+            "h": 76,
+            "r": 1.7
+          }
+        }
+      ]
+    },
+    {
+      "date": "2026-08-19",
+      "meals": [
+        {
+          "dishes": [
+            {
+              "name": "Linssi-bataattimuhennosta"
+            }
+          ],
+          "macros": {
+            "kcal": 101,
+            "p": 4.65,
+            "h": 12.91,
+            "r": 2.91
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Täysjyväriisiä"
+            }
+          ],
+          "macros": {
+            "kcal": 127,
+            "p": 2.65,
+            "h": 25.75,
+            "r": 1.07
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Kinkkukiusausta"
+            }
+          ],
+          "macros": {
+            "kcal": 88,
+            "p": 3.8,
+            "h": 12.31,
+            "r": 3.09
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Kananpoikaa teriyakikastikkeessa"
+            }
+          ],
+          "macros": {
+            "kcal": 43,
+            "p": 3.8,
+            "h": 4.21,
+            "r": 1.1
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Täysjyväriisiä"
+            }
+          ],
+          "macros": {
+            "kcal": 127,
+            "p": 2.65,
+            "h": 25.75,
+            "r": 1.07
+          }
+        }
+      ]
+    },
+    {
+      "date": "2026-08-20",
+      "meals": [
+        {
+          "dishes": [
+            {
+              "name": "Kasvis-hernekeittoa"
+            }
+          ],
+          "macros": {
+            "kcal": 53,
+            "p": 4.75,
+            "h": 5.62,
+            "r": 0.37
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Pannukakkua"
+            }
+          ],
+          "macros": {
+            "kcal": 174,
+            "p": 6.52,
+            "h": 25.63,
+            "r": 4.78
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Mansikkahilloa"
+            }
+          ],
+          "macros": {
+            "kcal": 167,
+            "p": 0,
+            "h": 39,
+            "r": 0
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Päivän proteiini"
+            }
+          ],
+          "macros": {
+            "kcal": 0,
+            "p": 0,
+            "h": 0,
+            "r": 0
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Hernekeittoa"
+            }
+          ],
+          "macros": {
+            "kcal": 71,
+            "p": 5.44,
+            "h": 5.93,
+            "r": 1.97
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Pannukakkua"
+            }
+          ],
+          "macros": {
+            "kcal": 174,
+            "p": 6.52,
+            "h": 25.63,
+            "r": 4.78
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Mansikkahilloa"
+            }
+          ],
+          "macros": {
+            "kcal": 167,
+            "p": 0,
+            "h": 39,
+            "r": 0
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Päivän proteiini"
+            }
+          ],
+          "macros": {
+            "kcal": 0,
+            "p": 0,
+            "h": 0,
+            "r": 0
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Broilerilasagnettea kasviksilla"
+            }
+          ],
+          "macros": {
+            "kcal": 104,
+            "p": 5.04,
+            "h": 12.51,
+            "r": 3.52
+          }
+        }
+      ]
+    },
+    {
+      "date": "2026-08-21",
+      "meals": [
+        {
+          "dishes": [
+            {
+              "name": "Punajuurilasagnettea"
+            }
+          ],
+          "macros": {
+            "kcal": 85,
+            "p": 3.62,
+            "h": 12.19,
+            "r": 1.98
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Lohi-porkkanamureketta"
+            }
+          ],
+          "macros": {
+            "kcal": 134,
+            "p": 9.02,
+            "h": 11.59,
+            "r": 5.64
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Tilli-kermaviilikastiketta"
+            }
+          ],
+          "macros": {
+            "kcal": 85,
+            "p": 3.2,
+            "h": 5.96,
+            "r": 5.02
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Keitettyjä perunoita"
+            }
+          ],
+          "macros": {
+            "kcal": 75,
+            "p": 1.9,
+            "h": 15.5,
+            "r": 0.1
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Makkarakastiketta"
+            }
+          ],
+          "macros": {
+            "kcal": 72,
+            "p": 2.99,
+            "h": 5.77,
+            "r": 4.04
+          }
+        },
+        {
+          "dishes": [
+            {
+              "name": "Keitettyjä perunoita"
+            }
+          ],
+          "macros": {
+            "kcal": 75,
+            "p": 1.9,
+            "h": 15.5,
+            "r": 0.1
+          }
+        }
+      ]
+    }
+  ]
+}
