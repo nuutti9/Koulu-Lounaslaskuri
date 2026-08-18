@@ -6,15 +6,15 @@ interface SettingsModalProps {
   theme: string;
   toggleTheme: () => void;
   user: any;
-  schoolsList: any[];
   hasSubscription: boolean | null;
   defaultOpenFaq?: boolean;
 }
 
-export default function SettingsModal({ isOpen, onClose, theme, toggleTheme, user, schoolsList, hasSubscription, defaultOpenFaq }: SettingsModalProps) {
+export default function SettingsModal({ isOpen, onClose, theme, toggleTheme, user, hasSubscription, defaultOpenFaq }: SettingsModalProps) {
   const [isFaqOpen, setIsFaqOpen] = useState(false);
   const [isLoadingCheckout, setIsLoadingCheckout] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<'yearly' | 'monthly'>('yearly');
+  const [schoolsList, setSchoolsList] = useState<{ id: string; name: string }[]>([]);
 
   // Placeholder prices - user will provide actuals
   const MONTHLY_PRICE = "4,99 €";
@@ -28,6 +28,14 @@ export default function SettingsModal({ isOpen, onClose, theme, toggleTheme, use
       setIsFaqOpen(false);
     }
   }, [isOpen, defaultOpenFaq]);
+
+  useEffect(() => {
+    if (!isFaqOpen || schoolsList.length > 0) return;
+    fetch("/schools.json")
+      .then((res) => (res.ok ? res.json() : []))
+      .then((data) => setSchoolsList(Array.isArray(data) ? data : []))
+      .catch(() => {});
+  }, [isFaqOpen, schoolsList.length]);
 
   const handleSubscribe = async (priceId: string) => {
     setIsLoadingCheckout(true);
@@ -230,6 +238,28 @@ export default function SettingsModal({ isOpen, onClose, theme, toggleTheme, use
           )}
         </div>
 
+        {/* Contact */}
+        <div style={{ marginBottom: 24, marginTop: 24, padding: 16, background: "var(--tertiary-bg)", borderRadius: 16, textAlign: "center" }}>
+          <p style={{ fontSize: 14, color: "var(--text-dim)", marginBottom: 10, lineHeight: 1.5 }}>
+            Palautetta, ongelmia tai ehdotuksia?
+          </p>
+          <a
+            href="mailto:Koululounaslaskuri@gmail.com"
+            style={{
+              display: "inline-block",
+              padding: "10px 22px",
+              background: "var(--accent)",
+              color: "#fff",
+              borderRadius: 20,
+              fontWeight: 600,
+              fontSize: 14,
+              textDecoration: "none",
+            }}
+          >
+            Ota yhteyttä
+          </a>
+        </div>
+
         {/* FAQ Accordion */}
         <div>
           <button 
@@ -282,7 +312,7 @@ export default function SettingsModal({ isOpen, onClose, theme, toggleTheme, use
                 <h2 style={{ fontSize: 15, fontWeight: 600, color: "var(--text)", marginBottom: 12 }}>Tuetut koulut ja ruokalistat</h2>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 8, fontSize: 13 }}>
                   {schoolsList.map((school, i) => (
-                    <a key={i} href={`/?school=${school.id}`} style={{ color: "var(--text-dim)", textDecoration: "none", padding: "4px 8px", background: "rgba(255,255,255,0.05)", borderRadius: 8 }}>
+                    <a key={i} href={`/koulu/${school.id}`} style={{ color: "var(--text-dim)", textDecoration: "none", padding: "4px 8px", background: "rgba(255,255,255,0.05)", borderRadius: 8 }}>
                       {school.name} ruokalista
                     </a>
                   ))}

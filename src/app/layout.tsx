@@ -9,13 +9,25 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "Koululounaslaskuri - Kouluruoka, Ruokalistat & Makrot",
-  description: "Katso koulusi ruokalista ja laske kouluruoan kalorit ja makrot (proteiini, hiilihydraatit, rasvat) helposti. Tuetut koulut: Muhos, Utajärvi, Vaala, ja kymmeniä muita!",
-  keywords: "kouluruoka macrot, kouluruoka makrot, kouluruoka ravintoarvot, koulu kalorit, kouluruoka kalorit, lounaslaskuri, koululounas, muhos kouluruoka macrot, muhos ruokalista, alavus kouluruoka, eurajoki kouluruoka, kauniainen kouluruoka, utajärvi ruokalista, vaala ruokalista",
+  metadataBase: new URL("https://koululounaslaskuri.fi"),
+  title: {
+    default: "Koululounaslaskuri - Kouluruoka, Ruokalistat & Makrot",
+    template: "%s | Koululounaslaskuri",
+  },
+  description: "Katso koulusi ruokalista ja laske kouluruoan kalorit ja makrot (proteiini, hiilihydraatit, rasvat) helposti. Tuetut koulut: Muhos, Utajärvi, Vaala, Helsinki ja kymmeniä muita!",
   openGraph: {
     title: "Koululounaslaskuri - Kouluruoka, Ruokalistat & Makrot",
     description: "Laske kouluruoan kalorit ja makrot helposti. Katso koulusi lounasruokalista!",
     type: "website",
+    url: "https://koululounaslaskuri.fi",
+    images: [
+      {
+        url: "/icon-512.png",
+        width: 512,
+        height: 512,
+        alt: "Koululounaslaskuri logo",
+      },
+    ],
   },
   appleWebApp: {
     capable: true,
@@ -23,9 +35,13 @@ export const metadata: Metadata = {
     title: "Koululounaslaskuri",
   },
   icons: {
-    icon: "/Koululounaslaskurilogo.png",
-    apple: "/Koululounaslaskurilogo.png",
-  }
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon-32.png", type: "image/png", sizes: "32x32" },
+      { url: "/icon-512.png", type: "image/png", sizes: "512x512" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({
@@ -42,11 +58,14 @@ export default function RootLayout({
           "@context": "https://schema.org",
           "@type": "WebApplication",
           "name": "Koululounaslaskuri",
+          "url": "https://koululounaslaskuri.fi",
           "description": "Kouluruoan ruokalistat ja makrolaskuri. Laske kalorit, proteiini, hiilihydraatit ja rasvat.",
           "applicationCategory": "HealthApplication",
+          "inLanguage": "fi",
           "offers": {
             "@type": "Offer",
-            "price": "0"
+            "price": "0",
+            "priceCurrency": "EUR"
           }
         })}} />
       </head>

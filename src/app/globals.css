@@ -595,9 +595,16 @@
             padding: 14px 20px;
             font-size: 16px;
             font-weight: 500;
+            color: var(--text);
+            text-decoration: none;
+            display: block;
             border-bottom: var(--ios-border);
             cursor: pointer;
             transition: background 0.2s;
+        }
+
+        .custom-school-item:hover {
+            background: var(--tertiary-bg);
         }
 
         .custom-school-item:last-child {
