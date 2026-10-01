@@ -2,6 +2,43 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 
+export const maxDuration = 60;
+
+type InputPart =
+  | { type: 'input_text'; text: string }
+  | { type: 'input_image'; image_url: string; detail: 'auto' };
+
+type AnalysisResult = {
+  reasoning: string;
+  menuResults: Record<string, number>;
+  notFound: string[];
+};
+
+type OpenAIResponse = {
+  status?: string;
+  output?: Array<{
+    type?: string;
+    content?: Array<{ type?: string; text?: string }>;
+  }>;
+};
+
+function isAnalysisResult(value: unknown, menuItems: string[]): value is AnalysisResult {
+  if (typeof value !== 'object' || value === null) return false;
+  const result = value as Partial<AnalysisResult>;
+  return (
+    typeof result.reasoning === 'string' &&
+    Array.isArray(result.notFound) &&
+    result.notFound.every((item) => typeof item === 'string') &&
+    typeof result.menuResults === 'object' &&
+    result.menuResults !== null &&
+    !Array.isArray(result.menuResults) &&
+    Object.entries(result.menuResults).every(([name, grams]) =>
+      menuItems.includes(name) && typeof grams === 'number' && Number.isFinite(grams) && grams >= 0
+    ) &&
+    menuItems.every((name) => Object.hasOwn(result.menuResults!, name))
+  );
+}
+
 export async function POST(req: Request) {
   try {
     const supabase = await createClient();
@@ -47,17 +84,40 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Olet tehnyt liian monta pyyntöä lyhyen ajan sisällä. Odota hetki ja yritä uudelleen." }, { status: 429 });
     }
 
-    // 2. Fetch Gemini API Key
-    // Note: In production, the key should be retrieved securely from a Supabase Secrets table.
-    // For now, we fallback to process.env.GEMINI_API_KEY
-    let GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+    // This variable stays on the server; never use a NEXT_PUBLIC_ key.
+    const apiKey = process.env.OPENAI_API_KEY;
 
-    if (!GEMINI_API_KEY) {
-      return NextResponse.json({ error: "Gemini API-avainta ei ole määritetty palvelimella." }, { status: 500 });
+    if (!apiKey) {
+      return NextResponse.json({ error: "Tekoälypalvelua ei ole määritetty palvelimella." }, { status: 503 });
     }
 
     // 3. Parse Request
-    const { text, imageData, mimeType, menuItems } = await req.json();
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: "Virheellinen analyysipyyntö." }, { status: 400 });
+    }
+    if (typeof body !== 'object' || body === null) {
+      return NextResponse.json({ error: "Virheellinen analyysipyyntö." }, { status: 400 });
+    }
+    const { text = '', imageData, mimeType, menuItems: requestedMenuItems } = body as Record<string, unknown>;
+    if (
+      typeof text !== 'string' || text.length > 6000 ||
+      !Array.isArray(requestedMenuItems) || requestedMenuItems.length === 0 || requestedMenuItems.length > 200 ||
+      !requestedMenuItems.every((item) => typeof item === 'string' && item.trim() && item.length <= 300) ||
+      (!text.trim() && !imageData)
+    ) {
+      return NextResponse.json({ error: "Lisää kuva tai kuvaus ja valitse ruokalista." }, { status: 400 });
+    }
+    if (imageData != null && (
+      typeof imageData !== 'string' || !imageData || imageData.length > 4_000_000 ||
+      !/^[A-Za-z0-9+/]+={0,2}$/.test(imageData) ||
+      typeof mimeType !== 'string' || !['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(mimeType)
+    )) {
+      return NextResponse.json({ error: "Kuva on liian suuri tai sen tiedostomuotoa ei tueta. Käytä JPG-, PNG-, WebP- tai GIF-kuvaa." }, { status: 400 });
+    }
+    const menuItems = [...new Set(requestedMenuItems as string[])];
 
     const promptString = `Olet maailmanluokan ravitsemusterapeutti ja ruoan painon arvioija. Tehtäväsi on tunnistaa ruoat käyttäjän syötteestä, yhdistää ne annettuun valikkoon ja arvioida niiden paino grammoina mahdollisimman suurella tieteellisellä tarkkuudella.
 
@@ -86,32 +146,78 @@ TÄRKEÄÄ: Palauta vastauksesi PELKÄSTÄÄN validina JSON-objektina ilman mit�
   ]
 }`;
 
-    const parts: any[] = [{ text: promptString }];
+    const parts: InputPart[] = [{ type: 'input_text', text: promptString + '\nPalauta jokainen valikon ruokalaji menuResults-objektissa. Käytä painoa 0, jos ruokalajia ei havaita.' }];
     
     if (imageData && mimeType) {
-      parts.push({ inlineData: { data: imageData, mimeType } });
+      parts.push({ type: 'input_image', image_url: `data:${mimeType};base64,${imageData}`, detail: 'auto' });
     }
 
-    // 4. Call Gemini
+    // 4. Call OpenAI from the server. Authentication is never placed in a URL.
     const resp = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`,
+      'https://api.openai.com/v1/responses',
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contents: [{ parts }] }),
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+        signal: AbortSignal.timeout(45_000),
+        body: JSON.stringify({
+          model: process.env.OPENAI_MODEL || 'gpt-6-luna',
+          store: false,
+          reasoning: { effort: 'low' },
+          max_output_tokens: 2500,
+          input: [{ role: 'user', content: parts }],
+          text: {
+            format: {
+              type: 'json_schema',
+              name: 'food_analysis',
+              strict: true,
+              schema: {
+                type: 'object',
+                additionalProperties: false,
+                required: ['reasoning', 'menuResults', 'notFound'],
+                properties: {
+                  reasoning: { type: 'string' },
+                  menuResults: {
+                    type: 'object',
+                    additionalProperties: false,
+                    required: menuItems,
+                    properties: Object.fromEntries(menuItems.map((name) => [name, { type: 'number', minimum: 0 }])),
+                  },
+                  notFound: { type: 'array', items: { type: 'string' } },
+                },
+              },
+            },
+          },
+        }),
       }
     );
 
-    const d = await resp.json();
-    if (!d.candidates || d.candidates.length === 0) {
+    if (!resp.ok) {
+      // Do not log upstream bodies or request headers, which may contain sensitive data.
+      console.error('OpenAI request failed', { status: resp.status, requestId: resp.headers.get('x-request-id') });
+      return NextResponse.json({ error: "Tekoälypalvelu ei ole juuri nyt käytettävissä. Yritä myöhemmin uudelleen." }, { status: resp.status === 429 ? 429 : 502 });
+    }
+
+    const d = await resp.json() as OpenAIResponse;
+    if (d.status !== 'completed' || !Array.isArray(d.output)) {
+      return NextResponse.json({ error: "Tekoälyn analyysi jäi kesken. Yritä uudelleen." }, { status: 502 });
+    }
+    const content = d.output
+      .filter((item) => item.type === 'message' && Array.isArray(item.content))
+      .flatMap((item) => item.content ?? []);
+    if (content.some((part) => part.type === 'refusal')) {
       return NextResponse.json({ error: "Tekoäly ei osannut analysoida kuvaa tai tekstiä kunnolla. Yritä uudelleen selkeämmällä kuvalla." }, { status: 400 });
     }
 
-    let results;
+    let results: AnalysisResult;
     try {
-      results = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
-    } catch (pe) {
-      return NextResponse.json({ error: "Tekoälyn vastaus ei ollut luettavassa muodossa." }, { status: 500 });
+      const outputText = content.filter((part) => part.type === 'output_text').map((part) => part.text ?? '').join('');
+      const parsed: unknown = JSON.parse(outputText);
+      if (!isAnalysisResult(parsed, menuItems)) {
+        throw new Error('Invalid analysis response');
+      }
+      results = parsed;
+    } catch {
+      return NextResponse.json({ error: "Tekoälyn vastaus ei ollut luettavassa muodossa." }, { status: 502 });
     }
 
     // Securely update usage limits after a successful generation
@@ -129,8 +235,11 @@ TÄRKEÄÄ: Palauta vastauksesi PELKÄSTÄÄN validina JSON-objektina ilman mit�
 
     return NextResponse.json({ ...results, freeAnalysesRemaining });
     
-  } catch (error: any) {
-    console.error("API Error:", error);
+  } catch (error: unknown) {
+    if (error instanceof Error && (error.name === 'TimeoutError' || error.name === 'AbortError')) {
+      return NextResponse.json({ error: "Tekoälypalvelun vastaus kesti liian kauan. Yritä uudelleen." }, { status: 504 });
+    }
+    console.error("Analysis failed", { name: error instanceof Error ? error.name : 'UnknownError' });
     return NextResponse.json({ error: "Palvelinvirhe analyysin aikana." }, { status: 500 });
   }
 }
