@@ -289,9 +289,6 @@ export default function MenuViewer({ schoolId, schoolName }: Props) {
       { name: "Thousand island salaatinkastike", kcal: 370, p: 1, h: 10, r: 35 },
       { name: "Koulunäkki", kcal: 360, p: 10, h: 60, r: 2.5 },
       { name: "Koulu kuntonäkki", kcal: 360, p: 10, h: 60, r: 2.5 },
-      { name: "Leipä", kcal: 250, p: 8, h: 50, r: 3 },
-      { name: "Levite", kcal: 450, p: 0.5, h: 0.5, r: 50 },
-      { name: "Juomat", kcal: 20, p: 1.5, h: 3, r: 0 },
     ];
     
     return [...items, ...extraItems];
